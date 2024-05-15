@@ -9,15 +9,16 @@ import type {
   PrepareDepositCall,
   PrepareWithdrawCall,
 } from "../../type/common/index.js";
-import { AdapterUtil, SpokeChainUtil } from "../../util/common/index.js";
 import { FolksCore } from "../core/FolksCore.js";
-import { HubChainUtil } from "../../util/hub/index.js";
+import { checkAdapterSupportsDataMessage, checkAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
+import { checkSpokeChainSupportFolksToken, checkSpokeChainSupported } from "../../util/common/chain.js";
+import { checkLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
 
 export const prepare = {
   async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -38,7 +39,7 @@ export const prepare = {
   async deleteLoan(accountId: Hex, loanId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -65,9 +66,9 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    SpokeChainUtil.checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    HubChainUtil.checkLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    checkLoanTypeSupported(loanType, folksTokenId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -97,10 +98,10 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    AdapterUtil.checkAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
-    SpokeChainUtil.checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    SpokeChainUtil.checkSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    checkSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
 
     const getReturnAdapterFees = FolksHubLoan.getSendTokenAdapterFees(
       FolksCore.getHubProvider(),
@@ -137,7 +138,7 @@ export const write = {
   async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -157,7 +158,7 @@ export const write = {
   async deleteLoan(accountId: Hex, loanId: Hex, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -182,7 +183,7 @@ export const write = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -211,7 +212,7 @@ export const write = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    const { poolId } = HubChainUtil.getHubTokenData(folksTokenId, folksChain.network);
+    const { poolId } = getHubTokenData(folksTokenId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

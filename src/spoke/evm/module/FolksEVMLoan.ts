@@ -15,9 +15,23 @@ import type {
   PrepareDepositCall,
   PrepareWithdrawCall,
 } from "../../../type/evm/index.js";
-import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../../util/common/index.js";
-import { EVMContractUtil, getSignerAddress } from "../../../util/evm/index.js";
-import { HubChainUtil } from "../../../util/hub/index.js";
+import {
+  getBridgeRouterSpokeContract,
+  getSignerAddress,
+  getSpokeCommonContract,
+  getSpokeTokenContract,
+  sendERC20Approve,
+} from "../../../util/evm/index.js";
+
+import { getRandomGenericAddress } from "../../../util/common/address.js";
+import { convertNumberToBytes, convertBooleanToByte } from "../../../util/common/bytes.js";
+import { getSpokeChain, getSpokeTokenData } from "../../../util/common/chain.js";
+import {
+  DEFAULT_MESSAGE_PARAMS,
+  buildMessagePayload,
+  getSendTokenExtraArgsWhenAdding,
+} from "../../../util/common/messages.js";
+import { getHubChain, getHubTokenData } from "../../../util/hub/chain.js";
 
 export const prepare = {
   async createLoan(
@@ -30,7 +44,7 @@ export const prepare = {
     adapters: MessageAdapters
   ): Promise<PrepareCreateLoanCall> {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.createLoan(provider, network, accountId, loanId, loanTypeId, adapters, spokeChain);
@@ -45,7 +59,7 @@ export const prepare = {
     adapters: MessageAdapters
   ) {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.deleteLoan(provider, network, accountId, loanId, adapters, spokeChain);
@@ -62,7 +76,7 @@ export const prepare = {
     adapters: MessageAdapters
   ) {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.deposit(provider, network, accountId, loanId, folksTokenId, amount, adapters, spokeChain);
@@ -82,7 +96,7 @@ export const prepare = {
     returnAdapterFees: bigint
   ) {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.withdraw(
@@ -114,23 +128,23 @@ export const prepareRaw = {
   ): Promise<PrepareCreateLoanCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeChain.spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
+      payload: buildMessagePayload(
         Action.CreateLoan,
         accountId,
-        AddressUtil.getRandomGenericAddress(),
-        concat([loanId, BytesUtil.convertNumberToBytes(loanTypeId, UINT16_LENGTH)])
+        getRandomGenericAddress(),
+        concat([loanId, convertNumberToBytes(loanTypeId, UINT16_LENGTH)])
       ),
       finalityLevel: FINALITY.IMMEDIATE,
       extraArgs: "0x",
@@ -169,24 +183,19 @@ export const prepareRaw = {
   ): Promise<PrepareDeleteLoanCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeChain.spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
-        Action.DeleteLoan,
-        accountId,
-        AddressUtil.getRandomGenericAddress(),
-        loanId
-      ),
+      payload: buildMessagePayload(Action.DeleteLoan, accountId, getRandomGenericAddress(), loanId),
       finalityLevel: FINALITY.IMMEDIATE,
       extraArgs: "0x",
     };
@@ -224,33 +233,33 @@ export const prepareRaw = {
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = {}
   ): Promise<PrepareDepositCall> {
-    const spokeTokenData = SpokeChainUtil.getSpokeTokenData(spokeChain, folksTokenId);
-    const hubTokenData = HubChainUtil.getHubTokenData(folksTokenId, network);
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, network);
 
-    const spokeToken = EVMContractUtil.getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeToken.address,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
+      payload: buildMessagePayload(
         Action.Deposit,
         accountId,
-        AddressUtil.getRandomGenericAddress(),
+        getRandomGenericAddress(),
         concat([
           loanId,
-          BytesUtil.convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
-          BytesUtil.convertNumberToBytes(amount, UINT256_LENGTH),
+          convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
+          convertNumberToBytes(amount, UINT256_LENGTH),
         ])
       ),
       finalityLevel: FINALITY.FINALISED,
-      extraArgs: MessageUtil.getSendTokenExtraArgsWhenAdding(spokeTokenData, hubTokenData, amount),
+      extraArgs: getSendTokenExtraArgsWhenAdding(spokeTokenData, hubTokenData, amount),
     };
 
     // get adapter fees
@@ -290,33 +299,33 @@ export const prepareRaw = {
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = {}
   ): Promise<PrepareWithdrawCall> {
-    const spokeTokenData = SpokeChainUtil.getSpokeTokenData(spokeChain, folksTokenId);
-    const hubTokenData = HubChainUtil.getHubTokenData(folksTokenId, network);
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, network);
 
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const spokeBridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const spokeBridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message incl return adapter fee needed
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     params.receiverValue = returnAdapterFee;
     const message: MessageToSend = {
       params,
       sender: spokeTokenData.tokenAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
+      payload: buildMessagePayload(
         Action.Withdraw,
         accountId,
-        AddressUtil.getRandomGenericAddress(),
+        getRandomGenericAddress(),
         concat([
           loanId,
-          BytesUtil.convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
-          BytesUtil.convertNumberToBytes(receiverFolksChainId, UINT16_LENGTH),
-          BytesUtil.convertNumberToBytes(amount, UINT256_LENGTH),
-          BytesUtil.convertBooleanToByte(isFAmount),
+          convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
+          convertNumberToBytes(receiverFolksChainId, UINT16_LENGTH),
+          convertNumberToBytes(amount, UINT256_LENGTH),
+          convertBooleanToByte(isFAmount),
         ])
       ),
       finalityLevel: FINALITY.IMMEDIATE,
@@ -368,7 +377,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,
@@ -402,7 +411,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,
@@ -433,10 +442,10 @@ export const write = {
 
     const sender = getSignerAddress(signer);
 
-    const spokeToken = EVMContractUtil.getSpokeTokenContract(provider, token.spokeAddress, signer);
+    const spokeToken = getSpokeTokenContract(provider, token.spokeAddress, signer);
 
     if (includeApprove && token.tokenType !== TokenType.NATIVE)
-      await EVMContractUtil.sendERC20Approve(provider, token.spokeAddress, signer, spokeToken.address, amount);
+      await sendERC20Approve(provider, token.spokeAddress, signer, spokeToken.address, amount);
 
     const params: MessageParams = {
       ...adapters,
@@ -474,7 +483,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
     const params: MessageParams = {
       ...adapters,
       receiverValue: returnAdapterFee,

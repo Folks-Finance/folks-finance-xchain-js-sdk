@@ -4,47 +4,46 @@ import { UINT16_LENGTH, UINT256_LENGTH } from "../../constants/common/index.js";
 import { Action, TokenType } from "../../type/common/index.js";
 import type { GenericAddress, MessageAdapters, MessageParams, SpokeTokenData } from "../../type/common/index.js";
 import type { HubTokenData } from "../../type/hub/index.js";
-import { AddressUtil } from "./address.js";
-import { BytesUtil } from "./bytes.js";
 
-export namespace MessageUtil {
-  export const DEFAULT_MESSAGE_PARAMS = (adapters: MessageAdapters): MessageParams => ({
-    ...adapters,
-    receiverValue: BigInt(0),
-    gasLimit: BigInt(30000),
-    returnGasLimit: BigInt(0),
-  });
+import { convertNumberToBytes } from "./bytes.js";
+import { isGenericAddress } from "./address.js";
 
-  export function buildMessagePayload(action: Action, accountId: Hex, userAddr: GenericAddress, data: string): Hex {
-    if (!AddressUtil.isGenericAddress(accountId)) throw Error("Unknown account id format");
-    if (!AddressUtil.isGenericAddress(userAddr)) throw Error("Unknown user address format");
-    if (!isHex(data)) throw Error("Unknown data format");
+export const DEFAULT_MESSAGE_PARAMS = (adapters: MessageAdapters): MessageParams => ({
+  ...adapters,
+  receiverValue: BigInt(0),
+  gasLimit: BigInt(30000),
+  returnGasLimit: BigInt(0),
+});
 
-    return concat([BytesUtil.convertNumberToBytes(action, UINT16_LENGTH), accountId, userAddr, data]);
-  }
+export function buildMessagePayload(action: Action, accountId: Hex, userAddr: GenericAddress, data: string): Hex {
+  if (!isGenericAddress(accountId)) throw Error("Unknown account id format");
+  if (!isGenericAddress(userAddr)) throw Error("Unknown user address format");
+  if (!isHex(data)) throw Error("Unknown data format");
 
-  export function extraArgsToBytes(tokenAddr: GenericAddress, recipientAddr: GenericAddress, amount: bigint): Hex {
-    if (!AddressUtil.isGenericAddress(tokenAddr)) throw Error("Unknown token address format");
-    if (!AddressUtil.isGenericAddress(recipientAddr)) throw Error("Unknown recipient address format");
+  return concat([convertNumberToBytes(action, UINT16_LENGTH), accountId, userAddr, data]);
+}
 
-    return concat(["0x1b366e79", tokenAddr, recipientAddr, BytesUtil.convertNumberToBytes(amount, UINT256_LENGTH)]);
-  }
+export function extraArgsToBytes(tokenAddr: GenericAddress, recipientAddr: GenericAddress, amount: bigint): Hex {
+  if (!isGenericAddress(tokenAddr)) throw Error("Unknown token address format");
+  if (!isGenericAddress(recipientAddr)) throw Error("Unknown recipient address format");
 
-  export function getSendTokenExtraArgsWhenAdding(
-    spokeTokenData: SpokeTokenData,
-    hubTokenData: HubTokenData,
-    amount: bigint
-  ): Hex {
-    if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
-    return extraArgsToBytes(spokeTokenData.tokenAddress, hubTokenData.poolAddress, amount);
-  }
+  return concat(["0x1b366e79", tokenAddr, recipientAddr, convertNumberToBytes(amount, UINT256_LENGTH)]);
+}
 
-  export function getSendTokenExtraArgsWhenRemoving(
-    spokeTokenData: SpokeTokenData,
-    hubTokenData: HubTokenData,
-    amount: bigint
-  ): Hex {
-    if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
-    return extraArgsToBytes(hubTokenData.tokenAddress, spokeTokenData.spokeAddress, BigInt(amount));
-  }
+export function getSendTokenExtraArgsWhenAdding(
+  spokeTokenData: SpokeTokenData,
+  hubTokenData: HubTokenData,
+  amount: bigint
+): Hex {
+  if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
+  return extraArgsToBytes(spokeTokenData.tokenAddress, hubTokenData.poolAddress, amount);
+}
+
+export function getSendTokenExtraArgsWhenRemoving(
+  spokeTokenData: SpokeTokenData,
+  hubTokenData: HubTokenData,
+  amount: bigint
+): Hex {
+  if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
+  return extraArgsToBytes(hubTokenData.tokenAddress, spokeTokenData.spokeAddress, BigInt(amount));
 }

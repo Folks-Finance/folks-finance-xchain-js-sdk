@@ -15,9 +15,16 @@ import type {
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
 } from "../../../type/evm/index.js";
-import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../../util/common/index.js";
-import { EVMContractUtil, getSignerAddress } from "../../../util/evm/index.js";
-import { HubChainUtil } from "../../../util/hub/index.js";
+import {
+  DEFAULT_MESSAGE_PARAMS,
+  buildMessagePayload,
+  convertNumberToBytes,
+  convertToGenericAddress,
+  getRandomGenericAddress,
+  getSpokeChain,
+} from "../../../util/common/index.js";
+import { getBridgeRouterSpokeContract, getSignerAddress, getSpokeCommonContract } from "../../../util/evm/index.js";
+import { getHubChain } from "../../../util/hub/chain.js";
 
 export const prepare = {
   async createAccount(
@@ -28,7 +35,7 @@ export const prepare = {
     adapters: MessageAdapters
   ): Promise<PrepareCreateAccountCall> {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.createAccount(provider, network, accountId, adapters, spokeChain);
@@ -44,7 +51,7 @@ export const prepare = {
     adapters: MessageAdapters
   ): Promise<PrepareInviteAddressCall> {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.inviteAddress(
@@ -66,7 +73,7 @@ export const prepare = {
     adapters: MessageAdapters
   ) {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.acceptInvite(provider, network, accountId, adapters, spokeChain);
@@ -81,7 +88,7 @@ export const prepare = {
     adapters: MessageAdapters
   ) {
     // get intended spoke
-    const spokeChain = SpokeChainUtil.getSpokeChain(folksChainId, network);
+    const spokeChain = getSpokeChain(folksChainId, network);
 
     // use raw function
     return prepareRaw.unregisterAddress(provider, network, accountId, folksChainIdToUnregister, adapters, spokeChain);
@@ -99,24 +106,19 @@ export const prepareRaw = {
   ): Promise<PrepareCreateAccountCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
-        Action.CreateAccount,
-        accountId,
-        AddressUtil.getRandomGenericAddress(),
-        "0x"
-      ),
+      payload: buildMessagePayload(Action.CreateAccount, accountId, getRandomGenericAddress(), "0x"),
       finalityLevel: FINALITY.IMMEDIATE,
       extraArgs: "0x",
     };
@@ -153,25 +155,25 @@ export const prepareRaw = {
   ): Promise<PrepareInviteAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
+      payload: buildMessagePayload(
         Action.InviteAddress,
         accountId,
-        AddressUtil.getRandomGenericAddress(),
+        getRandomGenericAddress(),
         concat([
-          BytesUtil.convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
-          AddressUtil.convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
+          convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
+          convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
         ])
       ),
       finalityLevel: FINALITY.IMMEDIATE,
@@ -211,24 +213,19 @@ export const prepareRaw = {
   ): Promise<PrepareAcceptInviteAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
-        Action.AcceptInviteAddress,
-        accountId,
-        AddressUtil.getRandomGenericAddress(),
-        "0x"
-      ),
+      payload: buildMessagePayload(Action.AcceptInviteAddress, accountId, getRandomGenericAddress(), "0x"),
       finalityLevel: FINALITY.IMMEDIATE,
       extraArgs: "0x",
     };
@@ -264,23 +261,23 @@ export const prepareRaw = {
   ): Promise<PrepareUnregisterAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = EVMContractUtil.getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const hubChain = HubChainUtil.getHubChain(network);
+    const hubChain = getHubChain(network);
 
     // construct message
-    const params = MessageUtil.DEFAULT_MESSAGE_PARAMS(adapters);
+    const params = DEFAULT_MESSAGE_PARAMS(adapters);
     const message: MessageToSend = {
       params,
       sender: spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      payload: MessageUtil.buildMessagePayload(
+      payload: buildMessagePayload(
         Action.UnregisterAddress,
         accountId,
-        AddressUtil.getRandomGenericAddress(),
-        BytesUtil.convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH)
+        getRandomGenericAddress(),
+        convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH)
       ),
       finalityLevel: FINALITY.IMMEDIATE,
       extraArgs: "0x",
@@ -326,7 +323,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,
@@ -361,7 +358,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,
@@ -394,7 +391,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,
@@ -428,7 +425,7 @@ export const write = {
       spokeCommonAddress,
     } = prepareCall;
 
-    const spokeCommon = EVMContractUtil.getSpokeCommonContract(provider, spokeCommonAddress, signer);
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     const params: MessageParams = {
       ...adapters,

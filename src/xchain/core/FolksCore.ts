@@ -10,9 +10,9 @@ import type {
   FolksSigner,
   FolksSignerType,
 } from "../../type/common/index.js";
-import { ProviderEVMUtil } from "../../util/evm/index.js";
-import { FolksChainUtil } from "../../util/common/index.js";
-import { HubChainUtil } from "../../util/hub/index.js";
+import { getFolksChain } from "../../util/common/chain.js";
+import { initProviders } from "../../util/evm/provider.js";
+import { getHubChain } from "../../util/hub/chain.js";
 
 export class FolksCore {
   private static instance: FolksCore;
@@ -25,7 +25,7 @@ export class FolksCore {
   private constructor(folksCoreConfig: FolksCoreConfig) {
     this.selectedNetwork = folksCoreConfig.network;
     this.folksCoreProvider = { evm: {} as Record<FolksChainId, EVMProvider> };
-    this.folksCoreProvider.evm = ProviderEVMUtil.initProviders(folksCoreConfig.provider.evm);
+    this.folksCoreProvider.evm = initProviders(folksCoreConfig.provider.evm);
   }
 
   static init(folksCoreConfig: FolksCoreConfig): FolksCore {
@@ -40,7 +40,7 @@ export class FolksCore {
   }
 
   static getProvider<T extends ChainType>(folksChainId: FolksChainId): FolksProviderType<T> {
-    const folksChain = FolksChainUtil.getFolksChain(folksChainId, this.getSelectedNetwork());
+    const folksChain = getFolksChain(folksChainId, this.getSelectedNetwork());
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return FolksCore.getEVMProvider(folksChainId) as FolksProviderType<T>;
@@ -60,7 +60,7 @@ export class FolksCore {
   }
 
   static getSelectedFolksChain(): FolksChain {
-    return FolksChainUtil.getFolksChain(FolksCore.getSelectedFolksChainId(), FolksCore.getSelectedNetwork());
+    return getFolksChain(FolksCore.getSelectedFolksChainId(), FolksCore.getSelectedNetwork());
   }
 
   static getSelectedNetwork() {
@@ -69,12 +69,12 @@ export class FolksCore {
   }
 
   static getHubProvider(): EVMProvider {
-    const hubFolksChainId = HubChainUtil.getHubChain(this.instance.selectedNetwork).folksChainId;
+    const hubFolksChainId = getHubChain(this.instance.selectedNetwork).folksChainId;
     return this.instance.folksCoreProvider.evm[hubFolksChainId]!;
   }
 
   static setProvider(folksChainId: FolksChainId, provider: FolksProvider) {
-    const folksChain = FolksChainUtil.getFolksChain(folksChainId, this.getSelectedNetwork());
+    const folksChain = getFolksChain(folksChainId, this.getSelectedNetwork());
     switch (folksChain.chainType) {
       case ChainType.EVM:
         this.instance.folksCoreProvider.evm[folksChainId] = provider as EVMProvider;
@@ -85,7 +85,7 @@ export class FolksCore {
   }
 
   static setFolksChainIdAndSigner(folksChainId: FolksChainId, network: NetworkType, signer?: FolksSigner) {
-    const folksChain = FolksChainUtil.getFolksChain(folksChainId, network);
+    const folksChain = getFolksChain(folksChainId, network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

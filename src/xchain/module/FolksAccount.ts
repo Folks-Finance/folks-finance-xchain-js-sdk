@@ -11,14 +11,15 @@ import type {
   PrepareUnregisterAddressCall,
 } from "../../type/common/index.js";
 import { FolksCore } from "../core/FolksCore.js";
-import { AdapterUtil, SpokeChainUtil } from "../../util/common/index.js";
+import { checkAdapterSupportsDataMessage } from "../../util/common/adapter.js";
+import { checkSpokeChainSupported } from "../../util/common/chain.js";
 
 export const prepare = {
   async createAccount(accountId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -43,7 +44,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -65,7 +66,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -85,7 +86,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    AdapterUtil.checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -108,7 +109,7 @@ export const write = {
     if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -132,7 +133,7 @@ export const write = {
     if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -153,7 +154,7 @@ export const write = {
     if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -176,7 +177,7 @@ export const write = {
     if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    SpokeChainUtil.checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

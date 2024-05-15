@@ -2,8 +2,8 @@ import type { Address, Hex, PublicClient } from "viem";
 import { NetworkType } from "../../type/common/index.js";
 import type { FolksChainId } from "../../type/common/index.js";
 import type { AccountInfo } from "../../type/hub/index.js";
-import { FolksChainUtil } from "../../util/common/index.js";
-import { HubChainUtil, HubContractUtil } from "../../util/hub/index.js";
+import { getFolksChainIdsByNetwork } from "../../util/common/chain.js";
+import { getAccountManagerContract, getHubChain } from "../../util/hub/index.js";
 
 export async function getAccountInfo(
   provider: PublicClient,
@@ -11,10 +11,10 @@ export async function getAccountInfo(
   accountId: Hex,
   folksChainIds?: FolksChainId[]
 ): Promise<AccountInfo> {
-  const hubChain = HubChainUtil.getHubChain(network);
-  const accountManager = HubContractUtil.getAccountManagerContract(provider, hubChain.accountManagerAddress);
+  const hubChain = getHubChain(network);
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
   // get chain ids to check
-  folksChainIds = folksChainIds ? folksChainIds : FolksChainUtil.getFolksChainIdsByNetwork(network);
+  folksChainIds = folksChainIds ? folksChainIds : getFolksChainIdsByNetwork(network);
   // define return variable
   const accountInfo: AccountInfo = { registered: new Map(), invited: new Map() };
 
