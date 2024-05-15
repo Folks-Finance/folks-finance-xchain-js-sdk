@@ -1,5 +1,6 @@
-import { FolksTokenId, GenericAddress, IFolksChain } from "../common";
-import { HubTokenData } from "./token";
+import { FolksTokenId } from "../common/index.js";
+import type { GenericAddress, IFolksChain } from "../common/index.js";
+import type { HubTokenData } from "./token.js";
 
 export interface HubChain extends IFolksChain {
   hubAddress: GenericAddress;

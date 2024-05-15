@@ -1,3 +1,3 @@
-export * from "./bytes";
-export * from "./chain";
-export * from "./message";
+export * from "./bytes.js";
+export * from "./chain.js";
+export * from "./message.js";

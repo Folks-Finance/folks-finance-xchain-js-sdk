@@ -1,19 +1,17 @@
-import { Hex } from "viem";
-import { FolksHubLoan } from "../../hub/module/FolksHubLoan";
-import { FolksEVMLoan } from "../../spoke/evm/module/FolksEVMLoan";
-import {
-  ChainType,
+import type { Hex } from "viem";
+import { FolksHubLoan } from "../../hub/module/FolksHubLoan.js";
+import { FolksEVMLoan } from "../../spoke/evm/module/FolksEVMLoan.js";
+import { ChainType, FolksTokenId, LoanType } from "../../type/common/index.js";
+import type {
   FolksChainId,
-  FolksTokenId,
-  LoanType,
   MessageAdapters,
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
-} from "../../type/common";
-import { AdapterUtil, SpokeChainUtil } from "../../util/common";
-import { FolksCore } from "../core/FolksCore";
-import { HubChainUtil } from "../../util/hub";
+} from "../../type/common/index.js";
+import { AdapterUtil, SpokeChainUtil } from "../../util/common/index.js";
+import { FolksCore } from "../core/FolksCore.js";
+import { HubChainUtil } from "../../util/hub/index.js";
 
 export class FolksLoan {
   static prepare = {

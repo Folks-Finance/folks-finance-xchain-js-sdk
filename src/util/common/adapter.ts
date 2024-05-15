@@ -1,6 +1,7 @@
-import { AdapterType, FolksChainId } from "../../type/common";
-import { FolksCore } from "../../xchain/core/FolksCore";
-import { HubChainUtil } from "../hub";
+import { AdapterType } from "../../type/common/index.js";
+import type { FolksChainId } from "../../type/common/index.js";
+import { FolksCore } from "../../xchain/core/FolksCore.js";
+import { HubChainUtil } from "../hub/index.js";
 
 export namespace AdapterUtil {
   export function doesAdapterSupportDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): boolean {

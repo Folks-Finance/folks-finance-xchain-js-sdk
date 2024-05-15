@@ -1,8 +1,9 @@
-import { PublicClient, createPublicClient, fallback, http } from "viem";
-import { CHAIN_NODE, CHAIN_VIEM } from "../../constants/evm";
-import { ChainId } from "../../type/evm";
-import { FOLKS_CHAIN_ID } from "../../constants/common";
-import { FolksChainId } from "../../type/common";
+import { createPublicClient, fallback, http } from "viem";
+import type { PublicClient } from "viem";
+import { CHAIN_NODE, CHAIN_VIEM } from "../../constants/evm/index.js";
+import { ChainId } from "../../type/evm/index.js";
+import { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
+import type { FolksChainId } from "../../type/common/index.js";
 
 export namespace ProviderEVMUtil {
   export function initProviders(

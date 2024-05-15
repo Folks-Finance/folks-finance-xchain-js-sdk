@@ -1,15 +1,17 @@
-import { Address, GetContractReturnType, PublicClient, WalletClient, getContract } from "viem";
+import type { Address, GetContractReturnType, PublicClient, WalletClient } from "viem";
+import { getContract } from "viem";
 import {
   BridgeRouterHubAbi,
   BridgeRouterSpokeAbi,
   ERC20Abi,
   SpokeCommonAbi,
   SpokeTokenAbi,
-} from "../../constants/evm/abi";
-import { GetReadContractReturnType } from "../../type/evm";
-import { getSignerAddress } from "./chain";
-import { ChainType, GenericAddress } from "../../type/common";
-import { AddressUtil } from "../common";
+} from "../../constants/evm/abi/index.js";
+import type { GetReadContractReturnType } from "../../type/evm/index.js";
+import { getSignerAddress } from "./chain.js";
+import { ChainType } from "../../type/common/index.js";
+import type { GenericAddress } from "../../type/common/index.js";
+import { AddressUtil } from "../common/index.js";
 
 export namespace EVMContractUtil {
   export function getSpokeCommonContract(

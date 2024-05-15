@@ -1,5 +1,6 @@
 import { avalanche, avalancheFuji, base, baseGoerli, goerli, mainnet } from "viem/chains";
-import { AdapterType, ChainType, FolksChain, FolksChainId, NetworkType, SpokeChain } from "../../type/common";
+import { AdapterType, ChainType, NetworkType } from "../../type/common/index.js";
+import type { FolksChain, FolksChainId, SpokeChain } from "../../type/common/index.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   AVALANCHE: 1,

@@ -1,8 +1,10 @@
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import { BYTES32_LENGTH, EVM_ADDRESS_BYTES_LENGTH } from "../../constants/common";
-import { ChainType, GenericAddress } from "../../type/common";
-import { Address, getAddress, pad, sliceHex } from "viem";
-import { AddressType } from "../../type/common/address";
+import { BYTES32_LENGTH, EVM_ADDRESS_BYTES_LENGTH } from "../../constants/common/index.js";
+import { ChainType } from "../../type/common/index.js";
+import type { GenericAddress } from "../../type/common/index.js";
+import { getAddress, pad, sliceHex } from "viem";
+import type { Address } from "viem";
+import type { AddressType } from "../../type/common/address.js";
 
 export namespace AddressUtil {
   export function getRandomGenericAddress(): GenericAddress {
