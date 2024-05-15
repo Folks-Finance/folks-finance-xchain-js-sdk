@@ -1,5 +1,6 @@
-import { FOLKS_CHAIN, SPOKE_CHAIN } from "../../constants/common";
-import { FolksChain, FolksChainId, FolksTokenId, NetworkType, SpokeChain, SpokeTokenData } from "../../type/common";
+import { FOLKS_CHAIN, SPOKE_CHAIN } from "../../constants/common/index.js";
+import { FolksTokenId, NetworkType } from "../../type/common/index.js";
+import type { FolksChain, FolksChainId, SpokeChain, SpokeTokenData } from "../../type/common/index.js";
 
 export namespace FolksChainUtil {
   export function isFolksChainNetworkSupported(network: NetworkType): boolean {

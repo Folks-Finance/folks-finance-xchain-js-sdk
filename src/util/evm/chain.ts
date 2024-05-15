@@ -1,4 +1,4 @@
-import { Address, WalletClient } from "viem";
+import type { Address, WalletClient } from "viem";
 
 export function getSignerAddress(signer: WalletClient): Address {
   if (signer.account?.address) return signer.account.address;

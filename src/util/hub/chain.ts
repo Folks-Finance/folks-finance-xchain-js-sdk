@@ -1,6 +1,7 @@
-import { HUB_CHAIN } from "../../constants/hub";
-import { FolksChainId, FolksTokenId, LoanType, NetworkType } from "../../type/common";
-import { HubChain, HubTokenData } from "../../type/hub";
+import { HUB_CHAIN } from "../../constants/hub/index.js";
+import { FolksTokenId, LoanType, NetworkType } from "../../type/common/index.js";
+import type { FolksChainId } from "../../type/common/index.js";
+import type { HubChain, HubTokenData } from "../../type/hub/index.js";
 
 export namespace HubChainUtil {
   export function isHubChainNetworkSupported(network: NetworkType): boolean {

@@ -1,4 +1,4 @@
-export { FolksCore } from "./xchain/core/FolksCore";
-export { FolksAccount } from "./xchain/module/FolksAccount";
-export { FolksLoan } from "./xchain/module/FolksLoan";
-export * from "./type/common";
+export { FolksCore } from "./xchain/core/FolksCore.js";
+export { FolksAccount } from "./xchain/module/FolksAccount.js";
+export { FolksLoan } from "./xchain/module/FolksLoan.js";
+export * from "./type/common/index.js";

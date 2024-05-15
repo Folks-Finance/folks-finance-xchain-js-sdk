@@ -1,9 +1,11 @@
-import { Hex, concat, isHex } from "viem";
-import { UINT16_LENGTH, UINT256_LENGTH } from "../../constants/common";
-import { Action, GenericAddress, MessageAdapters, MessageParams, SpokeTokenData, TokenType } from "../../type/common";
-import { HubTokenData } from "../../type/hub";
-import { AddressUtil } from "./address";
-import { BytesUtil } from "./bytes";
+import { concat, isHex } from "viem";
+import type { Hex } from "viem";
+import { UINT16_LENGTH, UINT256_LENGTH } from "../../constants/common/index.js";
+import { Action, TokenType } from "../../type/common/index.js";
+import type { GenericAddress, MessageAdapters, MessageParams, SpokeTokenData } from "../../type/common/index.js";
+import type { HubTokenData } from "../../type/hub/index.js";
+import { AddressUtil } from "./address.js";
+import { BytesUtil } from "./bytes.js";
 
 export namespace MessageUtil {
   export const DEFAULT_MESSAGE_PARAMS = (adapters: MessageAdapters): MessageParams => ({

@@ -1,7 +1,7 @@
-import { Chain } from "viem";
+import type { Chain } from "viem";
 import { avalanche, avalancheFuji, mainnet, goerli, base, baseGoerli } from "viem/chains";
-import { FOLKS_CHAIN_ID } from "../common";
-import { FolksChainId } from "../../type/common";
+import { FOLKS_CHAIN_ID } from "../common/index.js";
+import type { FolksChainId } from "../../type/common/index.js";
 
 export const CHAIN_VIEM: Record<FolksChainId, Chain> = {
   // mainnet

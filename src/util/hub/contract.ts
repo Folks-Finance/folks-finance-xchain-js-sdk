@@ -1,6 +1,7 @@
-import { Address, PublicClient, WalletClient, getContract } from "viem";
-import { AccountManagerAbi } from "../../constants/evm/abi";
-import { GetReadContractReturnType } from "../../type/evm";
+import { getContract } from "viem";
+import type { Address, PublicClient, WalletClient } from "viem";
+import { AccountManagerAbi } from "../../constants/evm/abi/index.js";
+import type { GetReadContractReturnType } from "../../type/evm/index.js";
 
 export namespace HubContractUtil {
   export function getAccountManagerContract(

@@ -1,24 +1,23 @@
-import { Address, EstimateGasParameters, Hex, PublicClient, WalletClient, concat } from "viem";
-import { FINALITY, UINT16_LENGTH } from "../../../constants/common";
-import {
-  Action,
-  ChainType,
+import { concat } from "viem";
+import type { Address, EstimateGasParameters, Hex, PublicClient, WalletClient } from "viem";
+import { FINALITY, UINT16_LENGTH } from "../../../constants/common/index.js";
+import { Action, ChainType, NetworkType } from "../../../type/common/index.js";
+import type {
   FolksChainId,
   MessageAdapters,
   MessageParams,
   MessageToSend,
-  NetworkType,
   SpokeChain,
-} from "../../../type/common";
-import {
+} from "../../../type/common/index.js";
+import type {
   PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
-} from "../../../type/evm";
-import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../../util/common";
-import { EVMContractUtil, getSignerAddress } from "../../../util/evm";
-import { HubChainUtil } from "../../../util/hub";
+} from "../../../type/evm/index.js";
+import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../../util/common/index.js";
+import { EVMContractUtil, getSignerAddress } from "../../../util/evm/index.js";
+import { HubChainUtil } from "../../../util/hub/index.js";
 
 export class FolksEVMAccount {
   static prepare = {

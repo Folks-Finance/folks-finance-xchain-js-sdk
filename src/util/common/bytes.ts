@@ -1,5 +1,6 @@
-import { Hex, bytesToHex, pad, toHex } from "viem";
-import { BYTES32_LENGTH } from "../../constants/common";
+import { bytesToHex, pad, toHex } from "viem";
+import type { Hex } from "viem";
+import { BYTES32_LENGTH } from "../../constants/common/index.js";
 
 export namespace BytesUtil {
   export function getEmptyBytes(length: number): string {

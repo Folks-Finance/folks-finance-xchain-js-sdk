@@ -1,1 +1,1 @@
-export * from "./chain";
+export * from "./chain.js";

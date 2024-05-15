@@ -1,9 +1,10 @@
-import { Hex, PublicClient } from "viem";
-import { FINALITY, UINT256_LENGTH } from "../../constants/common";
-import { Action, FolksChainId, FolksTokenId, MessageAdapters, MessageToSend, NetworkType } from "../../type/common";
-import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../util/common";
-import { EVMContractUtil } from "../../util/evm";
-import { HubChainUtil } from "../../util/hub";
+import type { Hex, PublicClient } from "viem";
+import { FINALITY, UINT256_LENGTH } from "../../constants/common/index.js";
+import { Action, FolksTokenId, NetworkType } from "../../type/common/index.js";
+import type { FolksChainId, MessageAdapters, MessageToSend } from "../../type/common/index.js";
+import { MessageUtil, SpokeChainUtil, BytesUtil, AddressUtil } from "../../util/common/index.js";
+import { EVMContractUtil } from "../../util/evm/index.js";
+import { HubChainUtil } from "../../util/hub/index.js";
 
 export class FolksHubLoan {
   static getSendTokenAdapterFees(

@@ -1,17 +1,17 @@
-import { Address, Hex } from "viem";
-import { FolksHubAccount } from "../../hub/module/FolksHubAccount";
-import { FolksEVMAccount } from "../../spoke/evm/module/FolksEVMAccount";
-import {
-  ChainType,
+import type { Address, Hex } from "viem";
+import { FolksHubAccount } from "../../hub/module/FolksHubAccount.js";
+import { FolksEVMAccount } from "../../spoke/evm/module/FolksEVMAccount.js";
+import { ChainType } from "../../type/common/index.js";
+import type {
   FolksChainId,
   MessageAdapters,
   PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
-} from "../../type/common";
-import { FolksCore } from "../core/FolksCore";
-import { AdapterUtil, SpokeChainUtil } from "../../util/common";
+} from "../../type/common/index.js";
+import { FolksCore } from "../core/FolksCore.js";
+import { AdapterUtil, SpokeChainUtil } from "../../util/common/index.js";
 
 export class FolksAccount {
   static prepare = {

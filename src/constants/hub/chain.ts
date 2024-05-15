@@ -1,6 +1,6 @@
-import { FolksTokenId, NetworkType } from "../../type/common";
-import { HubChain, HubTokenData } from "../../type/hub";
-import { FOLKS_CHAIN_ID } from "../common";
+import { FolksTokenId, NetworkType } from "../../type/common/index.js";
+import type { HubChain, HubTokenData } from "../../type/hub/index.js";
+import { FOLKS_CHAIN_ID } from "../common/index.js";
 
 export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.MAINNET]: {

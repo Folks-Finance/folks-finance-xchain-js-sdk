@@ -1,2 +1,2 @@
-export * from "./chain";
-export * from "./contract";
+export * from "./chain.js";
+export * from "./contract.js";

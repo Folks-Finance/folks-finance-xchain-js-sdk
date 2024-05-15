@@ -1,4 +1,4 @@
-import {
+import type {
   PrepareCreateAccountCall as PrepareCreateAccountEVMCall,
   PrepareInviteAddressCall as PrepareInviteAddressEVMCall,
   PrepareAcceptInviteAddressCall as PrepareAcceptInviteAddressEVMCall,
@@ -8,7 +8,7 @@ import {
   PrepareDepositCall as PrepareDepositEVMCall,
   PrepareWithdrawCall as PrepareWithdrawEVMCall,
   PrepareCall as PrepareEVMCall,
-} from "../evm";
+} from "../evm/index.js";
 
 export enum LoanType {
   DEPOSIT = 1, // no support for borrows

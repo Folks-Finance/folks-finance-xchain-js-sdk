@@ -1,5 +1,5 @@
-import { Address } from "viem";
-import { ListedToken, MessageAdapters, SpokeTokenData } from "../common";
+import type { Address } from "viem";
+import type { ListedToken, MessageAdapters, SpokeTokenData } from "../common/index.js";
 
 export interface PrepareCall {
   adapters: MessageAdapters;
