@@ -5,9 +5,18 @@ import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config(
-  { ignores: ["dist/"] },
-  { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
+  { ignores: ["dist/", "eslint.config.js"] },
+  {
+    languageOptions: {
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  { linterOptions: { reportUnusedDisableDirectives: true } },
   eslint.configs.recommended,
-  ...tseslint.configs.strict,
+  ...tseslint.configs.strictTypeChecked,
   eslintConfigPrettier
 );
