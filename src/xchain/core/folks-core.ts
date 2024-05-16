@@ -9,7 +9,8 @@ import type {
   FolksProviderType,
   FolksSigner,
   FolksSignerType,
- NetworkType } from "../../type/common/index.js";
+  NetworkType,
+} from "../../type/common/index.js";
 import { getFolksChain } from "../../util/common/chain.js";
 import { initProviders } from "../../util/evm/provider.js";
 import { getHubChain } from "../../util/hub/chain.js";
@@ -82,6 +83,7 @@ export class FolksCore {
     const folksChain = getFolksChain(folksChainId, this.getSelectedNetwork());
     switch (folksChain.chainType) {
       case ChainType.EVM:
+        // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style -- in the future FolksProvider will contain more than just EVMProvider
         instance.folksCoreProvider.evm[folksChainId] = provider as EVMProvider;
         break;
       default:

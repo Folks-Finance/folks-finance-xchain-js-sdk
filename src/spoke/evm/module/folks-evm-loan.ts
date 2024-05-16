@@ -434,7 +434,7 @@ export const write = {
     accountId: Hex,
     loanId: Hex,
     amount: bigint,
-    includeApprove: boolean = true,
+    includeApprove = true,
     prepareCall: PrepareDepositCall
   ) {
     const { adapters, adapterFee, returnAdapterFee, gasLimit, receiveGasLimit, returnReceiveGasLimit, token } =

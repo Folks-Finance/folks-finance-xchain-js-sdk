@@ -12,12 +12,11 @@ export function initProviders(
     Object.values(FOLKS_CHAIN_ID).map((folksChainId) => {
       return [
         folksChainId,
-        customProvider[folksChainId] !== undefined
-          ? customProvider[folksChainId]
-          : createPublicClient({
-              chain: CHAIN_VIEM[folksChainId],
-              transport: fallback(CHAIN_NODE[folksChainId].map((url: string) => http(url))),
-            }),
+        customProvider[folksChainId] ??
+          createPublicClient({
+            chain: CHAIN_VIEM[folksChainId],
+            transport: fallback(CHAIN_NODE[folksChainId].map((url: string) => http(url))),
+          }),
       ];
     })
   ) as Record<FolksChainId, PublicClient>;
