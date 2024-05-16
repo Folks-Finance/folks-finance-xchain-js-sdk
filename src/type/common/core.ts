@@ -2,11 +2,11 @@ import type { PublicClient as EVMProvider, WalletClient as EVMSigner } from "vie
 import type { ChainType, NetworkType } from "./chain.js";
 import type { FolksChainId } from "./chain.js";
 
-interface FolksProviderTypeMap {
+type FolksProviderTypeMap = {
   [ChainType.EVM]: EVMProvider;
 }
 
-interface FolksSignerTypeMap {
+type FolksSignerTypeMap = {
   [ChainType.EVM]: EVMSigner;
 }
 
@@ -16,10 +16,10 @@ export type FolksSignerType<T extends ChainType> = FolksSignerTypeMap[T];
 export type FolksProvider = EVMProvider | null;
 export type FolksSigner = EVMSigner | null;
 
-export interface FolksCoreProvider {
+export type FolksCoreProvider = {
   evm: Partial<Record<FolksChainId, EVMProvider>>;
 }
-export interface FolksCoreConfig {
+export type FolksCoreConfig = {
   network: NetworkType;
   provider: FolksCoreProvider;
 }

@@ -1,7 +1,7 @@
 import type { Address } from "viem";
 import type { ChainType } from "./chain.js";
 
-interface AddressTypeMap {
+type AddressTypeMap = {
   [ChainType.EVM]: Address;
 }
 

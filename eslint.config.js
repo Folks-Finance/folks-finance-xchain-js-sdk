@@ -26,6 +26,7 @@ export default tseslint.config(
       unicorn: eslintPluginUnicorn,
     },
     rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
       "@typescript-eslint/switch-exhaustiveness-check": "error",

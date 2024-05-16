@@ -35,18 +35,18 @@ export enum Action {
 
 export type Finality = (typeof FINALITY)[keyof typeof FINALITY];
 
-export interface MessageAdapters {
+export type MessageAdapters = {
   adapterId: AdapterType;
   returnAdapterId: AdapterType;
 }
 
-export interface MessageParams extends MessageAdapters {
+export type MessageParams = {
   receiverValue: bigint;
   gasLimit: bigint;
   returnGasLimit: bigint;
-}
+} & MessageAdapters
 
-export interface MessageToSend {
+export type MessageToSend = {
   params: MessageParams;
   sender: GenericAddress;
   destinationChainId: number;
