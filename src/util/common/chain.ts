@@ -9,11 +9,11 @@ export function getFolksChain(folksChainId: FolksChainId, network: NetworkType):
   return folksChain;
 }
 
-export function getFolksChainsByNetwork(network: NetworkType): FolksChain[] {
+export function getFolksChainsByNetwork(network: NetworkType): Array<FolksChain> {
   return Object.values(FOLKS_CHAIN[network]);
 }
 
-export function getFolksChainIdsByNetwork(networkType: NetworkType): FolksChainId[] {
+export function getFolksChainIdsByNetwork(networkType: NetworkType): Array<FolksChainId> {
   return getFolksChainsByNetwork(networkType).map((folksChain) => folksChain.folksChainId);
 }
 

@@ -192,7 +192,7 @@ export const write = {
 };
 
 export const read = {
-  async accountInfo(accountId: Hex, folksChainIds?: FolksChainId[]) {
+  async accountInfo(accountId: Hex, folksChainIds?: Array<FolksChainId>) {
     return FolksHubAccount.getAccountInfo(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),

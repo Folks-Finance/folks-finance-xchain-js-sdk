@@ -14,7 +14,7 @@ export const CHAIN_VIEM: Record<FolksChainId, Chain> = {
   [FOLKS_CHAIN_ID.BASE_GOERLI]: baseGoerli,
 };
 
-export const CHAIN_NODE: Record<FolksChainId, string[]> = {
+export const CHAIN_NODE: Record<FolksChainId, Array<string>> = {
   // mainnet
   [FOLKS_CHAIN_ID.AVALANCHE]: [...avalanche.rpcUrls.default.http],
   [FOLKS_CHAIN_ID.ETHEREUM]: [...mainnet.rpcUrls.default.http],

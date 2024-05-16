@@ -9,7 +9,7 @@ export async function getAccountInfo(
   provider: PublicClient,
   network: NetworkType,
   accountId: Hex,
-  folksChainIds?: FolksChainId[]
+  folksChainIds?: Array<FolksChainId>
 ): Promise<AccountInfo> {
   const hubChain = getHubChain(network);
   const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
