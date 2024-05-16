@@ -1,6 +1,10 @@
 # Contributing to folks-finance-xchain-js-sdk
 
-## Getting Started
+## Table of Contents
+
+- [Using nvm to Manage Node.js Version](#using-nvm-to-manage-nodejs-version)
+- [Using pnpm Managed via Corepack](#using-pnpm-managed-via-corepack)
+- [Commit Guidelines](#commit-guidelines)
 
 ### Using nvm to Manage Node.js Version
 
