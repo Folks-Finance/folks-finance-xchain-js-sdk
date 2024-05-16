@@ -75,7 +75,11 @@ export class FolksCore {
   static getHubProvider(): EVMProvider {
     const instance = this.getInstance();
     const hubFolksChainId = getHubChain(instance.selectedNetwork).folksChainId;
-    return instance.folksCoreProvider.evm[hubFolksChainId]!;
+
+    const hubProvider = instance.folksCoreProvider.evm[hubFolksChainId];
+    if (!hubProvider) throw new Error(`Hub Provider has not been initialized`);
+
+    return hubProvider;
   }
 
   static setProvider(folksChainId: FolksChainId, provider: FolksProvider) {
