@@ -1,4 +1,4 @@
-import { LoanType } from "./module.js";
+import type { LoanType } from "./module.js";
 import type { GenericAddress } from "./chain.js";
 
 export enum FolksTokenId {
@@ -12,17 +12,17 @@ export enum TokenType {
   CIRCLE = "CIRCLE",
 }
 
-export interface ITokenData {
+export type ITokenData = {
   folksTokenId: FolksTokenId;
 }
 
-export interface SpokeTokenData extends ITokenData {
+export type SpokeTokenData = {
   tokenType: TokenType;
   spokeAddress: GenericAddress;
   tokenAddress: GenericAddress;
-}
+} & ITokenData
 
-export interface ListedToken {
+export type ListedToken = {
   tokenType: TokenType;
   supportedLoanTypes: Set<LoanType>;
   poolId: number;

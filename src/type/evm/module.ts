@@ -1,7 +1,7 @@
 import type { Address } from "viem";
 import type { ListedToken, MessageAdapters, SpokeTokenData } from "../common/index.js";
 
-export interface PrepareCall {
+export type PrepareCall = {
   adapters: MessageAdapters;
   adapterFee: bigint;
   returnAdapterFee: bigint;
@@ -10,58 +10,58 @@ export interface PrepareCall {
   returnReceiveGasLimit: bigint;
 }
 
-export interface PrepareCreateAccountCall extends PrepareCall {
+export type PrepareCreateAccountCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareInviteAddressCall extends PrepareCall {
+export type PrepareInviteAddressCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareAcceptInviteAddressCall extends PrepareCall {
+export type PrepareAcceptInviteAddressCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareUnregisterAddressCall extends PrepareCall {
+export type PrepareUnregisterAddressCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareAddDelegateCall extends PrepareCall {
+export type PrepareAddDelegateCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareRemoveDelegateCall extends PrepareCall {
+export type PrepareRemoveDelegateCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareCreateLoanCall extends PrepareCall {
+export type PrepareCreateLoanCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareDeleteLoanCall extends PrepareCall {
+export type PrepareDeleteLoanCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareDepositCall extends PrepareCall {
+export type PrepareDepositCall = {
   token: SpokeTokenData;
-}
+} & PrepareCall
 
-export interface PrepareWithdrawCall extends PrepareCall {
+export type PrepareWithdrawCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareBorrowCall extends PrepareCall {
+export type PrepareBorrowCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareRepayCall extends PrepareCall {
+export type PrepareRepayCall = {
   token: ListedToken;
-}
+} & PrepareCall
 
-export interface PrepareRepayWithCollateralCall extends PrepareCall {
+export type PrepareRepayWithCollateralCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall
 
-export interface PrepareSwitchBorrowTypeCall extends PrepareCall {
+export type PrepareSwitchBorrowTypeCall = {
   spokeCommonAddress: Address;
-}
+} & PrepareCall

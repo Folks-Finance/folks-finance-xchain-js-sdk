@@ -1,6 +1,6 @@
-import { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
-import { AdapterType } from "./message.js";
-import { FolksTokenId } from "./token.js";
+import type { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
+import type { AdapterType } from "./message.js";
+import type { FolksTokenId } from "./token.js";
 import type { SpokeTokenData } from "./token.js";
 
 export enum ChainType {
@@ -16,20 +16,20 @@ export type FolksChainId = (typeof FOLKS_CHAIN_ID)[keyof typeof FOLKS_CHAIN_ID];
 
 export type GenericAddress = `0x${string}`;
 
-export interface IFolksChain {
+export type IFolksChain = {
   folksChainId: FolksChainId;
 }
 
-export interface FolksChain extends IFolksChain {
+export type FolksChain = {
   chainName: string;
   chainType: ChainType;
   chainId: number | string | undefined;
   network: NetworkType;
-}
+} & IFolksChain
 
-export interface SpokeChain extends IFolksChain {
+export type SpokeChain = {
   spokeCommonAddress: GenericAddress;
   bridgeRouterAddress: GenericAddress;
   adapters: Partial<Record<AdapterType, GenericAddress>>;
   tokens: Partial<Record<FolksTokenId, SpokeTokenData>>;
-}
+} & IFolksChain

@@ -1,4 +1,5 @@
-import { FolksTokenId, NetworkType } from "../../type/common/index.js";
+import type { FolksTokenId} from "../../type/common/index.js";
+import { NetworkType } from "../../type/common/index.js";
 import type { HubChain, HubTokenData } from "../../type/hub/index.js";
 import { FOLKS_CHAIN_ID } from "../common/index.js";
 

@@ -2,13 +2,23 @@
   "name": "@folks-finance/xchain-sdk",
   "version": "0.0.1",
   "type": "module",
+  "engines": {
+    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+  },
   "scripts": {
     "build": "tsc --outDir dist",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@eslint/js": "^9.2.0",
     "@types/node": "^20.12.12",
-    "typescript": "^5.4.5"
+    "eslint": "^9.2.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-unicorn": "^53.0.0",
+    "globals": "^15.2.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
     "viem": "^2.10.5"
