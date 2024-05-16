@@ -13,6 +13,7 @@ import type {
 import { getFolksChain } from "../../util/common/chain.js";
 import { initProviders } from "../../util/evm/provider.js";
 import { getHubChain } from "../../util/hub/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export class FolksCore {
   private static instance: FolksCore;
@@ -45,7 +46,7 @@ export class FolksCore {
       case ChainType.EVM:
         return FolksCore.getEVMProvider(folksChainId) as FolksProviderType<T>;
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   }
 
@@ -80,7 +81,7 @@ export class FolksCore {
         this.instance.folksCoreProvider.evm[folksChainId] = provider as EVMProvider;
         break;
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   }
 
@@ -92,7 +93,7 @@ export class FolksCore {
         this.instance.signer = signer;
         break;
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
 
     this.instance.selectedFolksChainId = folksChainId;

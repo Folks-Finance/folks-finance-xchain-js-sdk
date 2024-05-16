@@ -13,6 +13,7 @@ import { FolksCore } from "../core/FolksCore.js";
 import { checkAdapterSupportsDataMessage, checkAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
 import { checkSpokeChainSupportFolksToken, checkSpokeChainSupported } from "../../util/common/chain.js";
 import { checkLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
   async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, adapters: MessageAdapters) {
@@ -32,7 +33,7 @@ export const prepare = {
           adapters
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -52,7 +53,7 @@ export const prepare = {
           adapters
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -83,7 +84,7 @@ export const prepare = {
           adapters
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -129,7 +130,7 @@ export const prepare = {
           await getReturnAdapterFees()
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 };
@@ -151,7 +152,7 @@ export const write = {
           prepareCall
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -170,7 +171,7 @@ export const write = {
           prepareCall
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -197,7 +198,7 @@ export const write = {
           prepareCall
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 
@@ -228,7 +229,7 @@ export const write = {
           prepareCall
         );
       default:
-        throw new Error(`Unsupported chain type: ${folksChain.chainType}`);
+        return exhaustiveCheck(folksChain.chainType);
     }
   },
 };

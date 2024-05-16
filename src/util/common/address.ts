@@ -5,6 +5,7 @@ import type { GenericAddress } from "../../type/common/index.js";
 import { getAddress, pad, sliceHex } from "viem";
 import type { Address } from "viem";
 import type { AddressType } from "../../type/common/address.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export function getRandomGenericAddress(): GenericAddress {
   return pad(privateKeyToAccount(generatePrivateKey()).address, { size: BYTES32_LENGTH });
@@ -22,7 +23,7 @@ export function convertToGenericAddress<T extends ChainType>(
     case ChainType.EVM:
       return pad(address as Address, { size: BYTES32_LENGTH });
     default:
-      throw Error(`Unknown chain type: ${fromChainType}`);
+      return exhaustiveCheck(fromChainType);
   }
 }
 
@@ -34,6 +35,6 @@ export function convertFromGenericAddress<T extends ChainType>(
     case ChainType.EVM:
       return getAddress(sliceHex(address, BYTES32_LENGTH - EVM_ADDRESS_BYTES_LENGTH));
     default:
-      throw Error(`Unknown chain type: ${toChainType}`);
+      return exhaustiveCheck(toChainType);
   }
 }
