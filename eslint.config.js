@@ -15,8 +15,17 @@ export default tseslint.config(
       globals: { ...globals.browser, ...globals.node },
     },
   },
-  { linterOptions: { reportUnusedDisableDirectives: true } },
   eslint.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
-  eslintConfigPrettier
+  eslintConfigPrettier,
+  {
+    plugins: {
+      "@typescript-eslint": tseslint.plugin,
+    },
+    rules: {
+      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+    },
+  },
+  // warn if there are unused eslint-disable directives
+  { linterOptions: { reportUnusedDisableDirectives: true } }
 );
