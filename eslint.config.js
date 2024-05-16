@@ -6,7 +6,7 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 
 export default tseslint.config(
-  { ignores: ["dist/", "eslint.config.js"] },
+  { ignores: ["dist/", "eslint.config.js", "commitlint.config.js"] },
   {
     languageOptions: {
       parserOptions: {
