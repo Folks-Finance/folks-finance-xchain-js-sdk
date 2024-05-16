@@ -20,7 +20,10 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -29,7 +32,7 @@ export const prepare = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
           accountId,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -40,12 +43,15 @@ export const prepare = {
     accountId: Hex,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: Address,
-    adapters: MessageAdapters
+    adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -56,7 +62,7 @@ export const prepare = {
           accountId,
           folksChainIdToInvite,
           addressToInvite,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -67,7 +73,10 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -76,18 +85,25 @@ export const prepare = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
           accountId,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
   },
 
-  async unregisterAddress(accountId: Hex, folksChainIdToUnregister: FolksChainId, adapters: MessageAdapters) {
+  async unregisterAddress(
+    accountId: Hex,
+    folksChainIdToUnregister: FolksChainId,
+    adapters: MessageAdapters,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -97,7 +113,7 @@ export const prepare = {
           folksChain.network,
           accountId,
           folksChainIdToUnregister,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -117,7 +133,7 @@ export const write = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -128,7 +144,7 @@ export const write = {
     accountId: Hex,
     folksChainIdToInvite: number,
     addressToInvite: Address,
-    prepareCall: PrepareInviteAddressCall
+    prepareCall: PrepareInviteAddressCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -142,14 +158,17 @@ export const write = {
           accountId,
           folksChainIdToInvite,
           addressToInvite,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
   },
 
-  async acceptInvite(accountId: Hex, prepareCall: PrepareAcceptInviteAddressCall) {
+  async acceptInvite(
+    accountId: Hex,
+    prepareCall: PrepareAcceptInviteAddressCall,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -160,7 +179,7 @@ export const write = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -170,7 +189,7 @@ export const write = {
   async unregisterAddress(
     accountId: Hex,
     folksChainIdToUnregister: FolksChainId,
-    prepareCall: PrepareUnregisterAddressCall
+    prepareCall: PrepareUnregisterAddressCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -183,7 +202,7 @@ export const write = {
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           folksChainIdToUnregister,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -197,7 +216,7 @@ export const read = {
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       accountId,
-      folksChainIds
+      folksChainIds,
     );
   },
 };

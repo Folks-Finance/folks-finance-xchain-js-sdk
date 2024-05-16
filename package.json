@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc --outDir dist",
     "lint": "eslint .",
+    "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -17,6 +18,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-unicorn": "^53.0.0",
     "globals": "^15.2.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.9.0"
   },

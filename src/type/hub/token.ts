@@ -6,4 +6,4 @@ export type HubTokenData = {
   poolAddress: GenericAddress;
   tokenAddress: GenericAddress;
   supportedLoanTypes: Set<LoanType>;
-} & ITokenData
+} & ITokenData;

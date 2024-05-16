@@ -9,4 +9,4 @@ export type HubChain = {
   accountManagerAddress: GenericAddress;
   loanManagerAddress: GenericAddress;
   tokens: Record<FolksTokenId, HubTokenData>;
-} & IFolksChain
+} & IFolksChain;

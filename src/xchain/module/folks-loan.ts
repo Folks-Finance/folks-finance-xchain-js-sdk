@@ -12,16 +12,33 @@ import type {
   LoanType,
 } from "../../type/common/index.js";
 import { FolksCore } from "../core/folks-core.js";
-import { assertAdapterSupportsDataMessage, assertAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
-import { assertSpokeChainSupportFolksToken, assertSpokeChainSupported } from "../../util/common/chain.js";
-import { assertLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
+import {
+  assertAdapterSupportsDataMessage,
+  assertAdapterSupportsTokenMessage,
+} from "../../util/common/adapter.js";
+import {
+  assertSpokeChainSupportFolksToken,
+  assertSpokeChainSupported,
+} from "../../util/common/chain.js";
+import {
+  assertLoanTypeSupported,
+  getHubTokenData,
+} from "../../util/hub/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
-  async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, adapters: MessageAdapters) {
+  async createLoan(
+    accountId: Hex,
+    loanId: Hex,
+    loanTypeId: LoanType,
+    adapters: MessageAdapters,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -32,7 +49,7 @@ export const prepare = {
           accountId,
           loanId,
           loanTypeId,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -42,7 +59,10 @@ export const prepare = {
   async deleteLoan(accountId: Hex, loanId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -52,7 +72,7 @@ export const prepare = {
           folksChain.network,
           accountId,
           loanId,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -65,12 +85,19 @@ export const prepare = {
     loanType: LoanType,
     folksTokenId: FolksTokenId,
     amount: bigint,
-    adapters: MessageAdapters
+    adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
+    assertSpokeChainSupportFolksToken(
+      folksChain.folksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
     assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
 
     switch (folksChain.chainType) {
@@ -83,7 +110,7 @@ export const prepare = {
           loanId,
           folksTokenId,
           amount,
-          adapters
+          adapters,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -97,14 +124,28 @@ export const prepare = {
     amount: bigint,
     isFAmount: boolean,
     receiverFolksChainId: FolksChainId,
-    adapters: MessageAdapters
+    adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
-    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
+    assertAdapterSupportsTokenMessage(
+      receiverFolksChainId,
+      adapters.returnAdapterId,
+    );
+    assertSpokeChainSupportFolksToken(
+      folksChain.folksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
+    assertSpokeChainSupportFolksToken(
+      receiverFolksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
 
     const getReturnAdapterFees = FolksHubLoan.getSendTokenAdapterFees(
       FolksCore.getHubProvider(),
@@ -113,7 +154,7 @@ export const prepare = {
       folksTokenId,
       amount,
       receiverFolksChainId,
-      adapters
+      adapters,
     );
 
     switch (folksChain.chainType) {
@@ -129,7 +170,7 @@ export const prepare = {
           isFAmount,
           receiverFolksChainId,
           adapters,
-          await getReturnAdapterFees()
+          await getReturnAdapterFees(),
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -138,7 +179,12 @@ export const prepare = {
 };
 
 export const write = {
-  async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
+  async createLoan(
+    accountId: Hex,
+    loanId: Hex,
+    loanTypeId: LoanType,
+    prepareCall: PrepareCreateLoanCall,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -151,14 +197,18 @@ export const write = {
           accountId,
           loanId,
           loanTypeId,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
   },
 
-  async deleteLoan(accountId: Hex, loanId: Hex, prepareCall: PrepareCreateLoanCall) {
+  async deleteLoan(
+    accountId: Hex,
+    loanId: Hex,
+    prepareCall: PrepareCreateLoanCall,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -170,7 +220,7 @@ export const write = {
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -182,7 +232,7 @@ export const write = {
     loanId: Hex,
     amount: bigint,
     includeApproval: boolean,
-    prepareCall: PrepareDepositCall
+    prepareCall: PrepareDepositCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -197,7 +247,7 @@ export const write = {
           loanId,
           amount,
           includeApproval,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -211,7 +261,7 @@ export const write = {
     amount: bigint,
     isFAmount: boolean,
     receiverFolksChainId: FolksChainId,
-    prepareCall: PrepareWithdrawCall
+    prepareCall: PrepareWithdrawCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -228,7 +278,7 @@ export const write = {
           amount,
           isFAmount,
           receiverFolksChainId,
-          prepareCall
+          prepareCall,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);

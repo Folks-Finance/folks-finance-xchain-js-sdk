@@ -1,4 +1,9 @@
-import type { Address, GetContractReturnType, PublicClient, WalletClient } from "viem";
+import type {
+  Address,
+  GetContractReturnType,
+  PublicClient,
+  WalletClient,
+} from "viem";
 import { getContract } from "viem";
 import {
   BridgeRouterHubAbi,
@@ -15,14 +20,18 @@ import { convertFromGenericAddress } from "../common/address.js";
 
 export function getSpokeCommonContract(
   provider: PublicClient,
-  address: GenericAddress
+  address: GenericAddress,
 ): GetReadContractReturnType<typeof SpokeCommonAbi>;
 export function getSpokeCommonContract(
   provider: PublicClient,
   address: GenericAddress,
-  signer: WalletClient
+  signer: WalletClient,
 ): GetContractReturnType<typeof SpokeCommonAbi, PublicClient>;
-export function getSpokeCommonContract(provider: PublicClient, address: GenericAddress, signer?: WalletClient) {
+export function getSpokeCommonContract(
+  provider: PublicClient,
+  address: GenericAddress,
+  signer?: WalletClient,
+) {
   return getContract({
     abi: SpokeCommonAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -30,7 +39,11 @@ export function getSpokeCommonContract(provider: PublicClient, address: GenericA
   });
 }
 
-export function getBridgeRouterSpokeContract(provider: PublicClient, address: GenericAddress, signer?: WalletClient) {
+export function getBridgeRouterSpokeContract(
+  provider: PublicClient,
+  address: GenericAddress,
+  signer?: WalletClient,
+) {
   return getContract({
     abi: BridgeRouterSpokeAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -38,7 +51,11 @@ export function getBridgeRouterSpokeContract(provider: PublicClient, address: Ge
   });
 }
 
-export function getBridgeRouterHubContract(provider: PublicClient, address: GenericAddress, signer?: WalletClient) {
+export function getBridgeRouterHubContract(
+  provider: PublicClient,
+  address: GenericAddress,
+  signer?: WalletClient,
+) {
   return getContract({
     abi: BridgeRouterHubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -48,14 +65,18 @@ export function getBridgeRouterHubContract(provider: PublicClient, address: Gene
 
 export function getSpokeTokenContract(
   provider: PublicClient,
-  address: GenericAddress
+  address: GenericAddress,
 ): GetReadContractReturnType<typeof SpokeTokenAbi>;
 export function getSpokeTokenContract(
   provider: PublicClient,
   address: GenericAddress,
-  signer: WalletClient
+  signer: WalletClient,
 ): GetContractReturnType<typeof SpokeTokenAbi, PublicClient>;
-export function getSpokeTokenContract(provider: PublicClient, address: GenericAddress, signer?: WalletClient) {
+export function getSpokeTokenContract(
+  provider: PublicClient,
+  address: GenericAddress,
+  signer?: WalletClient,
+) {
   return getContract({
     abi: SpokeTokenAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -63,7 +84,11 @@ export function getSpokeTokenContract(provider: PublicClient, address: GenericAd
   });
 }
 
-export function getERC20Contract(provider: PublicClient, address: GenericAddress, signer: WalletClient) {
+export function getERC20Contract(
+  provider: PublicClient,
+  address: GenericAddress,
+  signer: WalletClient,
+) {
   return getContract({
     abi: ERC20Abi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -76,7 +101,7 @@ export async function sendERC20Approve(
   address: GenericAddress,
   signer: WalletClient,
   receiver: Address,
-  amount: bigint
+  amount: bigint,
 ) {
   const sender = getSignerAddress(signer);
 
@@ -85,5 +110,8 @@ export async function sendERC20Approve(
 
   // approve if not enough
   if (allowance < amount)
-    return await erc20.write.approve([receiver, BigInt(amount)], { account: sender, chain: signer.chain });
+    return await erc20.write.approve([receiver, BigInt(amount)], {
+      account: sender,
+      chain: signer.chain,
+    });
 }

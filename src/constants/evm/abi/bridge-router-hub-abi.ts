@@ -12,7 +12,9 @@ export const BridgeRouterHubAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
+    inputs: [
+      { internalType: "address", name: "defaultAdmin", type: "address" },
+    ],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },
@@ -437,7 +439,9 @@ export const BridgeRouterHubAbi = [
   {
     inputs: [{ internalType: "uint16", name: "adapterId", type: "uint16" }],
     name: "getAdapter",
-    outputs: [{ internalType: "contract IBridgeAdapter", name: "", type: "address" }],
+    outputs: [
+      { internalType: "contract IBridgeAdapter", name: "", type: "address" },
+    ],
     stateMutability: "view",
     type: "function",
   },

@@ -1,5 +1,9 @@
 import type { Address } from "viem";
-import type { ListedToken, MessageAdapters, SpokeTokenData } from "../common/index.js";
+import type {
+  ListedToken,
+  MessageAdapters,
+  SpokeTokenData,
+} from "../common/index.js";
 
 export type PrepareCall = {
   adapters: MessageAdapters;
@@ -8,60 +12,60 @@ export type PrepareCall = {
   gasLimit: bigint;
   receiveGasLimit: bigint;
   returnReceiveGasLimit: bigint;
-}
+};
 
 export type PrepareCreateAccountCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareInviteAddressCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareAcceptInviteAddressCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareUnregisterAddressCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareAddDelegateCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareRemoveDelegateCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareCreateLoanCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareDeleteLoanCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareDepositCall = {
   token: SpokeTokenData;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareWithdrawCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareBorrowCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareRepayCall = {
   token: ListedToken;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareRepayWithCollateralCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;
 
 export type PrepareSwitchBorrowTypeCall = {
   spokeCommonAddress: Address;
-} & PrepareCall
+} & PrepareCall;

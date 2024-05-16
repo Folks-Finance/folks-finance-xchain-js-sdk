@@ -1,6 +1,21 @@
-import { avalanche, avalancheFuji, base, baseGoerli, goerli, mainnet } from "viem/chains";
-import { AdapterType, ChainType, NetworkType } from "../../type/common/index.js";
-import type { FolksChain, FolksChainId, SpokeChain } from "../../type/common/index.js";
+import {
+  avalanche,
+  avalancheFuji,
+  base,
+  baseGoerli,
+  goerli,
+  mainnet,
+} from "viem/chains";
+import {
+  AdapterType,
+  ChainType,
+  NetworkType,
+} from "../../type/common/index.js";
+import type {
+  FolksChain,
+  FolksChainId,
+  SpokeChain,
+} from "../../type/common/index.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   AVALANCHE: 1,
@@ -19,7 +34,10 @@ export const FOLKS_CHAIN_ID = {
   ...TESTNET_FOLKS_CHAIN_ID,
 } as const;
 
-export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, FolksChain>>> = {
+export const FOLKS_CHAIN: Record<
+  NetworkType,
+  Partial<Record<FolksChainId, FolksChain>>
+> = {
   [NetworkType.MAINNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE]: {
       chainType: ChainType.EVM,
@@ -68,7 +86,10 @@ export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Folks
   },
 } as const;
 
-export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, SpokeChain>>> = {
+export const SPOKE_CHAIN: Record<
+  NetworkType,
+  Partial<Record<FolksChainId, SpokeChain>>
+> = {
   [NetworkType.MAINNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE]: {
       folksChainId: FOLKS_CHAIN_ID.AVALANCHE,

@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/prefer-literal-enum-member */
-import { avalanche, avalancheFuji, mainnet, goerli, base, baseGoerli } from "viem/chains";
+import {
+  avalanche,
+  avalancheFuji,
+  mainnet,
+  goerli,
+  base,
+  baseGoerli,
+} from "viem/chains";
 
 export enum ChainId {
   // mainnet

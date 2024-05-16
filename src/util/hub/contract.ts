@@ -6,7 +6,7 @@ import type { GetReadContractReturnType } from "../../type/evm/index.js";
 export function getAccountManagerContract(
   provider: PublicClient,
   address: Address,
-  signer?: WalletClient
+  signer?: WalletClient,
 ): GetReadContractReturnType<typeof AccountManagerAbi> {
   return getContract({
     abi: AccountManagerAbi,

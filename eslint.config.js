@@ -28,8 +28,14 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/array-type": ["error", { default: "generic" }],
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
-      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports" },
+      ],
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        { allowNumber: true },
+      ],
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "unicorn/better-regex": "error",
       "unicorn/consistent-function-scoping": "error",
@@ -40,5 +46,5 @@ export default tseslint.config(
     },
   },
   // warn if there are unused eslint-disable directives
-  { linterOptions: { reportUnusedDisableDirectives: true } }
+  { linterOptions: { reportUnusedDisableDirectives: true } },
 );

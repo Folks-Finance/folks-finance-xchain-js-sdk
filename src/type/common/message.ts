@@ -38,13 +38,13 @@ export type Finality = (typeof FINALITY)[keyof typeof FINALITY];
 export type MessageAdapters = {
   adapterId: AdapterType;
   returnAdapterId: AdapterType;
-}
+};
 
 export type MessageParams = {
   receiverValue: bigint;
   gasLimit: bigint;
   returnGasLimit: bigint;
-} & MessageAdapters
+} & MessageAdapters;
 
 export type MessageToSend = {
   params: MessageParams;
@@ -54,4 +54,4 @@ export type MessageToSend = {
   payload: Hex;
   finalityLevel: Finality;
   extraArgs: Hex;
-}
+};

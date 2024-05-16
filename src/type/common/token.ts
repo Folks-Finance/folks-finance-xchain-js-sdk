@@ -14,13 +14,13 @@ export enum TokenType {
 
 export type ITokenData = {
   folksTokenId: FolksTokenId;
-}
+};
 
 export type SpokeTokenData = {
   tokenType: TokenType;
   spokeAddress: GenericAddress;
   tokenAddress: GenericAddress;
-} & ITokenData
+} & ITokenData;
 
 export type ListedToken = {
   tokenType: TokenType;
@@ -32,4 +32,4 @@ export type ListedToken = {
     spoke: GenericAddress;
     hub: GenericAddress;
   } | null; // null if native gas token
-}
+};

@@ -18,18 +18,18 @@ export type GenericAddress = `0x${string}`;
 
 export type IFolksChain = {
   folksChainId: FolksChainId;
-}
+};
 
 export type FolksChain = {
   chainName: string;
   chainType: ChainType;
   chainId: number | string | undefined;
   network: NetworkType;
-} & IFolksChain
+} & IFolksChain;
 
 export type SpokeChain = {
   spokeCommonAddress: GenericAddress;
   bridgeRouterAddress: GenericAddress;
   adapters: Partial<Record<AdapterType, GenericAddress>>;
   tokens: Partial<Record<FolksTokenId, SpokeTokenData>>;
-} & IFolksChain
+} & IFolksChain;
