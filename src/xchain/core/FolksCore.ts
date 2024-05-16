@@ -16,7 +16,7 @@ import { getHubChain } from "../../util/hub/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export class FolksCore {
-  private static instance: FolksCore;
+  private static instance: FolksCore | undefined;
   private folksCoreProvider: FolksCoreProvider;
 
   private selectedNetwork: NetworkType;
@@ -51,13 +51,15 @@ export class FolksCore {
   }
 
   static getSigner<T extends ChainType>(): FolksSignerType<T> {
-    if (!this.instance.signer) throw new Error("Signer is not set");
-    return this.instance.signer as FolksSignerType<T>;
+    const instance = this.getInstance();
+    return instance.signer as FolksSignerType<T>;
   }
 
   static getSelectedFolksChainId(): FolksChainId {
-    if (!this.instance.selectedFolksChainId) throw new Error("FolksChainId is not set");
-    return this.instance.selectedFolksChainId;
+    const instance = this.getInstance();
+    if (!instance.selectedFolksChainId) throw new Error("FolksChainId is not set");
+
+    return instance.selectedFolksChainId;
   }
 
   static getSelectedFolksChain(): FolksChain {
@@ -65,20 +67,22 @@ export class FolksCore {
   }
 
   static getSelectedNetwork() {
-    if (!this.instance.selectedNetwork) throw new Error("Network is not set");
-    return this.instance.selectedNetwork;
+    const instance = this.getInstance();
+    return instance.selectedNetwork;
   }
 
   static getHubProvider(): EVMProvider {
-    const hubFolksChainId = getHubChain(this.instance.selectedNetwork).folksChainId;
-    return this.instance.folksCoreProvider.evm[hubFolksChainId]!;
+    const instance = this.getInstance();
+    const hubFolksChainId = getHubChain(instance.selectedNetwork).folksChainId;
+    return instance.folksCoreProvider.evm[hubFolksChainId]!;
   }
 
   static setProvider(folksChainId: FolksChainId, provider: FolksProvider) {
+    const instance = this.getInstance();
     const folksChain = getFolksChain(folksChainId, this.getSelectedNetwork());
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        this.instance.folksCoreProvider.evm[folksChainId] = provider as EVMProvider;
+        instance.folksCoreProvider.evm[folksChainId] = provider as EVMProvider;
         break;
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -86,22 +90,24 @@ export class FolksCore {
   }
 
   static setFolksChainIdAndSigner(folksChainId: FolksChainId, network: NetworkType, signer?: FolksSigner) {
+    const instance = this.getInstance();
     const folksChain = getFolksChain(folksChainId, network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        this.instance.signer = signer;
+        instance.signer = signer;
         break;
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
 
-    this.instance.selectedFolksChainId = folksChainId;
-    this.instance.selectedNetwork = network;
+    instance.selectedFolksChainId = folksChainId;
+    instance.selectedNetwork = network;
   }
 
   static getEVMProvider(folksChainId: FolksChainId): EVMProvider {
-    const evmProvider = this.instance.folksCoreProvider.evm[folksChainId];
+    const instance = this.getInstance();
+    const evmProvider = instance.folksCoreProvider.evm[folksChainId];
     if (!evmProvider) throw new Error(`EVM Provider not found for folksChainId: ${folksChainId}`);
 
     return evmProvider;
