@@ -1,5 +1,6 @@
 {
   // Formatting using Prettier by default for all languages
+  "prettier.configPath": "prettierrc.js",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
 
