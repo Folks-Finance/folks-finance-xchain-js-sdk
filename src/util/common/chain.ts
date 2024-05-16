@@ -2,39 +2,23 @@ import { FOLKS_CHAIN, SPOKE_CHAIN } from "../../constants/common/index.js";
 import { FolksTokenId, NetworkType } from "../../type/common/index.js";
 import type { FolksChain, FolksChainId, SpokeChain, SpokeTokenData } from "../../type/common/index.js";
 
-export function isFolksChainNetworkSupported(network: NetworkType): boolean {
-  return FOLKS_CHAIN.hasOwnProperty(network);
-}
-
-export function isFolksChainSupported(folksChainId: FolksChainId, network: NetworkType): boolean {
-  return isFolksChainNetworkSupported(network) && FOLKS_CHAIN[network].hasOwnProperty(folksChainId);
-}
-
 export function getFolksChain(folksChainId: FolksChainId, network: NetworkType): FolksChain {
-  if (isFolksChainSupported(folksChainId, network)) return FOLKS_CHAIN[network][folksChainId]!;
-  throw new Error(`Invalid folksChainId: ${folksChainId} for network: ${network}`);
+  const folksChain = FOLKS_CHAIN[network][folksChainId];
+  if (!folksChain) throw new Error(`Folks Chain not found for folksChainId: ${folksChainId}`);
+
+  return folksChain;
 }
 
 export function getFolksChainsByNetwork(network: NetworkType): FolksChain[] {
-  if (isFolksChainNetworkSupported(network)) return Object.values(FOLKS_CHAIN[network]);
-  throw new Error(`Invalid network: ${network}`);
+  return Object.values(FOLKS_CHAIN[network]);
 }
 
 export function getFolksChainIdsByNetwork(networkType: NetworkType): FolksChainId[] {
   return getFolksChainsByNetwork(networkType).map((folksChain) => folksChain.folksChainId);
 }
 
-export function isSpokeChainNetworkSupported(network: NetworkType): boolean {
-  return SPOKE_CHAIN.hasOwnProperty(network);
-}
-
-export function checkSpokeChainNetworkSupported(network: NetworkType) {
-  if (!isSpokeChainNetworkSupported(network)) throw new Error(`Spoke chain is not supported for network: ${network}`);
-}
-
 export function isSpokeChainSupported(folksChainId: FolksChainId, network: NetworkType): boolean {
-  checkSpokeChainNetworkSupported(network);
-  return SPOKE_CHAIN[network].hasOwnProperty(folksChainId);
+  return SPOKE_CHAIN[network][folksChainId] !== undefined;
 }
 
 export function checkSpokeChainSupported(folksChainId: FolksChainId, network: NetworkType) {
@@ -43,17 +27,21 @@ export function checkSpokeChainSupported(folksChainId: FolksChainId, network: Ne
 }
 
 export function getSpokeChain(folksChainId: FolksChainId, network: NetworkType): SpokeChain {
-  checkSpokeChainSupported(folksChainId, network);
-  return SPOKE_CHAIN[network][folksChainId]!;
+  const spokeChain = SPOKE_CHAIN[network][folksChainId];
+  if (!spokeChain) throw new Error(`Spoke chain not found for folksChainId: ${folksChainId}`);
+
+  return spokeChain;
 }
 
 export function doesSpokeSupportFolksToken(spokeChain: SpokeChain, folksTokenId: FolksTokenId): boolean {
-  return spokeChain.tokens.hasOwnProperty(folksTokenId);
+  return spokeChain.tokens[folksTokenId] !== undefined;
 }
 
 export function getSpokeTokenData(spokeChain: SpokeChain, folksTokenId: FolksTokenId): SpokeTokenData {
-  if (doesSpokeSupportFolksToken(spokeChain, folksTokenId)) return spokeChain.tokens[folksTokenId]!;
-  throw new Error(`Spoke Token not found for folksTokenId: ${folksTokenId}`);
+  const tokenData = spokeChain.tokens[folksTokenId];
+  if (!tokenData) throw new Error(`Spoke Token not found for folksTokenId: ${folksTokenId}`);
+
+  return tokenData;
 }
 
 export function isFolksTokenSupported(

@@ -12,7 +12,7 @@ export function initProviders(
     Object.values(FOLKS_CHAIN_ID).map((folksChainId) => {
       return [
         folksChainId,
-        customProvider.hasOwnProperty(folksChainId)
+        customProvider[folksChainId] !== undefined
           ? customProvider[folksChainId]
           : createPublicClient({
               chain: CHAIN_VIEM[folksChainId],

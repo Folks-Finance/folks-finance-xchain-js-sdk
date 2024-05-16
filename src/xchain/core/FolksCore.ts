@@ -101,8 +101,9 @@ export class FolksCore {
   }
 
   static getEVMProvider(folksChainId: FolksChainId): EVMProvider {
-    if (this.instance.folksCoreProvider.evm.hasOwnProperty(folksChainId))
-      return this.instance.folksCoreProvider.evm[folksChainId]!;
-    throw new Error(`Unsupported EVM folks chain id: ${folksChainId}`);
+    const evmProvider = this.instance.folksCoreProvider.evm[folksChainId];
+    if (!evmProvider) throw new Error(`EVM Provider not found for folksChainId: ${folksChainId}`);
+
+    return evmProvider;
   }
 }
