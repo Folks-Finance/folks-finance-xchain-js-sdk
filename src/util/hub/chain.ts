@@ -21,7 +21,7 @@ export function isLoanTypeSupported(loanType: LoanType, folksTokenId: FolksToken
   return token.supportedLoanTypes.has(loanType);
 }
 
-export function checkLoanTypeSupported(loanType: LoanType, folksTokenId: FolksTokenId, network: NetworkType): void {
+export function assertLoanTypeSupported(loanType: LoanType, folksTokenId: FolksTokenId, network: NetworkType): void {
   if (!isLoanTypeSupported(loanType, folksTokenId, network))
     throw new Error(`Loan type ${loanType} is not supported for folksTokenId: ${folksTokenId}`);
 }

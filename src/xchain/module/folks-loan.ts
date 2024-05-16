@@ -8,18 +8,20 @@ import type {
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
- FolksTokenId, LoanType } from "../../type/common/index.js";
+  FolksTokenId,
+  LoanType,
+} from "../../type/common/index.js";
 import { FolksCore } from "../core/folks-core.js";
-import { checkAdapterSupportsDataMessage, checkAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
-import { checkSpokeChainSupportFolksToken, checkSpokeChainSupported } from "../../util/common/chain.js";
-import { checkLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
+import { assertAdapterSupportsDataMessage, assertAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
+import { assertSpokeChainSupportFolksToken, assertSpokeChainSupported } from "../../util/common/chain.js";
+import { assertLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
   async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -40,7 +42,7 @@ export const prepare = {
   async deleteLoan(accountId: Hex, loanId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -67,9 +69,9 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    checkLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -99,10 +101,10 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    checkAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
-    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    checkSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
 
     const getReturnAdapterFees = FolksHubLoan.getSendTokenAdapterFees(
       FolksCore.getHubProvider(),
@@ -139,7 +141,7 @@ export const write = {
   async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -159,7 +161,7 @@ export const write = {
   async deleteLoan(accountId: Hex, loanId: Hex, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -184,7 +186,7 @@ export const write = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

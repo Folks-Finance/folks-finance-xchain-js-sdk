@@ -11,8 +11,8 @@ import type {
   PrepareUnregisterAddressCall,
 } from "../../type/common/index.js";
 import { FolksCore } from "../core/folks-core.js";
-import { checkAdapterSupportsDataMessage } from "../../util/common/adapter.js";
-import { checkSpokeChainSupported } from "../../util/common/chain.js";
+import { assertAdapterSupportsDataMessage } from "../../util/common/adapter.js";
+import { assertSpokeChainSupported } from "../../util/common/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
@@ -20,7 +20,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -45,7 +45,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -67,7 +67,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -87,7 +87,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -109,7 +109,7 @@ export const write = {
   async createAccount(accountId: Hex, prepareCall: PrepareCreateAccountCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -132,7 +132,7 @@ export const write = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -152,7 +152,7 @@ export const write = {
   async acceptInvite(accountId: Hex, prepareCall: PrepareAcceptInviteAddressCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -174,7 +174,7 @@ export const write = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

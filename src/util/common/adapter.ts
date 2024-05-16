@@ -11,7 +11,7 @@ export function doesAdapterSupportDataMessage(folksChainId: FolksChainId, adapte
   );
 }
 
-export function checkAdapterSupportsDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): void {
+export function assertAdapterSupportsDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): void {
   if (!doesAdapterSupportDataMessage(folksChainId, adapterId))
     throw Error(`Adapter ${adapterId} does not support data message for folksChainId: ${folksChainId}`);
 }
@@ -24,7 +24,7 @@ export function doesAdapterSupportTokenMessage(folksChainId: FolksChainId, adapt
   );
 }
 
-export function checkAdapterSupportsTokenMessage(folksChainId: FolksChainId, adapterId: AdapterType): void {
+export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, adapterId: AdapterType): void {
   if (!doesAdapterSupportTokenMessage(folksChainId, adapterId))
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
 }

@@ -21,7 +21,7 @@ export function isSpokeChainSupported(folksChainId: FolksChainId, network: Netwo
   return SPOKE_CHAIN[network][folksChainId] !== undefined;
 }
 
-export function checkSpokeChainSupported(folksChainId: FolksChainId, network: NetworkType) {
+export function assertSpokeChainSupported(folksChainId: FolksChainId, network: NetworkType) {
   if (!isSpokeChainSupported(folksChainId, network))
     throw new Error(`Spoke chain is not supported for folksChainId: ${folksChainId}`);
 }
@@ -53,7 +53,7 @@ export function isFolksTokenSupported(
   return doesSpokeSupportFolksToken(spokeChain, folksTokenId);
 }
 
-export function checkSpokeChainSupportFolksToken(
+export function assertSpokeChainSupportFolksToken(
   folksChainId: FolksChainId,
   folksTokenId: FolksTokenId,
   network: NetworkType
