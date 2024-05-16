@@ -3,6 +3,7 @@ import globals from "globals";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 
 export default tseslint.config(
   { ignores: ["dist/", "eslint.config.js"] },
@@ -21,9 +22,16 @@ export default tseslint.config(
   {
     plugins: {
       "@typescript-eslint": tseslint.plugin,
+      unicorn: eslintPluginUnicorn,
     },
     rules: {
       "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
+      "unicorn/better-regex": "error",
+      "unicorn/consistent-function-scoping": "error",
+      "unicorn/expiring-todo-comments": "error",
+      "unicorn/filename-case": ["error", { case: "kebabCase" }],
+      "unicorn/no-array-for-each": "error",
+      "unicorn/no-for-loop": "error",
     },
   },
   // warn if there are unused eslint-disable directives

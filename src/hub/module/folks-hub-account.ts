@@ -39,14 +39,14 @@ export async function getAccountInfo(
     allowFailure: true,
   });
 
-  registeredAddresses.forEach((result, index) => {
+  for (const [index, result] of registeredAddresses.entries()) {
     const chainId = folksChainIds[index];
     if (result.status === "success") accountInfo.registered.set(chainId, result.result as Address);
-  });
-  invitedAddresses.forEach((result, index) => {
+  }
+  for (const [index, result] of invitedAddresses.entries()) {
     const chainId = folksChainIds[index];
     if (result.status === "success") accountInfo.invited.set(chainId, result.result as Address);
-  });
+  }
 
   return accountInfo;
 }

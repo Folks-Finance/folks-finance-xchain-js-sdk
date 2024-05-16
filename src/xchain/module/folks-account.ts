@@ -1,35 +1,34 @@
-import type { Hex } from "viem";
-import * as FolksHubLoan from "../../hub/module/FolksHubLoan.js";
-import * as FolksEVMLoan from "../../spoke/evm/module/FolksEVMLoan.js";
-import { ChainType, FolksTokenId, LoanType } from "../../type/common/index.js";
+import type { Address, Hex } from "viem";
+import * as FolksHubAccount from "../../hub/module/folks-hub-account.js";
+import * as FolksEVMAccount from "../../spoke/evm/module/folks-evm-account.js";
+import { ChainType } from "../../type/common/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
-  PrepareCreateLoanCall,
-  PrepareDepositCall,
-  PrepareWithdrawCall,
+  PrepareAcceptInviteAddressCall,
+  PrepareCreateAccountCall,
+  PrepareInviteAddressCall,
+  PrepareUnregisterAddressCall,
 } from "../../type/common/index.js";
-import { FolksCore } from "../core/FolksCore.js";
-import { checkAdapterSupportsDataMessage, checkAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
-import { checkSpokeChainSupportFolksToken, checkSpokeChainSupported } from "../../util/common/chain.js";
-import { checkLoanTypeSupported, getHubTokenData } from "../../util/hub/chain.js";
+import { FolksCore } from "../core/folks-core.js";
+import { checkAdapterSupportsDataMessage } from "../../util/common/adapter.js";
+import { checkSpokeChainSupported } from "../../util/common/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
-  async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, adapters: MessageAdapters) {
+  async createAccount(accountId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
+    // check adapters are compatible
     checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.createLoan(
+        return await FolksEVMAccount.prepare.createAccount(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
           accountId,
-          loanId,
-          loanTypeId,
           adapters
         );
       default:
@@ -37,50 +36,26 @@ export const prepare = {
     }
   },
 
-  async deleteLoan(accountId: Hex, loanId: Hex, adapters: MessageAdapters) {
-    const folksChain = FolksCore.getSelectedFolksChain();
-
-    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-
-    switch (folksChain.chainType) {
-      case ChainType.EVM:
-        return await FolksEVMLoan.prepare.deleteLoan(
-          folksChain.folksChainId,
-          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          folksChain.network,
-          accountId,
-          loanId,
-          adapters
-        );
-      default:
-        return exhaustiveCheck(folksChain.chainType);
-    }
-  },
-
-  async deposit(
+  async inviteAddress(
     accountId: Hex,
-    loanId: Hex,
-    loanType: LoanType,
-    folksTokenId: FolksTokenId,
-    amount: bigint,
+    folksChainIdToInvite: FolksChainId,
+    addressToInvite: Address,
     adapters: MessageAdapters
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
+    // check adapters are compatible
     checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    checkLoanTypeSupported(loanType, folksTokenId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.deposit(
+        return await FolksEVMAccount.prepare.inviteAddress(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
           accountId,
-          loanId,
-          folksTokenId,
-          amount,
+          folksChainIdToInvite,
+          addressToInvite,
           adapters
         );
       default:
@@ -88,46 +63,41 @@ export const prepare = {
     }
   },
 
-  async withdraw(
-    accountId: Hex,
-    loanId: Hex,
-    folksTokenId: FolksTokenId,
-    amount: bigint,
-    isFAmount: boolean,
-    receiverFolksChainId: FolksChainId,
-    adapters: MessageAdapters
-  ) {
+  async acceptInvite(accountId: Hex, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
+    // check adapters are compatible
     checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    checkAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
-    checkSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    checkSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, folksChain.network);
-
-    const getReturnAdapterFees = FolksHubLoan.getSendTokenAdapterFees(
-      FolksCore.getHubProvider(),
-      folksChain.network,
-      accountId,
-      folksTokenId,
-      amount,
-      receiverFolksChainId,
-      adapters
-    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.withdraw(
+        return await FolksEVMAccount.prepare.acceptInvite(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
           accountId,
-          loanId,
-          folksTokenId,
-          amount,
-          isFAmount,
-          receiverFolksChainId,
-          adapters,
-          await getReturnAdapterFees()
+          adapters
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async unregisterAddress(accountId: Hex, folksChainIdToUnregister: FolksChainId, adapters: MessageAdapters) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    // check adapters are compatible
+    checkAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEVMAccount.prepare.unregisterAddress(
+          folksChain.folksChainId,
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          folksChain.network,
+          accountId,
+          folksChainIdToUnregister,
+          adapters
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -136,19 +106,17 @@ export const prepare = {
 };
 
 export const write = {
-  async createLoan(accountId: Hex, loanId: Hex, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
+  async createAccount(accountId: Hex, prepareCall: PrepareCreateAccountCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.createLoan(
+        return await FolksEVMAccount.write.createAccount(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          loanId,
-          loanTypeId,
           prepareCall
         );
       default:
@@ -156,31 +124,11 @@ export const write = {
     }
   },
 
-  async deleteLoan(accountId: Hex, loanId: Hex, prepareCall: PrepareCreateLoanCall) {
-    const folksChain = FolksCore.getSelectedFolksChain();
-
-    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
-
-    switch (folksChain.chainType) {
-      case ChainType.EVM:
-        return await FolksEVMLoan.write.deleteLoan(
-          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>(),
-          accountId,
-          loanId,
-          prepareCall
-        );
-      default:
-        return exhaustiveCheck(folksChain.chainType);
-    }
-  },
-
-  async deposit(
+  async inviteAddress(
     accountId: Hex,
-    loanId: Hex,
-    amount: bigint,
-    includeApproval: boolean,
-    prepareCall: PrepareDepositCall
+    folksChainIdToInvite: number,
+    addressToInvite: Address,
+    prepareCall: PrepareInviteAddressCall
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -188,13 +136,12 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.deposit(
+        return await FolksEVMAccount.write.inviteAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          loanId,
-          amount,
-          includeApproval,
+          folksChainIdToInvite,
+          addressToInvite,
           prepareCall
         );
       default:
@@ -202,30 +149,40 @@ export const write = {
     }
   },
 
-  async withdraw(
-    accountId: Hex,
-    loanId: Hex,
-    folksTokenId: FolksTokenId,
-    amount: bigint,
-    isFAmount: boolean,
-    receiverFolksChainId: FolksChainId,
-    prepareCall: PrepareWithdrawCall
-  ) {
+  async acceptInvite(accountId: Hex, prepareCall: PrepareAcceptInviteAddressCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    const { poolId } = getHubTokenData(folksTokenId, folksChain.network);
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.withdraw(
+        return await FolksEVMAccount.write.acceptInvite(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          loanId,
-          poolId,
-          amount,
-          isFAmount,
-          receiverFolksChainId,
+          prepareCall
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async unregisterAddress(
+    accountId: Hex,
+    folksChainIdToUnregister: FolksChainId,
+    prepareCall: PrepareUnregisterAddressCall
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEVMAccount.write.unregisterAddress(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          folksChainIdToUnregister,
           prepareCall
         );
       default:
@@ -234,4 +191,13 @@ export const write = {
   },
 };
 
-export const read = {};
+export const read = {
+  async accountInfo(accountId: Hex, folksChainIds?: FolksChainId[]) {
+    return FolksHubAccount.getAccountInfo(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      accountId,
+      folksChainIds
+    );
+  },
+};
