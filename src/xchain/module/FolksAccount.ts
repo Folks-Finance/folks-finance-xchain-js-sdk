@@ -107,7 +107,6 @@ export const prepare = {
 
 export const write = {
   async createAccount(accountId: Hex, prepareCall: PrepareCreateAccountCall) {
-    if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
     checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -131,7 +130,6 @@ export const write = {
     addressToInvite: Address,
     prepareCall: PrepareInviteAddressCall
   ) {
-    if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
     checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -152,7 +150,6 @@ export const write = {
   },
 
   async acceptInvite(accountId: Hex, prepareCall: PrepareAcceptInviteAddressCall) {
-    if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
     checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -175,7 +172,6 @@ export const write = {
     folksChainIdToUnregister: FolksChainId,
     prepareCall: PrepareUnregisterAddressCall
   ) {
-    if (!FolksCore.getSigner()) throw new Error("Signer is not set");
     const folksChain = FolksCore.getSelectedFolksChain();
 
     checkSpokeChainSupported(folksChain.folksChainId, folksChain.network);
