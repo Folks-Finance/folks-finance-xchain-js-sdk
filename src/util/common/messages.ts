@@ -1,8 +1,8 @@
 import { concat, isHex } from "viem";
 import type { Hex } from "viem";
 import { UINT16_LENGTH, UINT256_LENGTH } from "../../constants/common/index.js";
-import { Action, TokenType } from "../../type/common/index.js";
-import type { GenericAddress, MessageAdapters, MessageParams, SpokeTokenData } from "../../type/common/index.js";
+import { TokenType } from "../../type/common/index.js";
+import type { GenericAddress, MessageAdapters, MessageParams, SpokeTokenData , Action} from "../../type/common/index.js";
 import type { HubTokenData } from "../../type/hub/index.js";
 
 import { convertNumberToBytes } from "./bytes.js";

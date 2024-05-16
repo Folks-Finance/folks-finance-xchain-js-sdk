@@ -1,7 +1,7 @@
 import { createPublicClient, fallback, http } from "viem";
 import type { PublicClient } from "viem";
 import { CHAIN_NODE, CHAIN_VIEM } from "../../constants/evm/index.js";
-import { ChainId } from "../../type/evm/index.js";
+import type { ChainId } from "../../type/evm/index.js";
 import { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
 import type { FolksChainId } from "../../type/common/index.js";
 

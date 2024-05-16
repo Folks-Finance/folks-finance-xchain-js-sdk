@@ -1,14 +1,14 @@
 import { concat } from "viem";
 import type { EstimateGasParameters, Hex, PublicClient, WalletClient } from "viem";
 import { FINALITY, UINT16_LENGTH, UINT256_LENGTH, UINT8_LENGTH } from "../../../constants/common/index.js";
-import { Action, FolksTokenId, NetworkType, TokenType } from "../../../type/common/index.js";
+import { Action, TokenType } from "../../../type/common/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
   MessageParams,
   MessageToSend,
   SpokeChain,
-} from "../../../type/common/index.js";
+ FolksTokenId, NetworkType} from "../../../type/common/index.js";
 import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,

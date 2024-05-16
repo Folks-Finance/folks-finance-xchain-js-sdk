@@ -1,5 +1,5 @@
 import { HUB_CHAIN } from "../../constants/hub/index.js";
-import { FolksTokenId, LoanType, NetworkType } from "../../type/common/index.js";
+import type { FolksTokenId, LoanType, NetworkType } from "../../type/common/index.js";
 import type { FolksChainId } from "../../type/common/index.js";
 import type { HubChain, HubTokenData } from "../../type/hub/index.js";
 

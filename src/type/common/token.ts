@@ -1,4 +1,4 @@
-import { LoanType } from "./module.js";
+import type { LoanType } from "./module.js";
 import type { GenericAddress } from "./chain.js";
 
 export enum FolksTokenId {

@@ -1,7 +1,7 @@
 import type { Hex, PublicClient } from "viem";
 import { FINALITY, UINT256_LENGTH } from "../../constants/common/index.js";
-import { Action, FolksTokenId, NetworkType } from "../../type/common/index.js";
-import type { FolksChainId, MessageAdapters, MessageToSend } from "../../type/common/index.js";
+import { Action } from "../../type/common/index.js";
+import type { FolksChainId, MessageAdapters, MessageToSend , FolksTokenId, NetworkType } from "../../type/common/index.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,

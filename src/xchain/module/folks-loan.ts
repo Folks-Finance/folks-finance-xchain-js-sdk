@@ -1,14 +1,14 @@
 import type { Hex } from "viem";
 import * as FolksHubLoan from "../../hub/module/folks-hub-loan.js";
 import * as FolksEVMLoan from "../../spoke/evm/module/folks-evm-loan.js";
-import { ChainType, FolksTokenId, LoanType } from "../../type/common/index.js";
+import { ChainType } from "../../type/common/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
-} from "../../type/common/index.js";
+ FolksTokenId, LoanType } from "../../type/common/index.js";
 import { FolksCore } from "../core/folks-core.js";
 import { checkAdapterSupportsDataMessage, checkAdapterSupportsTokenMessage } from "../../util/common/adapter.js";
 import { checkSpokeChainSupportFolksToken, checkSpokeChainSupported } from "../../util/common/chain.js";

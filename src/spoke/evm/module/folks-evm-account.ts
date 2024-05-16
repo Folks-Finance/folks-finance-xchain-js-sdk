@@ -1,14 +1,14 @@
 import { concat } from "viem";
 import type { Address, EstimateGasParameters, Hex, PublicClient, WalletClient } from "viem";
 import { FINALITY, UINT16_LENGTH } from "../../../constants/common/index.js";
-import { Action, ChainType, NetworkType } from "../../../type/common/index.js";
+import { Action, ChainType } from "../../../type/common/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
   MessageParams,
   MessageToSend,
   SpokeChain,
-} from "../../../type/common/index.js";
+ NetworkType } from "../../../type/common/index.js";
 import type {
   PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,

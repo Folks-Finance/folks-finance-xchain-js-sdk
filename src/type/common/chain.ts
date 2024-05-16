@@ -1,6 +1,6 @@
-import { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
-import { AdapterType } from "./message.js";
-import { FolksTokenId } from "./token.js";
+import type { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
+import type { AdapterType } from "./message.js";
+import type { FolksTokenId } from "./token.js";
 import type { SpokeTokenData } from "./token.js";
 
 export enum ChainType {

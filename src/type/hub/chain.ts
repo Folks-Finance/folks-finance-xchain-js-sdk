@@ -1,4 +1,4 @@
-import { FolksTokenId } from "../common/index.js";
+import type { FolksTokenId } from "../common/index.js";
 import type { GenericAddress, IFolksChain } from "../common/index.js";
 import type { HubTokenData } from "./token.js";
 

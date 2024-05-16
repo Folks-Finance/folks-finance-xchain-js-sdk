@@ -1,5 +1,5 @@
 import type { Address, Hex, PublicClient } from "viem";
-import { NetworkType } from "../../type/common/index.js";
+import type { NetworkType } from "../../type/common/index.js";
 import type { FolksChainId } from "../../type/common/index.js";
 import type { AccountInfo } from "../../type/hub/index.js";
 import { getFolksChainIdsByNetwork } from "../../util/common/chain.js";
