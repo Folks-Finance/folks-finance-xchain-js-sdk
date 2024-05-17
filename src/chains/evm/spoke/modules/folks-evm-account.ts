@@ -30,12 +30,12 @@ import {
   getRandomGenericAddress,
   getSpokeChain,
 } from "../../../../common/utils/index.js";
+import { getSignerAddress } from "../../common/utils/index.js";
+import { getHubChain } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
-  getSignerAddress,
   getSpokeCommonContract,
-} from "../../common/utils/index.js";
-import { getHubChain } from "../../hub/utils/chain.js";
+} from "../utils/contract.js";
 
 export const prepare = {
   async createAccount(

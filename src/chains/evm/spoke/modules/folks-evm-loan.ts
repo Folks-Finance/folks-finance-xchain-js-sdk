@@ -28,10 +28,7 @@ import type {
   PrepareWithdrawCall,
 } from "../../common/types/index.js";
 import {
-  getBridgeRouterSpokeContract,
   getSignerAddress,
-  getSpokeCommonContract,
-  getSpokeTokenContract,
   sendERC20Approve,
 } from "../../common/utils/index.js";
 
@@ -50,6 +47,11 @@ import {
   getSendTokenExtraArgsWhenAdding,
 } from "../../../../common/utils/messages.js";
 import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
+import {
+  getBridgeRouterSpokeContract,
+  getSpokeCommonContract,
+  getSpokeTokenContract,
+} from "../utils/contract.js";
 
 export const prepare = {
   async createLoan(

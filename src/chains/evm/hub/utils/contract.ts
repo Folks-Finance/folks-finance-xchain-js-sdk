@@ -1,15 +1,15 @@
 import { getContract } from "viem";
 import type { Address, PublicClient, WalletClient } from "viem";
-import {
-  AccountManagerAbi,
-  BridgeRouterHubAbi,
-} from "../../common/constants/abi/index.js";
 import type { GetReadContractReturnType } from "../../common/types/index.js";
 import {
   ChainType,
   type GenericAddress,
 } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
+import {
+  AccountManagerAbi,
+  BridgeRouterHubAbi,
+} from "../constants/abi/index.js";
 
 export function getAccountManagerContract(
   provider: PublicClient,
