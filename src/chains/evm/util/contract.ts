@@ -6,7 +6,6 @@ import type {
 } from "viem";
 import { getContract } from "viem";
 import {
-  BridgeRouterHubAbi,
   BridgeRouterSpokeAbi,
   ERC20Abi,
   SpokeCommonAbi,
@@ -46,18 +45,6 @@ export function getBridgeRouterSpokeContract(
 ) {
   return getContract({
     abi: BridgeRouterSpokeAbi,
-    address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
-    client: { wallet: signer, public: provider },
-  });
-}
-
-export function getBridgeRouterHubContract(
-  provider: PublicClient,
-  address: GenericAddress,
-  signer?: WalletClient,
-) {
-  return getContract({
-    abi: BridgeRouterHubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
     client: { wallet: signer, public: provider },
   });

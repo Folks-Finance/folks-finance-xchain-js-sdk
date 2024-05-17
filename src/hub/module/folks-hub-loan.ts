@@ -18,8 +18,8 @@ import {
   getSpokeTokenData,
 } from "../../common/util/index.js";
 
-import { getBridgeRouterHubContract } from "../../chains/evm/util/index.js";
 import { getHubChain, getHubTokenData } from "../util/chain.js";
+import { getBridgeRouterHubContract } from "../util/contract.js";
 
 export function getSendTokenAdapterFees(
   provider: PublicClient,
