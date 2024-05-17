@@ -1,6 +1,5 @@
 import type { Hex } from "viem";
-import * as FolksHubLoan from "../../chains/evm/hub/modules/folks-hub-loan.js";
-import * as FolksEVMLoan from "../../chains/evm/spoke/modules/folks-evm-loan.js";
+
 import { ChainType } from "../../common/types/index.js";
 import type {
   FolksChainId,
@@ -25,6 +24,8 @@ import {
   getHubTokenData,
 } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
+import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
 
 export const prepare = {
   async createLoan(
@@ -42,7 +43,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.createLoan(
+        return await FolksEvmLoan.prepare.createLoan(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -66,7 +67,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.deleteLoan(
+        return await FolksEvmLoan.prepare.deleteLoan(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -102,7 +103,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.deposit(
+        return await FolksEvmLoan.prepare.deposit(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -159,7 +160,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.prepare.withdraw(
+        return await FolksEvmLoan.prepare.withdraw(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -191,7 +192,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.createLoan(
+        return await FolksEvmLoan.write.createLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -215,7 +216,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.deleteLoan(
+        return await FolksEvmLoan.write.deleteLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -240,7 +241,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.deposit(
+        return await FolksEvmLoan.write.deposit(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -269,7 +270,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMLoan.write.withdraw(
+        return await FolksEvmLoan.write.withdraw(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,

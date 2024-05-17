@@ -1,6 +1,4 @@
 import type { Address, Hex } from "viem";
-import * as FolksHubAccount from "../../chains/evm/hub/modules/folks-hub-account.js";
-import * as FolksEVMAccount from "../../chains/evm/spoke/modules/folks-evm-account.js";
 import { ChainType } from "../../common/types/index.js";
 import type {
   FolksChainId,
@@ -14,6 +12,8 @@ import { FolksCore } from "../core/folks-core.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { assertSpokeChainSupported } from "../../common/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
+import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 
 export const prepare = {
   async createAccount(accountId: Hex, adapters: MessageAdapters) {
@@ -27,7 +27,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.prepare.createAccount(
+        return await FolksEvmAccount.prepare.createAccount(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -55,7 +55,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.prepare.inviteAddress(
+        return await FolksEvmAccount.prepare.inviteAddress(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -80,7 +80,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.prepare.acceptInvite(
+        return await FolksEvmAccount.prepare.acceptInvite(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -107,7 +107,7 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.prepare.unregisterAddress(
+        return await FolksEvmAccount.prepare.unregisterAddress(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           folksChain.network,
@@ -129,7 +129,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.write.createAccount(
+        return await FolksEvmAccount.write.createAccount(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -152,7 +152,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.write.inviteAddress(
+        return await FolksEvmAccount.write.inviteAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -175,7 +175,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.write.acceptInvite(
+        return await FolksEvmAccount.write.acceptInvite(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
@@ -197,7 +197,7 @@ export const write = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEVMAccount.write.unregisterAddress(
+        return await FolksEvmAccount.write.unregisterAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
