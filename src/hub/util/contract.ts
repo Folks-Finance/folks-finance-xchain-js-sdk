@@ -1,7 +1,7 @@
 import { getContract } from "viem";
 import type { Address, PublicClient, WalletClient } from "viem";
-import { AccountManagerAbi } from "../../constants/evm/abi/index.js";
-import type { GetReadContractReturnType } from "../../type/evm/index.js";
+import { AccountManagerAbi } from "../../chains/evm/constants/abi/index.js";
+import type { GetReadContractReturnType } from "../../chains/evm/type/index.js";
 
 export function getAccountManagerContract(
   provider: PublicClient,

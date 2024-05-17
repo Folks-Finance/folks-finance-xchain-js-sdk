@@ -1,11 +1,11 @@
-import { HUB_CHAIN } from "../../constants/hub/index.js";
+import { HUB_CHAIN } from "../constants/index.js";
 import type {
   FolksTokenId,
   LoanType,
   NetworkType,
-} from "../../type/common/index.js";
-import type { FolksChainId } from "../../type/common/index.js";
-import type { HubChain, HubTokenData } from "../../type/hub/index.js";
+} from "../../common/type/index.js";
+import type { FolksChainId } from "../../common/type/index.js";
+import type { HubChain, HubTokenData } from "../type/index.js";
 
 export function isHubChain(
   folksChainId: FolksChainId,

@@ -1,5 +1,5 @@
-import type { LoanType } from "../common/index.js";
-import type { GenericAddress, ITokenData } from "../common/index.js";
+import type { LoanType } from "../../common/type/index.js";
+import type { GenericAddress, ITokenData } from "../../common/type/index.js";
 
 export type HubTokenData = {
   poolId: number;

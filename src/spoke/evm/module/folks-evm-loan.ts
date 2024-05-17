@@ -10,8 +10,8 @@ import {
   UINT16_LENGTH,
   UINT256_LENGTH,
   UINT8_LENGTH,
-} from "../../../constants/common/index.js";
-import { Action, TokenType } from "../../../type/common/index.js";
+} from "../../../common/constants/index.js";
+import { Action, TokenType } from "../../../common/type/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
@@ -20,36 +20,36 @@ import type {
   SpokeChain,
   FolksTokenId,
   NetworkType,
-} from "../../../type/common/index.js";
+} from "../../../common/type/index.js";
 import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
-} from "../../../type/evm/index.js";
+} from "../../../chains/evm/type/index.js";
 import {
   getBridgeRouterSpokeContract,
   getSignerAddress,
   getSpokeCommonContract,
   getSpokeTokenContract,
   sendERC20Approve,
-} from "../../../util/evm/index.js";
+} from "../../../chains/evm/util/index.js";
 
-import { getRandomGenericAddress } from "../../../util/common/address.js";
+import { getRandomGenericAddress } from "../../../common/util/address.js";
 import {
   convertNumberToBytes,
   convertBooleanToByte,
-} from "../../../util/common/bytes.js";
+} from "../../../common/util/bytes.js";
 import {
   getSpokeChain,
   getSpokeTokenData,
-} from "../../../util/common/chain.js";
+} from "../../../common/util/chain.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
   getSendTokenExtraArgsWhenAdding,
-} from "../../../util/common/messages.js";
-import { getHubChain, getHubTokenData } from "../../../util/hub/chain.js";
+} from "../../../common/util/messages.js";
+import { getHubChain, getHubTokenData } from "../../../hub/util/chain.js";
 
 export const prepare = {
   async createLoan(

@@ -11,12 +11,12 @@ import {
   ERC20Abi,
   SpokeCommonAbi,
   SpokeTokenAbi,
-} from "../../constants/evm/abi/index.js";
-import type { GetReadContractReturnType } from "../../type/evm/index.js";
+} from "../constants/abi/index.js";
+import type { GetReadContractReturnType } from "../type/index.js";
 import { getSignerAddress } from "./chain.js";
-import { ChainType } from "../../type/common/index.js";
-import type { GenericAddress } from "../../type/common/index.js";
-import { convertFromGenericAddress } from "../common/address.js";
+import { ChainType } from "../../../common/type/index.js";
+import type { GenericAddress } from "../../../common/type/index.js";
+import { convertFromGenericAddress } from "../../../common/util/address.js";
 
 export function getSpokeCommonContract(
   provider: PublicClient,

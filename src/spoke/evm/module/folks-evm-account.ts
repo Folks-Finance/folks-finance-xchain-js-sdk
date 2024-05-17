@@ -6,8 +6,8 @@ import type {
   PublicClient,
   WalletClient,
 } from "viem";
-import { FINALITY, UINT16_LENGTH } from "../../../constants/common/index.js";
-import { Action, ChainType } from "../../../type/common/index.js";
+import { FINALITY, UINT16_LENGTH } from "../../../common/constants/index.js";
+import { Action, ChainType } from "../../../common/type/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
@@ -15,13 +15,13 @@ import type {
   MessageToSend,
   SpokeChain,
   NetworkType,
-} from "../../../type/common/index.js";
+} from "../../../common/type/index.js";
 import type {
   PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
-} from "../../../type/evm/index.js";
+} from "../../../chains/evm/type/index.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
@@ -29,13 +29,13 @@ import {
   convertToGenericAddress,
   getRandomGenericAddress,
   getSpokeChain,
-} from "../../../util/common/index.js";
+} from "../../../common/util/index.js";
 import {
   getBridgeRouterSpokeContract,
   getSignerAddress,
   getSpokeCommonContract,
-} from "../../../util/evm/index.js";
-import { getHubChain } from "../../../util/hub/chain.js";
+} from "../../../chains/evm/util/index.js";
+import { getHubChain } from "../../../hub/util/chain.js";
 
 export const prepare = {
   async createAccount(

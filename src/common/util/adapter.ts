@@ -1,7 +1,7 @@
-import { AdapterType } from "../../type/common/index.js";
-import type { FolksChainId } from "../../type/common/index.js";
+import { AdapterType } from "../type/index.js";
+import type { FolksChainId } from "../type/index.js";
 import { FolksCore } from "../../xchain/core/folks-core.js";
-import { isHubChain } from "../hub/chain.js";
+import { isHubChain } from "../../hub/util/chain.js";
 
 export function doesAdapterSupportDataMessage(
   folksChainId: FolksChainId,

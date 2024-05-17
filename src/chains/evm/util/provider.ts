@@ -1,9 +1,9 @@
 import { createPublicClient, fallback, http } from "viem";
 import type { PublicClient } from "viem";
-import { CHAIN_NODE, CHAIN_VIEM } from "../../constants/evm/index.js";
-import type { ChainId } from "../../type/evm/index.js";
-import { FOLKS_CHAIN_ID } from "../../constants/common/index.js";
-import type { FolksChainId } from "../../type/common/index.js";
+import { CHAIN_NODE, CHAIN_VIEM } from "../constants/index.js";
+import type { ChainId } from "../type/index.js";
+import { FOLKS_CHAIN_ID } from "../../../common/constants/index.js";
+import type { FolksChainId } from "../../../common/type/index.js";
 
 export function initProviders(
   customProvider: Partial<Record<FolksChainId, PublicClient>>,

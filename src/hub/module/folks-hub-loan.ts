@@ -1,13 +1,13 @@
 import type { Hex, PublicClient } from "viem";
-import { FINALITY, UINT256_LENGTH } from "../../constants/common/index.js";
-import { Action } from "../../type/common/index.js";
+import { FINALITY, UINT256_LENGTH } from "../../common/constants/index.js";
+import { Action } from "../../common/type/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
   MessageToSend,
   FolksTokenId,
   NetworkType,
-} from "../../type/common/index.js";
+} from "../../common/type/index.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
@@ -16,10 +16,10 @@ import {
   getSendTokenExtraArgsWhenRemoving,
   getSpokeChain,
   getSpokeTokenData,
-} from "../../util/common/index.js";
+} from "../../common/util/index.js";
 
-import { getBridgeRouterHubContract } from "../../util/evm/index.js";
-import { getHubChain, getHubTokenData } from "../../util/hub/chain.js";
+import { getBridgeRouterHubContract } from "../../chains/evm/util/index.js";
+import { getHubChain, getHubTokenData } from "../util/chain.js";
 
 export function getSendTokenAdapterFees(
   provider: PublicClient,

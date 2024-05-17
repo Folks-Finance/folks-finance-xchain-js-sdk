@@ -1,5 +1,5 @@
 import type { Hex } from "viem";
-import type { FINALITY } from "../../constants/common/index.js";
+import type { FINALITY } from "../constants/index.js";
 import type { GenericAddress } from "./chain.js";
 
 export enum AdapterType {

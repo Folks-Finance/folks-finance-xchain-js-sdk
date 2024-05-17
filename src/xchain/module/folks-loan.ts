@@ -1,7 +1,7 @@
 import type { Hex } from "viem";
 import * as FolksHubLoan from "../../hub/module/folks-hub-loan.js";
 import * as FolksEVMLoan from "../../spoke/evm/module/folks-evm-loan.js";
-import { ChainType } from "../../type/common/index.js";
+import { ChainType } from "../../common/type/index.js";
 import type {
   FolksChainId,
   MessageAdapters,
@@ -10,20 +10,20 @@ import type {
   PrepareWithdrawCall,
   FolksTokenId,
   LoanType,
-} from "../../type/common/index.js";
+} from "../../common/type/index.js";
 import { FolksCore } from "../core/folks-core.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
-} from "../../util/common/adapter.js";
+} from "../../common/util/adapter.js";
 import {
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
-} from "../../util/common/chain.js";
+} from "../../common/util/chain.js";
 import {
   assertLoanTypeSupported,
   getHubTokenData,
-} from "../../util/hub/chain.js";
+} from "../../hub/util/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {
