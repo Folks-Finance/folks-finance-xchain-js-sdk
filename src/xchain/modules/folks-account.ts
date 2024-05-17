@@ -1,6 +1,6 @@
 import type { Address, Hex } from "viem";
-import * as FolksHubAccount from "../../hub/modules/folks-hub-account.js";
-import * as FolksEVMAccount from "../../spoke/evm/modules/folks-evm-account.js";
+import * as FolksHubAccount from "../../chains/evm/hub/modules/folks-hub-account.js";
+import * as FolksEVMAccount from "../../chains/evm/spoke/modules/folks-evm-account.js";
 import { ChainType } from "../../common/types/index.js";
 import type {
   FolksChainId,

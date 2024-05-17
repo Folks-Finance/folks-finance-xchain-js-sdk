@@ -7,8 +7,8 @@ import {
   base,
   baseGoerli,
 } from "viem/chains";
-import { FOLKS_CHAIN_ID } from "../../../common/constants/index.js";
-import type { FolksChainId } from "../../../common/types/index.js";
+import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
+import type { FolksChainId } from "../../../../common/types/index.js";
 
 export const CHAIN_VIEM: Record<FolksChainId, Chain> = {
   // mainnet

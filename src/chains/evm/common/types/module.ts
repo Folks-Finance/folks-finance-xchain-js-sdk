@@ -3,7 +3,7 @@ import type {
   ListedToken,
   MessageAdapters,
   SpokeTokenData,
-} from "../../../common/types/index.js";
+} from "../../../../common/types/index.js";
 
 export type PrepareCall = {
   adapters: MessageAdapters;

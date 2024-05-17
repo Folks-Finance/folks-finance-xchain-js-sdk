@@ -1,6 +1,6 @@
 import type { Hex } from "viem";
-import * as FolksHubLoan from "../../hub/modules/folks-hub-loan.js";
-import * as FolksEVMLoan from "../../spoke/evm/modules/folks-evm-loan.js";
+import * as FolksHubLoan from "../../chains/evm/hub/modules/folks-hub-loan.js";
+import * as FolksEVMLoan from "../../chains/evm/spoke/modules/folks-evm-loan.js";
 import { ChainType } from "../../common/types/index.js";
 import type {
   FolksChainId,
@@ -23,7 +23,7 @@ import {
 import {
   assertLoanTypeSupported,
   getHubTokenData,
-} from "../../hub/utils/chain.js";
+} from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export const prepare = {

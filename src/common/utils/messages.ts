@@ -9,7 +9,7 @@ import type {
   SpokeTokenData,
   Action,
 } from "../types/index.js";
-import type { HubTokenData } from "../../hub/types/index.js";
+import type { HubTokenData } from "../../chains/evm/hub/types/index.js";
 
 import { convertNumberToBytes } from "./bytes.js";
 import { isGenericAddress } from "./address.js";

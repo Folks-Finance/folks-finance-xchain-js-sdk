@@ -12,8 +12,8 @@ import type {
   NetworkType,
 } from "../../common/types/index.js";
 import { getFolksChain } from "../../common/utils/chain.js";
-import { initProviders } from "../../chains/evm/utils/provider.js";
-import { getHubChain } from "../../hub/utils/chain.js";
+import { initProviders } from "../../chains/evm/common/utils/provider.js";
+import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export class FolksCore {

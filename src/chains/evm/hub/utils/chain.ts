@@ -3,8 +3,8 @@ import type {
   FolksTokenId,
   LoanType,
   NetworkType,
-} from "../../common/types/index.js";
-import type { FolksChainId } from "../../common/types/index.js";
+} from "../../../../common/types/index.js";
+import type { FolksChainId } from "../../../../common/types/index.js";
 import type { HubChain, HubTokenData } from "../types/index.js";
 
 export function isHubChain(
