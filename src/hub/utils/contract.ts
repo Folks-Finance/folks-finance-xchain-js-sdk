@@ -4,9 +4,9 @@ import {
   AccountManagerAbi,
   BridgeRouterHubAbi,
 } from "../../chains/evm/constants/abi/index.js";
-import type { GetReadContractReturnType } from "../../chains/evm/type/index.js";
-import { ChainType, type GenericAddress } from "../../common/type/chain.js";
-import { convertFromGenericAddress } from "../../common/util/address.js";
+import type { GetReadContractReturnType } from "../../chains/evm/types/index.js";
+import { ChainType, type GenericAddress } from "../../common/types/chain.js";
+import { convertFromGenericAddress } from "../../common/utils/address.js";
 
 export function getAccountManagerContract(
   provider: PublicClient,

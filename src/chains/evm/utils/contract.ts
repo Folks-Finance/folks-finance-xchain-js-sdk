@@ -11,11 +11,11 @@ import {
   SpokeCommonAbi,
   SpokeTokenAbi,
 } from "../constants/abi/index.js";
-import type { GetReadContractReturnType } from "../type/index.js";
+import type { GetReadContractReturnType } from "../types/index.js";
 import { getSignerAddress } from "./chain.js";
-import { ChainType } from "../../../common/type/index.js";
-import type { GenericAddress } from "../../../common/type/index.js";
-import { convertFromGenericAddress } from "../../../common/util/address.js";
+import { ChainType } from "../../../common/types/index.js";
+import type { GenericAddress } from "../../../common/types/index.js";
+import { convertFromGenericAddress } from "../../../common/utils/address.js";
 
 export function getSpokeCommonContract(
   provider: PublicClient,

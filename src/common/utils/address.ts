@@ -3,11 +3,11 @@ import {
   BYTES32_LENGTH,
   EVM_ADDRESS_BYTES_LENGTH,
 } from "../constants/index.js";
-import { ChainType } from "../type/index.js";
-import type { GenericAddress } from "../type/index.js";
+import { ChainType } from "../types/index.js";
+import type { GenericAddress } from "../types/index.js";
 import { getAddress, pad, sliceHex } from "viem";
 import type { Address } from "viem";
-import type { AddressType } from "../type/address.js";
+import type { AddressType } from "../types/address.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 export function getRandomGenericAddress(): GenericAddress {

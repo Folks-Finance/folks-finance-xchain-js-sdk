@@ -8,7 +8,7 @@ import type {
   PrepareDepositCall as PrepareDepositEVMCall,
   PrepareWithdrawCall as PrepareWithdrawEVMCall,
   PrepareCall as PrepareEVMCall,
-} from "../../chains/evm/type/index.js";
+} from "../../chains/evm/types/index.js";
 
 export enum LoanType {
   DEPOSIT = 1, // no support for borrows

@@ -6,8 +6,8 @@ import {
   goerli,
   mainnet,
 } from "viem/chains";
-import { AdapterType, ChainType, NetworkType } from "../type/index.js";
-import type { FolksChain, FolksChainId, SpokeChain } from "../type/index.js";
+import { AdapterType, ChainType, NetworkType } from "../types/index.js";
+import type { FolksChain, FolksChainId, SpokeChain } from "../types/index.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   AVALANCHE: 1,

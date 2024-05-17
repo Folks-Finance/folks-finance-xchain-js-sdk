@@ -1,5 +1,5 @@
-import type { FolksTokenId } from "../../common/type/index.js";
-import type { GenericAddress, IFolksChain } from "../../common/type/index.js";
+import type { FolksTokenId } from "../../common/types/index.js";
+import type { GenericAddress, IFolksChain } from "../../common/types/index.js";
 import type { HubTokenData } from "./token.js";
 
 export type HubChain = {

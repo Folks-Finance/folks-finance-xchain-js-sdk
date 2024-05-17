@@ -3,9 +3,9 @@ import type {
   FolksTokenId,
   LoanType,
   NetworkType,
-} from "../../common/type/index.js";
-import type { FolksChainId } from "../../common/type/index.js";
-import type { HubChain, HubTokenData } from "../type/index.js";
+} from "../../common/types/index.js";
+import type { FolksChainId } from "../../common/types/index.js";
+import type { HubChain, HubTokenData } from "../types/index.js";
 
 export function isHubChain(
   folksChainId: FolksChainId,
