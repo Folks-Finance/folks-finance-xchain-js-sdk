@@ -194,7 +194,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmLoan.write.createLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>().signer,
+          FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
           loanTypeId,
@@ -218,7 +218,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmLoan.write.deleteLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>().signer,
+          FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
           prepareCall,
@@ -243,7 +243,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmLoan.write.deposit(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>().signer,
+          FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
           amount,
@@ -272,7 +272,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmLoan.write.withdraw(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>().signer,
+          FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
           poolId,

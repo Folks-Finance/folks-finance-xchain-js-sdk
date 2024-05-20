@@ -10,7 +10,7 @@ type FolksProviderTypeMap = {
 };
 
 type FolksSignerTypeMap = {
-  [ChainType.EVM]: { signer: EVMSigner; folksChainId: FolksChainId };
+  [ChainType.EVM]: EVMSigner;
 };
 
 export type FolksProviderType<T extends ChainType> = FolksProviderTypeMap[T];
