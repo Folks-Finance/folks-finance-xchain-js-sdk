@@ -16,10 +16,7 @@ async function main() {
   };
 
   FolksCore.init(folksConfig);
-  FolksCore.setFolksChainIdAndSigner(
-    FOLKS_CHAIN_ID.AVALANCHE_FUJI,
-    NetworkType.TESTNET,
-  );
+  FolksCore.setNetwork(NetworkType.TESTNET);
 
   const accountId: Hex = randomBytes(32).toString("hex") as Hex;
 
@@ -37,11 +34,10 @@ async function main() {
     returnAdapterId: AdapterType.HUB,
   };
 
-  FolksCore.setFolksChainIdAndSigner(
-    FOLKS_CHAIN_ID.AVALANCHE_FUJI,
-    NetworkType.TESTNET,
+  FolksCore.setFolksSigner({
     signer,
-  );
+    folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
+  });
 
   const prepareCreateAccountCall = await FolksAccount.prepare.createAccount(
     accountId,

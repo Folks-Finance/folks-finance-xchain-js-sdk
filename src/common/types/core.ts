@@ -10,14 +10,14 @@ type FolksProviderTypeMap = {
 };
 
 type FolksSignerTypeMap = {
-  [ChainType.EVM]: EVMSigner;
+  [ChainType.EVM]: { signer: EVMSigner; folksChainId: FolksChainId };
 };
 
 export type FolksProviderType<T extends ChainType> = FolksProviderTypeMap[T];
 export type FolksSignerType<T extends ChainType> = FolksSignerTypeMap[T];
 
 export type FolksProvider = EVMProvider | null;
-export type FolksSigner = EVMSigner | null;
+export type FolksSigner = { signer: EVMSigner; folksChainId: FolksChainId };
 
 export type FolksCoreProvider = {
   evm: Partial<Record<FolksChainId, EVMProvider>>;

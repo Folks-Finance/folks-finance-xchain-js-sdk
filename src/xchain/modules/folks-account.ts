@@ -131,7 +131,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmAccount.write.createAccount(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>(),
+          FolksCore.getSigner<ChainType.EVM>().signer,
           accountId,
           prepareCall,
         );
@@ -154,7 +154,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmAccount.write.inviteAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>(),
+          FolksCore.getSigner<ChainType.EVM>().signer,
           accountId,
           folksChainIdToInvite,
           addressToInvite,
@@ -177,7 +177,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmAccount.write.acceptInvite(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>(),
+          FolksCore.getSigner<ChainType.EVM>().signer,
           accountId,
           prepareCall,
         );
@@ -199,7 +199,7 @@ export const write = {
       case ChainType.EVM:
         return await FolksEvmAccount.write.unregisterAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          FolksCore.getSigner<ChainType.EVM>(),
+          FolksCore.getSigner<ChainType.EVM>().signer,
           accountId,
           folksChainIdToUnregister,
           prepareCall,

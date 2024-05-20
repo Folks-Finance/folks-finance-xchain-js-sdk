@@ -22,7 +22,6 @@ export class FolksCore {
 
   private selectedNetwork: NetworkType;
   private signer?: FolksSigner;
-  private selectedFolksChainId?: FolksChainId;
 
   private constructor(folksCoreConfig: FolksCoreConfig) {
     this.selectedNetwork = folksCoreConfig.network;
@@ -55,20 +54,16 @@ export class FolksCore {
 
   static getSigner<T extends ChainType>(): FolksSignerType<T> {
     const instance = this.getInstance();
-    return instance.signer as FolksSignerType<T>;
-  }
 
-  static getSelectedFolksChainId(): FolksChainId {
-    const instance = this.getInstance();
-    if (!instance.selectedFolksChainId)
-      throw new Error("FolksChainId is not set");
+    const signer = instance.signer;
+    if (!signer) throw new Error("Signer is not initialized");
 
-    return instance.selectedFolksChainId;
+    return signer as FolksSignerType<T>;
   }
 
   static getSelectedFolksChain(): FolksChain {
     return getFolksChain(
-      FolksCore.getSelectedFolksChainId(),
+      FolksCore.getSigner().folksChainId,
       FolksCore.getSelectedNetwork(),
     );
   }
@@ -101,13 +96,15 @@ export class FolksCore {
     }
   }
 
-  static setFolksChainIdAndSigner(
-    folksChainId: FolksChainId,
-    network: NetworkType,
-    signer?: FolksSigner,
-  ) {
+  static setNetwork(network: NetworkType) {
     const instance = this.getInstance();
-    const folksChain = getFolksChain(folksChainId, network);
+    instance.selectedNetwork = network;
+  }
+
+  static setFolksSigner(signer: FolksSigner) {
+    const instance = this.getInstance();
+    const network = instance.selectedNetwork;
+    const folksChain = getFolksChain(signer.folksChainId, network);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -116,9 +113,6 @@ export class FolksCore {
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
-
-    instance.selectedFolksChainId = folksChainId;
-    instance.selectedNetwork = network;
   }
 
   static getEVMProvider(folksChainId: FolksChainId): EVMProvider {
