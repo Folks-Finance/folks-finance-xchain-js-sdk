@@ -107,8 +107,10 @@ export class FolksCore {
 
   static setFolksSigner(folksSigner: FolksSigner) {
     const instance = this.getInstance();
-    const network = instance.selectedNetwork;
-    const folksChain = getFolksChain(folksSigner.folksChainId, network);
+    const folksChain = getFolksChain(
+      folksSigner.folksChainId,
+      this.getSelectedNetwork(),
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
