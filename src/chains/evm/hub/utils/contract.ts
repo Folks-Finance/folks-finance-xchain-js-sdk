@@ -26,7 +26,7 @@ export function getAccountManagerContract(
 export function getBridgeRouterHubContract(
   provider: PublicClient,
   address: GenericAddress,
-) {
+): GetReadContractReturnType<typeof BridgeRouterHubAbi> {
   return getContract({
     abi: BridgeRouterHubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),

@@ -35,7 +35,7 @@ export function getBridgeRouterSpokeContract(
   provider: PublicClient,
   address: GenericAddress,
   signer?: WalletClient,
-) {
+): GetReadContractReturnType<typeof BridgeRouterSpokeAbi> {
   return getContract({
     abi: BridgeRouterSpokeAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
