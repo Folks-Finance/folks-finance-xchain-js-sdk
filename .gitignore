@@ -15,3 +15,6 @@ yarn-error.log*
 
 # eslint
 .eslintcache
+
+# macos
+.DS_Store
