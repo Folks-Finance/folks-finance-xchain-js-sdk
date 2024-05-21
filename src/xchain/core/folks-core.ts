@@ -1,5 +1,9 @@
-import type { PublicClient as EVMProvider } from "viem";
+import { initProviders } from "../../chains/evm/common/utils/provider.js";
+import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { ChainType } from "../../common/types/index.js";
+import { getFolksChain } from "../../common/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+
 import type {
   FolksChain,
   FolksChainId,
@@ -11,10 +15,7 @@ import type {
   FolksSignerType,
   NetworkType,
 } from "../../common/types/index.js";
-import { getFolksChain } from "../../common/utils/chain.js";
-import { initProviders } from "../../chains/evm/common/utils/provider.js";
-import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
-import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import type { PublicClient as EVMProvider } from "viem";
 
 export class FolksCore {
   private static instance: FolksCore | undefined;

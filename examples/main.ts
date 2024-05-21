@@ -1,5 +1,7 @@
 import { randomBytes } from "crypto";
-import { type Hex, createWalletClient, http } from "viem";
+
+import { createWalletClient, http } from "viem";
+
 import { FOLKS_CHAIN_ID } from "../src/common/constants/chain.js";
 import {
   NetworkType,
@@ -7,7 +9,9 @@ import {
   FolksAccount,
   AdapterType,
 } from "../src/index.js";
+
 import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
+import type { Hex } from "viem";
 
 async function main() {
   const folksConfig: FolksCoreConfig = {

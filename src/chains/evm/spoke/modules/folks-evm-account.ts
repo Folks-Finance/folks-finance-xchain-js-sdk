@@ -1,27 +1,7 @@
 import { concat } from "viem";
-import type {
-  Address,
-  EstimateGasParameters,
-  Hex,
-  PublicClient,
-  WalletClient,
-} from "viem";
+
 import { FINALITY, UINT16_LENGTH } from "../../../../common/constants/index.js";
 import { Action, ChainType } from "../../../../common/types/index.js";
-import type {
-  FolksChainId,
-  MessageAdapters,
-  MessageParams,
-  MessageToSend,
-  SpokeChain,
-  NetworkType,
-} from "../../../../common/types/index.js";
-import type {
-  PrepareAcceptInviteAddressCall,
-  PrepareCreateAccountCall,
-  PrepareInviteAddressCall,
-  PrepareUnregisterAddressCall,
-} from "../../common/types/index.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
@@ -36,6 +16,28 @@ import {
   getBridgeRouterSpokeContract,
   getSpokeCommonContract,
 } from "../utils/contract.js";
+
+import type {
+  FolksChainId,
+  MessageAdapters,
+  MessageParams,
+  MessageToSend,
+  SpokeChain,
+  NetworkType,
+} from "../../../../common/types/index.js";
+import type {
+  PrepareAcceptInviteAddressCall,
+  PrepareCreateAccountCall,
+  PrepareInviteAddressCall,
+  PrepareUnregisterAddressCall,
+} from "../../common/types/index.js";
+import type {
+  Address,
+  EstimateGasParameters,
+  Hex,
+  PublicClient,
+  WalletClient,
+} from "viem";
 
 export const prepare = {
   async createAccount(

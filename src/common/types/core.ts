@@ -1,9 +1,8 @@
+import type { ChainType, NetworkType, FolksChainId } from "./chain.js";
 import type {
   PublicClient as EVMProvider,
   WalletClient as EVMSigner,
 } from "viem";
-import type { ChainType, NetworkType } from "./chain.js";
-import type { FolksChainId } from "./chain.js";
 
 type FolksProviderTypeMap = {
   [ChainType.EVM]: EVMProvider;

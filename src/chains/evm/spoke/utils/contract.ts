@@ -1,14 +1,16 @@
-import type { GetContractReturnType, PublicClient, WalletClient } from "viem";
 import { getContract } from "viem";
+
+import { ChainType } from "../../../../common/types/index.js";
+import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import {
   BridgeRouterSpokeAbi,
   SpokeCommonAbi,
   SpokeTokenAbi,
 } from "../constants/abi/index.js";
-import { ChainType } from "../../../../common/types/index.js";
+
 import type { GenericAddress } from "../../../../common/types/index.js";
-import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import type { GetReadContractReturnType } from "../../common/types/contract.js";
+import type { GetContractReturnType, PublicClient, WalletClient } from "viem";
 
 export function getSpokeCommonContract(
   provider: PublicClient,

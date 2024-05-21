@@ -1,5 +1,5 @@
-import type { Address } from "viem";
 import type { ChainType } from "./chain.js";
+import type { Address } from "viem";
 
 type AddressTypeMap = {
   [ChainType.EVM]: Address;

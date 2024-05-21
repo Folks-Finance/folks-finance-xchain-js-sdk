@@ -1,6 +1,8 @@
 import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/index.js";
-import type { FolksTokenId, NetworkType } from "../types/index.js";
+
 import type {
+  FolksTokenId,
+  NetworkType,
   FolksChain,
   FolksChainId,
   SpokeChain,
