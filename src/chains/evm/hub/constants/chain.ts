@@ -1,16 +1,12 @@
-import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
-import {
-  AdapterType,
-  ChainType,
-  NetworkType,
-} from "../../../../common/types/index.js";
-import { convertToGenericAddress } from "../../../../common/utils/index.js";
+import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
+import { NetworkType, ChainType } from "../../../../common/types/chain.js";
+import { AdapterType } from "../../../../common/types/message.js";
+import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
-import type {
-  FolksChainId,
-  FolksTokenId,
-} from "../../../../common/types/index.js";
-import type { HubChain, HubTokenData } from "../types/index.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
+import type { FolksTokenId } from "../../../../common/types/token.js";
+import type { HubChain } from "../types/chain.js";
+import type { HubTokenData } from "../types/token.js";
 
 export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.MAINNET]: {

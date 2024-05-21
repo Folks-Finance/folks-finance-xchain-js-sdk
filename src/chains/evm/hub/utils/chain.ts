@@ -1,12 +1,13 @@
-import { HUB_CHAIN } from "../constants/index.js";
+import { HUB_CHAIN } from "../constants/chain.js";
 
 import type {
-  FolksTokenId,
-  LoanType,
-  NetworkType,
   FolksChainId,
-} from "../../../../common/types/index.js";
-import type { HubChain, HubTokenData } from "../types/index.js";
+  NetworkType,
+} from "../../../../common/types/chain.js";
+import type { LoanType } from "../../../../common/types/module.js";
+import type { FolksTokenId } from "../../../../common/types/token.js";
+import type { HubChain } from "../types/chain.js";
+import type { HubTokenData } from "../types/token.js";
 
 export function isHubChain(
   folksChainId: FolksChainId,

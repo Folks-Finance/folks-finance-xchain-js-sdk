@@ -3,14 +3,12 @@ import { randomBytes } from "crypto";
 import { createWalletClient, http } from "viem";
 
 import { FOLKS_CHAIN_ID } from "../src/common/constants/chain.js";
-import {
-  NetworkType,
-  FolksCore,
-  FolksAccount,
-  AdapterType,
-} from "../src/index.js";
+import { NetworkType } from "../src/common/types/chain.js";
+import { AdapterType } from "../src/common/types/message.js";
+import { FolksCore, FolksAccount } from "../src/index.js";
 
-import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
+import type { FolksCoreConfig } from "../src/common/types/core.js";
+import type { MessageAdapters } from "../src/common/types/message.js";
 import type { Hex } from "viem";
 
 async function main() {

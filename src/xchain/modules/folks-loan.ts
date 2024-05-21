@@ -4,7 +4,7 @@ import {
   getHubTokenData,
 } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
-import { ChainType } from "../../common/types/index.js";
+import { ChainType } from "../../common/types/chain.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
@@ -16,15 +16,15 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type { FolksChainId } from "../../common/types/chain.js";
+import type { MessageAdapters } from "../../common/types/message.js";
 import type {
-  FolksChainId,
-  MessageAdapters,
+  LoanType,
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
-  FolksTokenId,
-  LoanType,
-} from "../../common/types/index.js";
+} from "../../common/types/module.js";
+import type { FolksTokenId } from "../../common/types/token.js";
 import type { Hex } from "viem";
 
 export const prepare = {

@@ -1,19 +1,19 @@
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
-import { ChainType } from "../../common/types/index.js";
+import { ChainType } from "../../common/types/chain.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { assertSpokeChainSupported } from "../../common/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type { FolksChainId } from "../../common/types/chain.js";
+import type { MessageAdapters } from "../../common/types/message.js";
 import type {
-  FolksChainId,
-  MessageAdapters,
-  PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
+  PrepareAcceptInviteAddressCall,
   PrepareUnregisterAddressCall,
-} from "../../common/types/index.js";
+} from "../../common/types/module.js";
 import type { Address, Hex } from "viem";
 
 export const prepare = {

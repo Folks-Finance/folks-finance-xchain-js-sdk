@@ -1,19 +1,19 @@
 import { concat, isHex } from "viem";
 
-import { UINT16_LENGTH, UINT256_LENGTH } from "../constants/index.js";
-import { TokenType } from "../types/index.js";
+import { UINT16_LENGTH, UINT256_LENGTH } from "../constants/bytes.js";
+import { TokenType } from "../types/token.js";
 
 import { isGenericAddress } from "./address.js";
 import { convertNumberToBytes } from "./bytes.js";
 
-import type { HubTokenData } from "../../chains/evm/hub/types/index.js";
+import type { HubTokenData } from "../../chains/evm/hub/types/token.js";
+import type { GenericAddress } from "../types/chain.js";
 import type {
-  GenericAddress,
   MessageAdapters,
   MessageParams,
-  SpokeTokenData,
   Action,
-} from "../types/index.js";
+} from "../types/message.js";
+import type { SpokeTokenData } from "../types/token.js";
 import type { Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (

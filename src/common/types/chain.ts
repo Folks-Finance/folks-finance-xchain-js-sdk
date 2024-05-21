@@ -1,6 +1,6 @@
 import type { AdapterType } from "./message.js";
 import type { FolksTokenId, SpokeTokenData } from "./token.js";
-import type { FOLKS_CHAIN_ID } from "../constants/index.js";
+import type { FOLKS_CHAIN_ID } from "../constants/chain.js";
 
 export enum ChainType {
   EVM = "EVM",

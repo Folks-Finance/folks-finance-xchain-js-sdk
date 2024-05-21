@@ -1,10 +1,10 @@
 import { createPublicClient, fallback, http } from "viem";
 
-import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
-import { CHAIN_NODE, CHAIN_VIEM } from "../constants/index.js";
+import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
+import { CHAIN_VIEM, CHAIN_NODE } from "../constants/chain.js";
 
-import type { FolksChainId } from "../../../../common/types/index.js";
-import type { ChainId } from "../types/index.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
+import type { ChainId } from "../types/chain.js";
 import type { PublicClient } from "viem";
 
 export function initProviders(

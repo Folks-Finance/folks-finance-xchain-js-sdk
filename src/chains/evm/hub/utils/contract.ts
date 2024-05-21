@@ -2,13 +2,11 @@ import { getContract } from "viem";
 
 import { ChainType } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
-import {
-  AccountManagerAbi,
-  BridgeRouterHubAbi,
-} from "../constants/abi/index.js";
+import { AccountManagerAbi } from "../constants/abi/account-manager-abi.js";
+import { BridgeRouterHubAbi } from "../constants/abi/bridge-router-hub-abi.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
-import type { GetReadContractReturnType } from "../../common/types/index.js";
+import type { GetReadContractReturnType } from "../../common/types/contract.js";
 import type { Address, PublicClient, WalletClient } from "viem";
 
 export function getAccountManagerContract(

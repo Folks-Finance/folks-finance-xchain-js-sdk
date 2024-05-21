@@ -1,11 +1,12 @@
 import { getFolksChainIdsByNetwork } from "../../../../common/utils/chain.js";
-import { getAccountManagerContract, getHubChain } from "../utils/index.js";
+import { getHubChain } from "../utils/chain.js";
+import { getAccountManagerContract } from "../utils/contract.js";
 
 import type {
   NetworkType,
   FolksChainId,
-} from "../../../../common/types/index.js";
-import type { AccountInfo } from "../types/index.js";
+} from "../../../../common/types/chain.js";
+import type { AccountInfo } from "../types/account.js";
 import type { Address, Hex, PublicClient } from "viem";
 
 export async function getAccountInfo(
