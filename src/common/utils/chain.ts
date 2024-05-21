@@ -1,13 +1,12 @@
-import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/index.js";
+import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/chain.js";
 
 import type {
-  FolksTokenId,
+  FolksChainId,
   NetworkType,
   FolksChain,
-  FolksChainId,
   SpokeChain,
-  SpokeTokenData,
-} from "../types/index.js";
+} from "../types/chain.js";
+import type { FolksTokenId, SpokeTokenData } from "../types/token.js";
 
 export function getFolksChain(
   folksChainId: FolksChainId,

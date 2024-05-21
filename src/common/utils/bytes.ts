@@ -1,6 +1,6 @@
 import { bytesToHex, pad, toHex } from "viem";
 
-import { BYTES32_LENGTH } from "../constants/index.js";
+import { BYTES32_LENGTH } from "../constants/bytes.js";
 
 import type { Hex } from "viem";
 

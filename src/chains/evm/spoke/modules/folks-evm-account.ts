@@ -1,16 +1,20 @@
 import { concat } from "viem";
 
-import { FINALITY, UINT16_LENGTH } from "../../../../common/constants/index.js";
-import { Action, ChainType } from "../../../../common/types/index.js";
+import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
+import { FINALITY } from "../../../../common/constants/message.js";
+import { ChainType } from "../../../../common/types/chain.js";
+import { Action } from "../../../../common/types/message.js";
+import {
+  getRandomGenericAddress,
+  convertToGenericAddress,
+} from "../../../../common/utils/address.js";
+import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
+import { getSpokeChain } from "../../../../common/utils/chain.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
-  convertNumberToBytes,
-  convertToGenericAddress,
-  getRandomGenericAddress,
-  getSpokeChain,
-} from "../../../../common/utils/index.js";
-import { getSignerAddress } from "../../common/utils/index.js";
+} from "../../../../common/utils/messages.js";
+import { getSignerAddress } from "../../common/utils/chain.js";
 import { getHubChain } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
@@ -19,18 +23,20 @@ import {
 
 import type {
   FolksChainId,
-  MessageAdapters,
-  MessageParams,
-  MessageToSend,
   SpokeChain,
   NetworkType,
-} from "../../../../common/types/index.js";
+} from "../../../../common/types/chain.js";
 import type {
-  PrepareAcceptInviteAddressCall,
+  MessageAdapters,
+  MessageToSend,
+  MessageParams,
+} from "../../../../common/types/message.js";
+import type {
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
+  PrepareAcceptInviteAddressCall,
   PrepareUnregisterAddressCall,
-} from "../../common/types/index.js";
+} from "../../common/types/module.js";
 import type {
   Address,
   EstimateGasParameters,

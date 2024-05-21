@@ -1,8 +1,8 @@
 import { isHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksCore } from "../../xchain/core/folks-core.js";
-import { AdapterType } from "../types/index.js";
+import { AdapterType } from "../types/message.js";
 
-import type { FolksChainId } from "../types/index.js";
+import type { FolksChainId } from "../types/chain.js";
 
 export function doesAdapterSupportDataMessage(
   folksChainId: FolksChainId,

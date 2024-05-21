@@ -1,8 +1,8 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 
-import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
+import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
 
-import type { FolksChainId } from "../../../../common/types/index.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { Chain } from "viem";
 
 export const CHAIN_VIEM: Record<FolksChainId, Chain> = {

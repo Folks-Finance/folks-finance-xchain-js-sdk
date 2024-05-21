@@ -1,20 +1,22 @@
 import { initProviders } from "../../chains/evm/common/utils/provider.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
-import { ChainType } from "../../common/types/index.js";
+import { ChainType } from "../../common/types/chain.js";
 import { getFolksChain } from "../../common/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
 import type {
-  FolksChain,
   FolksChainId,
-  FolksCoreConfig,
-  FolksCoreProvider,
-  FolksProvider,
-  FolksProviderType,
-  FolksSigner,
-  FolksSignerType,
+  FolksChain,
   NetworkType,
-} from "../../common/types/index.js";
+} from "../../common/types/chain.js";
+import type {
+  FolksCoreProvider,
+  FolksSigner,
+  FolksCoreConfig,
+  FolksProviderType,
+  FolksSignerType,
+  FolksProvider,
+} from "../../common/types/core.js";
 import type { PublicClient as EVMProvider } from "viem";
 
 export class FolksCore {

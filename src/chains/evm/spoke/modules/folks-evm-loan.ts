@@ -1,12 +1,13 @@
 import { concat } from "viem";
 
 import {
-  FINALITY,
   UINT16_LENGTH,
-  UINT256_LENGTH,
   UINT8_LENGTH,
-} from "../../../../common/constants/index.js";
-import { Action, TokenType } from "../../../../common/types/index.js";
+  UINT256_LENGTH,
+} from "../../../../common/constants/bytes.js";
+import { FINALITY } from "../../../../common/constants/message.js";
+import { Action } from "../../../../common/types/message.js";
+import { TokenType } from "../../../../common/types/token.js";
 import { getRandomGenericAddress } from "../../../../common/utils/address.js";
 import {
   convertNumberToBytes,
@@ -21,10 +22,8 @@ import {
   buildMessagePayload,
   getSendTokenExtraArgsWhenAdding,
 } from "../../../../common/utils/messages.js";
-import {
-  getSignerAddress,
-  sendERC20Approve,
-} from "../../common/utils/index.js";
+import { getSignerAddress } from "../../common/utils/chain.js";
+import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
@@ -34,19 +33,21 @@ import {
 
 import type {
   FolksChainId,
-  MessageAdapters,
-  MessageParams,
-  MessageToSend,
-  SpokeChain,
-  FolksTokenId,
   NetworkType,
-} from "../../../../common/types/index.js";
+  SpokeChain,
+} from "../../../../common/types/chain.js";
+import type {
+  MessageAdapters,
+  MessageToSend,
+  MessageParams,
+} from "../../../../common/types/message.js";
+import type { FolksTokenId } from "../../../../common/types/token.js";
 import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
-} from "../../common/types/index.js";
+} from "../../common/types/module.js";
 import type {
   EstimateGasParameters,
   Hex,
