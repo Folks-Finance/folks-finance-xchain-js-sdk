@@ -15,3 +15,6 @@ export * from "./common/types/token.js";
 export * from "./common/constants/bytes.js";
 export * from "./common/constants/chain.js";
 export * from "./common/constants/message.js";
+
+// CHAINS
+export { CHAIN_VIEM } from "./chains/evm/common/constants/chain.js";
