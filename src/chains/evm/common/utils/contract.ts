@@ -1,10 +1,13 @@
-import type { Address, PublicClient, WalletClient } from "viem";
 import { getContract } from "viem";
-import { ERC20Abi } from "../constants/abi/index.js";
-import { getSignerAddress } from "./chain.js";
+
 import { ChainType } from "../../../../common/types/index.js";
-import type { GenericAddress } from "../../../../common/types/index.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
+import { ERC20Abi } from "../constants/abi/index.js";
+
+import { getSignerAddress } from "./chain.js";
+
+import type { GenericAddress } from "../../../../common/types/index.js";
+import type { Address, PublicClient, WalletClient } from "viem";
 
 export function getERC20Contract(
   provider: PublicClient,

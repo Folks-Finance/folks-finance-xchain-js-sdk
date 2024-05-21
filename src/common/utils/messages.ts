@@ -1,7 +1,12 @@
 import { concat, isHex } from "viem";
-import type { Hex } from "viem";
+
 import { UINT16_LENGTH, UINT256_LENGTH } from "../constants/index.js";
 import { TokenType } from "../types/index.js";
+
+import { isGenericAddress } from "./address.js";
+import { convertNumberToBytes } from "./bytes.js";
+
+import type { HubTokenData } from "../../chains/evm/hub/types/index.js";
 import type {
   GenericAddress,
   MessageAdapters,
@@ -9,10 +14,7 @@ import type {
   SpokeTokenData,
   Action,
 } from "../types/index.js";
-import type { HubTokenData } from "../../chains/evm/hub/types/index.js";
-
-import { convertNumberToBytes } from "./bytes.js";
-import { isGenericAddress } from "./address.js";
+import type { Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
   adapters: MessageAdapters,

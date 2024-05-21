@@ -1,6 +1,6 @@
-import type { Hex } from "viem";
-import type { FINALITY } from "../constants/index.js";
 import type { GenericAddress } from "./chain.js";
+import type { FINALITY } from "../constants/index.js";
+import type { Hex } from "viem";
 
 export enum AdapterType {
   HUB = 1,

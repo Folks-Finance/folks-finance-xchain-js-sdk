@@ -1,5 +1,9 @@
-import type { PublicClient as EVMProvider } from "viem";
+import { initProviders } from "../../chains/evm/common/utils/provider.js";
+import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { ChainType } from "../../common/types/index.js";
+import { getFolksChain } from "../../common/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+
 import type {
   FolksChain,
   FolksChainId,
@@ -11,18 +15,14 @@ import type {
   FolksSignerType,
   NetworkType,
 } from "../../common/types/index.js";
-import { getFolksChain } from "../../common/utils/chain.js";
-import { initProviders } from "../../chains/evm/common/utils/provider.js";
-import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
-import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import type { PublicClient as EVMProvider } from "viem";
 
 export class FolksCore {
   private static instance: FolksCore | undefined;
   private folksCoreProvider: FolksCoreProvider;
 
   private selectedNetwork: NetworkType;
-  private signer?: FolksSigner;
-  private selectedFolksChainId?: FolksChainId;
+  private folksSigner?: FolksSigner;
 
   private constructor(folksCoreConfig: FolksCoreConfig) {
     this.selectedNetwork = folksCoreConfig.network;
@@ -53,24 +53,24 @@ export class FolksCore {
     }
   }
 
-  static getSigner<T extends ChainType>(): FolksSignerType<T> {
+  static getFolksSigner() {
     const instance = this.getInstance();
-    return instance.signer as FolksSignerType<T>;
+    if (!instance.folksSigner)
+      throw new Error("FolksSigner is not initialized");
+
+    return instance.folksSigner;
   }
 
-  static getSelectedFolksChainId(): FolksChainId {
-    const instance = this.getInstance();
-    if (!instance.selectedFolksChainId)
-      throw new Error("FolksChainId is not set");
+  static getSigner<T extends ChainType>(): FolksSignerType<T> {
+    const { signer } = this.getFolksSigner();
 
-    return instance.selectedFolksChainId;
+    return signer as FolksSignerType<T>;
   }
 
   static getSelectedFolksChain(): FolksChain {
-    return getFolksChain(
-      FolksCore.getSelectedFolksChainId(),
-      FolksCore.getSelectedNetwork(),
-    );
+    const { folksChainId } = this.getFolksSigner();
+
+    return getFolksChain(folksChainId, this.getSelectedNetwork());
   }
 
   static getSelectedNetwork() {
@@ -101,24 +101,25 @@ export class FolksCore {
     }
   }
 
-  static setFolksChainIdAndSigner(
-    folksChainId: FolksChainId,
-    network: NetworkType,
-    signer?: FolksSigner,
-  ) {
+  static setNetwork(network: NetworkType) {
     const instance = this.getInstance();
-    const folksChain = getFolksChain(folksChainId, network);
+    instance.selectedNetwork = network;
+  }
+
+  static setFolksSigner(folksSigner: FolksSigner) {
+    const instance = this.getInstance();
+    const folksChain = getFolksChain(
+      folksSigner.folksChainId,
+      this.getSelectedNetwork(),
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        instance.signer = signer;
+        instance.folksSigner = folksSigner;
         break;
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
-
-    instance.selectedFolksChainId = folksChainId;
-    instance.selectedNetwork = network;
   }
 
   static getEVMProvider(folksChainId: FolksChainId): EVMProvider {

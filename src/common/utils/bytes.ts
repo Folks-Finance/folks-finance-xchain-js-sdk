@@ -1,6 +1,8 @@
 import { bytesToHex, pad, toHex } from "viem";
-import type { Hex } from "viem";
+
 import { BYTES32_LENGTH } from "../constants/index.js";
+
+import type { Hex } from "viem";
 
 export function getEmptyBytes(length: number): string {
   return pad("0x", { size: length });

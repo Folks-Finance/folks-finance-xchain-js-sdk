@@ -1,6 +1,21 @@
-import type { Hex } from "viem";
-
+import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
+import {
+  assertLoanTypeSupported,
+  getHubTokenData,
+} from "../../chains/evm/hub/utils/chain.js";
+import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/index.js";
+import {
+  assertAdapterSupportsDataMessage,
+  assertAdapterSupportsTokenMessage,
+} from "../../common/utils/adapter.js";
+import {
+  assertSpokeChainSupportFolksToken,
+  assertSpokeChainSupported,
+} from "../../common/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import { FolksCore } from "../core/folks-core.js";
+
 import type {
   FolksChainId,
   MessageAdapters,
@@ -10,22 +25,7 @@ import type {
   FolksTokenId,
   LoanType,
 } from "../../common/types/index.js";
-import { FolksCore } from "../core/folks-core.js";
-import {
-  assertAdapterSupportsDataMessage,
-  assertAdapterSupportsTokenMessage,
-} from "../../common/utils/adapter.js";
-import {
-  assertSpokeChainSupportFolksToken,
-  assertSpokeChainSupported,
-} from "../../common/utils/chain.js";
-import {
-  assertLoanTypeSupported,
-  getHubTokenData,
-} from "../../chains/evm/hub/utils/chain.js";
-import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
-import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
-import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
+import type { Hex } from "viem";
 
 export const prepare = {
   async createLoan(

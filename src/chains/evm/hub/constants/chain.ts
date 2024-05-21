@@ -1,15 +1,16 @@
-import type {
-  FolksChainId,
-  FolksTokenId,
-} from "../../../../common/types/index.js";
+import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
 import {
   AdapterType,
   ChainType,
   NetworkType,
 } from "../../../../common/types/index.js";
+import { convertToGenericAddress } from "../../../../common/utils/index.js";
+
+import type {
+  FolksChainId,
+  FolksTokenId,
+} from "../../../../common/types/index.js";
 import type { HubChain, HubTokenData } from "../types/index.js";
-import { FOLKS_CHAIN_ID } from "../../../../common/constants/index.js";
-import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
 export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.MAINNET]: {

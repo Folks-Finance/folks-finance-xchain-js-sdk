@@ -1,10 +1,5 @@
 import { concat } from "viem";
-import type {
-  EstimateGasParameters,
-  Hex,
-  PublicClient,
-  WalletClient,
-} from "viem";
+
 import {
   FINALITY,
   UINT16_LENGTH,
@@ -12,6 +7,31 @@ import {
   UINT8_LENGTH,
 } from "../../../../common/constants/index.js";
 import { Action, TokenType } from "../../../../common/types/index.js";
+import { getRandomGenericAddress } from "../../../../common/utils/address.js";
+import {
+  convertNumberToBytes,
+  convertBooleanToByte,
+} from "../../../../common/utils/bytes.js";
+import {
+  getSpokeChain,
+  getSpokeTokenData,
+} from "../../../../common/utils/chain.js";
+import {
+  DEFAULT_MESSAGE_PARAMS,
+  buildMessagePayload,
+  getSendTokenExtraArgsWhenAdding,
+} from "../../../../common/utils/messages.js";
+import {
+  getSignerAddress,
+  sendERC20Approve,
+} from "../../common/utils/index.js";
+import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
+import {
+  getBridgeRouterSpokeContract,
+  getSpokeCommonContract,
+  getSpokeTokenContract,
+} from "../utils/contract.js";
+
 import type {
   FolksChainId,
   MessageAdapters,
@@ -27,31 +47,12 @@ import type {
   PrepareDepositCall,
   PrepareWithdrawCall,
 } from "../../common/types/index.js";
-import {
-  getSignerAddress,
-  sendERC20Approve,
-} from "../../common/utils/index.js";
-
-import { getRandomGenericAddress } from "../../../../common/utils/address.js";
-import {
-  convertNumberToBytes,
-  convertBooleanToByte,
-} from "../../../../common/utils/bytes.js";
-import {
-  getSpokeChain,
-  getSpokeTokenData,
-} from "../../../../common/utils/chain.js";
-import {
-  DEFAULT_MESSAGE_PARAMS,
-  buildMessagePayload,
-  getSendTokenExtraArgsWhenAdding,
-} from "../../../../common/utils/messages.js";
-import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
-import {
-  getBridgeRouterSpokeContract,
-  getSpokeCommonContract,
-  getSpokeTokenContract,
-} from "../utils/contract.js";
+import type {
+  EstimateGasParameters,
+  Hex,
+  PublicClient,
+  WalletClient,
+} from "viem";
 
 export const prepare = {
   async createLoan(

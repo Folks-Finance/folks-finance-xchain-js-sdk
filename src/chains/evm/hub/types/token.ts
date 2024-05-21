@@ -1,5 +1,5 @@
-import type { LoanType } from "../../../../common/types/index.js";
 import type {
+  LoanType,
   GenericAddress,
   ITokenData,
 } from "../../../../common/types/index.js";

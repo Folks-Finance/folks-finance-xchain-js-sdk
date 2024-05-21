@@ -1,5 +1,7 @@
 import { randomBytes } from "crypto";
-import { type Hex, createWalletClient, http } from "viem";
+
+import { createWalletClient, http } from "viem";
+
 import { FOLKS_CHAIN_ID } from "../src/common/constants/chain.js";
 import {
   NetworkType,
@@ -7,7 +9,9 @@ import {
   FolksAccount,
   AdapterType,
 } from "../src/index.js";
+
 import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
+import type { Hex } from "viem";
 
 async function main() {
   const folksConfig: FolksCoreConfig = {
@@ -16,10 +20,7 @@ async function main() {
   };
 
   FolksCore.init(folksConfig);
-  FolksCore.setFolksChainIdAndSigner(
-    FOLKS_CHAIN_ID.AVALANCHE_FUJI,
-    NetworkType.TESTNET,
-  );
+  FolksCore.setNetwork(NetworkType.TESTNET);
 
   const accountId: Hex = randomBytes(32).toString("hex") as Hex;
 
@@ -37,11 +38,10 @@ async function main() {
     returnAdapterId: AdapterType.HUB,
   };
 
-  FolksCore.setFolksChainIdAndSigner(
-    FOLKS_CHAIN_ID.AVALANCHE_FUJI,
-    NetworkType.TESTNET,
+  FolksCore.setFolksSigner({
     signer,
-  );
+    folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
+  });
 
   const prepareCreateAccountCall = await FolksAccount.prepare.createAccount(
     accountId,
