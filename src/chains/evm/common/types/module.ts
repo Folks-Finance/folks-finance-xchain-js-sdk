@@ -1,8 +1,5 @@
 import type { MessageAdapters } from "../../../../common/types/message.js";
-import type {
-  SpokeTokenData,
-  ListedToken,
-} from "../../../../common/types/token.js";
+import type { SpokeTokenData } from "../../../../common/types/token.js";
 import type { Address } from "viem";
 
 export type PrepareCall = {
@@ -59,7 +56,7 @@ export type PrepareBorrowCall = {
 } & PrepareCall;
 
 export type PrepareRepayCall = {
-  token: ListedToken;
+  token: SpokeTokenData;
 } & PrepareCall;
 
 export type PrepareRepayWithCollateralCall = {

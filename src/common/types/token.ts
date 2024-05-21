@@ -1,5 +1,4 @@
 import type { GenericAddress } from "./chain.js";
-import type { LoanType } from "./module.js";
 
 export enum FolksTokenId {
   USDC = "USDC",
@@ -20,16 +19,5 @@ export type SpokeTokenData = {
   tokenType: TokenType;
   spokeAddress: GenericAddress;
   tokenAddress: GenericAddress;
+  tokenDecimals: number;
 } & ITokenData;
-
-export type ListedToken = {
-  tokenType: TokenType;
-  supportedLoanTypes: Set<LoanType>;
-  poolId: number;
-  spokeTokenAddress: GenericAddress;
-  hubPoolAddress: GenericAddress;
-  tokenAddress: {
-    spoke: GenericAddress;
-    hub: GenericAddress;
-  } | null; // null if native gas token
-};
