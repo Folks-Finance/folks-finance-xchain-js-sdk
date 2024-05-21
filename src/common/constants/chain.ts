@@ -1,7 +1,9 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
+
 import { AdapterType, ChainType, NetworkType } from "../types/index.js";
-import type { FolksChain, FolksChainId, SpokeChain } from "../types/index.js";
 import { convertToGenericAddress } from "../utils/address.js";
+
+import type { FolksChain, FolksChainId, SpokeChain } from "../types/index.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {} as const;
 
