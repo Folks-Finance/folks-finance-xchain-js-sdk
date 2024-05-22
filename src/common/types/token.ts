@@ -17,7 +17,8 @@ export type ITokenData = {
 
 export type SpokeTokenData = {
   tokenType: TokenType;
+  poolId: number;
   spokeAddress: GenericAddress;
-  tokenAddress: GenericAddress;
+  tokenAddress: GenericAddress | null;
   tokenDecimals: number;
 } & ITokenData;
