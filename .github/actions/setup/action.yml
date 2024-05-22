@@ -4,14 +4,14 @@ description: "Setup Node.js and pnpm and install dependencies"
 runs:
   using: "composite"
   steps:
+    - name: Setup pnpm # by default it uses the version set in the package.json as packageManager
+      uses: pnpm/action-setup@v4
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version-file: ".nvmrc"
         cache: "pnpm"
-
-    - name: Setup pnpm # by default it uses the version set in the package.json as packageManager
-      uses: pnpm/action-setup@v4
 
     - name: Install dependencies
       shell: bash
