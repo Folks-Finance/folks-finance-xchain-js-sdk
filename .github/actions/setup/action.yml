@@ -4,9 +4,6 @@ description: "Setup Node.js and pnpm and install dependencies"
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -17,4 +14,5 @@ runs:
       uses: pnpm/action-setup@v4
 
     - name: Install dependencies
+      shell: bash
       run: pnpm install --frozen-lockfile
