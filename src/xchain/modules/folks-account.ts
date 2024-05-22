@@ -1,3 +1,4 @@
+import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
@@ -31,6 +32,7 @@ export const prepare = {
         return await FolksEvmAccount.prepare.createAccount(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           adapters,
@@ -59,6 +61,7 @@ export const prepare = {
         return await FolksEvmAccount.prepare.inviteAddress(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           folksChainIdToInvite,
@@ -84,6 +87,7 @@ export const prepare = {
         return await FolksEvmAccount.prepare.acceptInvite(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           adapters,
@@ -111,6 +115,7 @@ export const prepare = {
         return await FolksEvmAccount.prepare.unregisterAddress(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           folksChainIdToUnregister,

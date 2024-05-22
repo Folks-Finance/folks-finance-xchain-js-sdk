@@ -1,3 +1,4 @@
+import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
 import {
   assertLoanTypeSupported,
@@ -46,6 +47,7 @@ export const prepare = {
         return await FolksEvmLoan.prepare.createLoan(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           loanId,
@@ -70,6 +72,7 @@ export const prepare = {
         return await FolksEvmLoan.prepare.deleteLoan(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           loanId,
@@ -106,6 +109,7 @@ export const prepare = {
         return await FolksEvmLoan.prepare.deposit(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           loanId,
@@ -163,6 +167,7 @@ export const prepare = {
         return await FolksEvmLoan.prepare.withdraw(
           folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
           folksChain.network,
           accountId,
           loanId,
