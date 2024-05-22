@@ -1,20 +1,55 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 
-import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
-
-import type { FolksChainId } from "../../../../common/types/chain.js";
+import type { EvmChainName, EvmFolksChainId } from "../types/chain.js";
 import type { Chain } from "viem";
 
-export const CHAIN_VIEM: Record<FolksChainId, Chain> = {
+const EVM_CHAIN_NAMES_MAINNET = [] as const;
+const EVM_CHAIN_NAMES_TESTNET = [
+  "AVALANCHE_FUJI",
+  "ETHEREUM_SEPOLIA",
+  "BASE_SEPOLIA",
+] as const;
+export const EVM_CHAIN_NAMES = [
+  ...EVM_CHAIN_NAMES_MAINNET,
+  ...EVM_CHAIN_NAMES_TESTNET,
+] as const;
+
+const EVM_CHAIN_ID_MAINNET = {} as const;
+
+const EVM_CHAIN_ID_TESTNET = {
+  AVALANCHE_FUJI: avalancheFuji.id,
+  ETHEREUM_SEPOLIA: sepolia.id,
+  BASE_SEPOLIA: baseSepolia.id,
+} as const;
+
+export const EVM_CHAIN_ID = {
+  ...EVM_CHAIN_ID_MAINNET,
+  ...EVM_CHAIN_ID_TESTNET,
+} as const satisfies Record<EvmChainName, number>;
+
+export const MAINNET_EVM_FOLKS_CHAIN_ID = {} as const;
+
+export const TESTNET_EVM_FOLKS_CHAIN_ID = {
+  AVALANCHE_FUJI: 1,
+  ETHEREUM_SEPOLIA: 6,
+  BASE_SEPOLIA: 7,
+} as const;
+
+export const EVM_FOLKS_CHAIN_ID = {
+  ...MAINNET_EVM_FOLKS_CHAIN_ID,
+  ...TESTNET_EVM_FOLKS_CHAIN_ID,
+} as const satisfies Record<EvmChainName, number>;
+
+export const CHAIN_VIEM: Record<EvmFolksChainId, Chain> = {
   // testnet
-  [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: avalancheFuji,
-  [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: sepolia,
-  [FOLKS_CHAIN_ID.BASE_SEPOLIA]: baseSepolia,
+  [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: avalancheFuji,
+  [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: sepolia,
+  [EVM_FOLKS_CHAIN_ID.BASE_SEPOLIA]: baseSepolia,
 };
 
-export const CHAIN_NODE: Record<FolksChainId, Array<string>> = {
+export const CHAIN_NODE: Record<EvmFolksChainId, Array<string>> = {
   // testnet
-  [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: [...avalancheFuji.rpcUrls.default.http],
-  [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: [...sepolia.rpcUrls.default.http],
-  [FOLKS_CHAIN_ID.BASE_SEPOLIA]: [...baseSepolia.rpcUrls.default.http],
+  [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: [...avalancheFuji.rpcUrls.default.http],
+  [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: [...sepolia.rpcUrls.default.http],
+  [EVM_FOLKS_CHAIN_ID.BASE_SEPOLIA]: [...baseSepolia.rpcUrls.default.http],
 };

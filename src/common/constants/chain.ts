@@ -1,23 +1,32 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 
+import {
+  MAINNET_EVM_FOLKS_CHAIN_ID,
+  TESTNET_EVM_FOLKS_CHAIN_ID,
+} from "../../chains/evm/common/constants/chain.js";
 import { NetworkType, ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 import { convertToGenericAddress } from "../utils/address.js";
 
-import type { FolksChainId, FolksChain, SpokeChain } from "../types/chain.js";
+import type {
+  FolksChainId,
+  FolksChain,
+  SpokeChain,
+  FolksChainName,
+} from "../types/chain.js";
 
-export const MAINNET_FOLKS_CHAIN_ID = {} as const;
+export const MAINNET_FOLKS_CHAIN_ID = {
+  ...MAINNET_EVM_FOLKS_CHAIN_ID,
+} as const;
 
 export const TESTNET_FOLKS_CHAIN_ID = {
-  AVALANCHE_FUJI: 1,
-  ETHEREUM_SEPOLIA: 6,
-  BASE_SEPOLIA: 7,
+  ...TESTNET_EVM_FOLKS_CHAIN_ID,
 } as const;
 
 export const FOLKS_CHAIN_ID = {
   ...MAINNET_FOLKS_CHAIN_ID,
   ...TESTNET_FOLKS_CHAIN_ID,
-} as const;
+} as const satisfies Record<FolksChainName, number>;
 
 export const FOLKS_CHAIN: Record<
   NetworkType,
