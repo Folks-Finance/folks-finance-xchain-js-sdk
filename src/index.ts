@@ -19,12 +19,7 @@ export * from "./common/constants/message.js";
 // === CHAINS ===
 
 // - EVM
-export {
-  CHAIN_VIEM,
-  CHAIN_NODE,
-  MAINNET_EVM_FOLKS_CHAIN_ID,
-  TESTNET_EVM_FOLKS_CHAIN_ID,
-} from "./chains/evm/common/constants/chain.js";
+export * from "./chains/evm/common/constants/chain.js";
 
 export * from "./chains/evm/common/types/chain.js";
 
