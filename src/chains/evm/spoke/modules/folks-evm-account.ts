@@ -49,6 +49,7 @@ export const prepare = {
   async createAccount(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     adapters: MessageAdapters,
@@ -59,6 +60,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.createAccount(
       provider,
+      sender,
       network,
       accountId,
       adapters,
@@ -69,6 +71,7 @@ export const prepare = {
   async inviteAddress(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     folksChainIdToInvite: number,
@@ -81,6 +84,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.inviteAddress(
       provider,
+      sender,
       network,
       accountId,
       folksChainIdToInvite,
@@ -93,6 +97,7 @@ export const prepare = {
   async acceptInvite(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     adapters: MessageAdapters,
@@ -103,6 +108,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.acceptInvite(
       provider,
+      sender,
       network,
       accountId,
       adapters,
@@ -113,6 +119,7 @@ export const prepare = {
   async unregisterAddress(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     folksChainIdToUnregister: FolksChainId,
@@ -124,6 +131,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.unregisterAddress(
       provider,
+      sender,
       network,
       accountId,
       folksChainIdToUnregister,
@@ -136,11 +144,12 @@ export const prepare = {
 export const prepareRaw = {
   async createAccount(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareCreateAccountCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
@@ -194,13 +203,14 @@ export const prepareRaw = {
 
   async inviteAddress(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     folksChainIdToInvite: number,
     addressToInvite: Address,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareInviteAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
@@ -260,11 +270,12 @@ export const prepareRaw = {
 
   async acceptInvite(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareAcceptInviteAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
@@ -318,12 +329,13 @@ export const prepareRaw = {
 
   async unregisterAddress(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     folksChainIdToUnregister: FolksChainId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareUnregisterAddressCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
