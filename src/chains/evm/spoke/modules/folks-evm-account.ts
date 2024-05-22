@@ -185,7 +185,10 @@ export const prepareRaw = {
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.createAccount(
       [params, accountId],
-      transactionOptions,
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
     );
     const returnReceiveGasLimit = BigInt(0);
     const receiveGasLimit = BigInt(300000); // TODO
@@ -252,7 +255,10 @@ export const prepareRaw = {
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.inviteAddress(
       [params, accountId, folksChainIdToInvite, addressToInvite],
-      transactionOptions,
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
     );
     const returnReceiveGasLimit = BigInt(0);
     const receiveGasLimit = BigInt(300000); // TODO
@@ -311,7 +317,10 @@ export const prepareRaw = {
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.acceptInviteAddress(
       [params, accountId],
-      transactionOptions,
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
     );
     const returnReceiveGasLimit = BigInt(0);
     const receiveGasLimit = BigInt(300000); // TODO
@@ -370,7 +379,10 @@ export const prepareRaw = {
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.unregisterAddress(
       [params, accountId, folksChainIdToUnregister],
-      transactionOptions,
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
     );
     const returnReceiveGasLimit = BigInt(0);
     const receiveGasLimit = BigInt(300000); // TODO
