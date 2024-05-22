@@ -16,7 +16,7 @@ export function getAccountManagerContract(
 ): GetReadContractReturnType<typeof AccountManagerAbi> {
   return getContract({
     abi: AccountManagerAbi,
-    address: address,
+    address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
     client: { wallet: signer, public: provider },
   });
 }
