@@ -8,10 +8,12 @@ import { NetworkType, ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 import { convertToGenericAddress } from "../utils/address.js";
 
-import type { EvmChainName } from "../../chains/evm/common/types/chain.js";
-import type { FolksChainId, FolksChain, SpokeChain } from "../types/chain.js";
-
-type FolksChainName = EvmChainName;
+import type {
+  FolksChainId,
+  FolksChain,
+  SpokeChain,
+  FolksChainName,
+} from "../types/chain.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   ...MAINNET_EVM_FOLKS_CHAIN_ID,

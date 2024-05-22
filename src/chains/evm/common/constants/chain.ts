@@ -1,10 +1,6 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 
-import type {
-  EvmChainId,
-  EvmChainName,
-  EvmFolksChainId,
-} from "../types/chain.js";
+import type { EvmChainName, EvmFolksChainId } from "../types/chain.js";
 import type { Chain } from "viem";
 
 const EVM_CHAIN_NAMES_MAINNET = [] as const;
@@ -30,11 +26,6 @@ export const EVM_CHAIN_ID = {
   ...EVM_CHAIN_ID_MAINNET,
   ...EVM_CHAIN_ID_TESTNET,
 } as const satisfies Record<EvmChainName, number>;
-
-export const isEvmChainId = (chainId: number): chainId is EvmChainId => {
-  // @ts-expect-error -- this is made on purpose to have the type predicate
-  return Object.values(EVM_FOLKS_CHAIN_ID).includes(chainId);
-};
 
 export const MAINNET_EVM_FOLKS_CHAIN_ID = {} as const;
 

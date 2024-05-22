@@ -1,3 +1,6 @@
+import { EVM_FOLKS_CHAIN_ID } from "../constants/chain.js";
+
+import type { EvmChainId } from "../types/chain.js";
 import type { Account, Address, WalletClient } from "viem";
 
 export function getSignerAddress(signer: WalletClient): Address {
@@ -9,3 +12,8 @@ export function getSignerAccount(signer: WalletClient): Account {
   if (signer.account) return signer.account;
   throw new Error("EVM Signer account is not set");
 }
+
+export const isEvmChainId = (chainId: number): chainId is EvmChainId => {
+  // @ts-expect-error -- this is made on purpose to have the type predicate
+  return Object.values(EVM_FOLKS_CHAIN_ID).includes(chainId);
+};

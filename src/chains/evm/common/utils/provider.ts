@@ -4,8 +4,9 @@ import {
   CHAIN_VIEM,
   CHAIN_NODE,
   EVM_FOLKS_CHAIN_ID,
-  isEvmChainId,
 } from "../constants/chain.js";
+
+import { isEvmChainId } from "./chain.js";
 
 import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { EvmChainId } from "../types/chain.js";
