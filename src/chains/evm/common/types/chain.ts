@@ -1,20 +1,12 @@
-/* eslint-disable @typescript-eslint/prefer-literal-enum-member */
-import {
-  avalanche,
-  avalancheFuji,
-  mainnet,
-  goerli,
-  base,
-  baseGoerli,
-} from "viem/chains";
+import type {
+  EVM_CHAIN_ID,
+  EVM_CHAIN_NAMES,
+  EVM_FOLKS_CHAIN_ID,
+} from "../constants/chain.js";
 
-export enum ChainId {
-  // mainnet
-  AVALANCHE = avalanche.id,
-  ETHEREUM = mainnet.id,
-  BASE = base.id,
-  // testnet
-  AVALANCHE_FUJI = avalancheFuji.id,
-  ETHEREUM_GOERLI = goerli.id,
-  BASE_GOERLI = baseGoerli.id,
-}
+export type EvmChainName = (typeof EVM_CHAIN_NAMES)[number];
+
+export type EvmChainId = (typeof EVM_CHAIN_ID)[keyof typeof EVM_CHAIN_ID];
+
+export type EvmFolksChainId =
+  (typeof EVM_FOLKS_CHAIN_ID)[keyof typeof EVM_FOLKS_CHAIN_ID];

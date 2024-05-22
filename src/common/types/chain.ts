@@ -1,5 +1,6 @@
 import type { AdapterType } from "./message.js";
 import type { FolksTokenId, SpokeTokenData } from "./token.js";
+import type { EvmChainName } from "../../chains/evm/common/types/chain.js";
 import type { FOLKS_CHAIN_ID } from "../constants/chain.js";
 
 export enum ChainType {
@@ -11,6 +12,7 @@ export enum NetworkType {
   TESTNET = "TESTNET",
 }
 
+export type FolksChainName = EvmChainName;
 export type FolksChainId = (typeof FOLKS_CHAIN_ID)[keyof typeof FOLKS_CHAIN_ID];
 
 export type GenericAddress = `0x${string}`;

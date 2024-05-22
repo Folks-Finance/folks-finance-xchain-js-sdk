@@ -407,7 +407,7 @@ export const prepareRaw = {
     params.receiverValue = returnAdapterFee;
     const message: MessageToSend = {
       params,
-      sender: spokeTokenData.tokenAddress,
+      sender: spokeTokenData.spokeAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       payload: buildMessagePayload(
