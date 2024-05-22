@@ -49,6 +49,7 @@ import type {
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type {
+  Address,
   EstimateGasParameters,
   Hex,
   PublicClient,
@@ -59,6 +60,7 @@ export const prepare = {
   async createLoan(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -71,6 +73,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.createLoan(
       provider,
+      sender,
       network,
       accountId,
       loanId,
@@ -83,6 +86,7 @@ export const prepare = {
   async deleteLoan(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -94,6 +98,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.deleteLoan(
       provider,
+      sender,
       network,
       accountId,
       loanId,
@@ -105,6 +110,7 @@ export const prepare = {
   async deposit(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -118,6 +124,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.deposit(
       provider,
+      sender,
       network,
       accountId,
       loanId,
@@ -131,6 +138,7 @@ export const prepare = {
   async withdraw(
     folksChainId: FolksChainId,
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -147,6 +155,7 @@ export const prepare = {
     // use raw function
     return prepareRaw.withdraw(
       provider,
+      sender,
       network,
       accountId,
       loanId,
@@ -164,13 +173,14 @@ export const prepare = {
 export const prepareRaw = {
   async createLoan(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
     loanTypeId: number,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareCreateLoanCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
@@ -227,11 +237,13 @@ export const prepareRaw = {
 
   async deleteLoan(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareDeleteLoanCall> {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
@@ -269,6 +281,7 @@ export const prepareRaw = {
       [params, accountId, loanId],
       {
         value: adapterFee,
+        ...transactionOptions,
       },
     );
     const returnReceiveGasLimit = BigInt(0);
@@ -287,6 +300,7 @@ export const prepareRaw = {
 
   async deposit(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -294,7 +308,7 @@ export const prepareRaw = {
     amount: bigint,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareDepositCall> {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -363,6 +377,7 @@ export const prepareRaw = {
 
   async withdraw(
     provider: PublicClient,
+    sender: Address,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -373,7 +388,7 @@ export const prepareRaw = {
     adapters: MessageAdapters,
     returnAdapterFee: bigint,
     spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = {},
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareWithdrawCall> {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, network);
