@@ -65,7 +65,12 @@ export function getSendTokenExtraArgsWhenAdding(
   hubTokenData: HubTokenData,
   amount: bigint,
 ): Hex {
-  if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
+  const { tokenType } = spokeTokenData;
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  if (spokeTokenData.tokenAddress === null)
+    throw Error("Unknown token address");
+
   return extraArgsToBytes(
     spokeTokenData.tokenAddress,
     hubTokenData.poolAddress,
@@ -78,7 +83,11 @@ export function getSendTokenExtraArgsWhenRemoving(
   hubTokenData: HubTokenData,
   amount: bigint,
 ): Hex {
-  if (spokeTokenData.tokenType === TokenType.NATIVE) return "0x";
+  const { tokenType } = hubTokenData;
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  if (hubTokenData.tokenAddress === null) throw Error("Unknown token address");
+
   return extraArgsToBytes(
     hubTokenData.tokenAddress,
     spokeTokenData.spokeAddress,
