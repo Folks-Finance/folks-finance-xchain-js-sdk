@@ -22,7 +22,7 @@ import {
   buildMessagePayload,
   getSendTokenExtraArgsWhenAdding,
 } from "../../../../common/utils/messages.js";
-import { getSignerAddress } from "../../common/utils/chain.js";
+import { getSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
 import {
@@ -480,7 +480,7 @@ export const write = {
     return await spokeCommon.write.createLoan(
       [params, accountId, loanId, loanTypeId],
       {
-        account: getSignerAddress(signer),
+        account: getSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,
@@ -519,7 +519,7 @@ export const write = {
     };
 
     return await spokeCommon.write.deleteLoan([params, accountId, loanId], {
-      account: getSignerAddress(signer),
+      account: getSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -545,8 +545,6 @@ export const write = {
       token,
     } = prepareCall;
 
-    const sender = getSignerAddress(signer);
-
     const spokeToken = getSpokeTokenContract(
       provider,
       token.spokeAddress,
@@ -570,7 +568,7 @@ export const write = {
     };
 
     return await spokeToken.write.deposit([params, accountId, loanId, amount], {
-      account: sender,
+      account: getSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -613,7 +611,7 @@ export const write = {
     return await spokeCommon.write.withdraw(
       [params, accountId, loanId, poolId, receiverChainId, amount, isFAmount],
       {
-        account: getSignerAddress(signer),
+        account: getSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,

@@ -14,7 +14,7 @@ import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
 } from "../../../../common/utils/messages.js";
-import { getSignerAddress } from "../../common/utils/chain.js";
+import { getSignerAccount } from "../../common/utils/chain.js";
 import { getHubChain } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
@@ -406,7 +406,7 @@ export const write = {
     };
 
     return await spokeCommon.write.createAccount([params, accountId], {
-      account: getSignerAddress(signer),
+      account: getSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
       value: adapterFee,
@@ -447,7 +447,7 @@ export const write = {
     return await spokeCommon.write.inviteAddress(
       [params, accountId, folksChainIdToInvite, addressToInvite],
       {
-        account: getSignerAddress(signer),
+        account: getSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,
@@ -485,7 +485,7 @@ export const write = {
     };
 
     return await spokeCommon.write.acceptInviteAddress([params, accountId], {
-      account: getSignerAddress(signer),
+      account: getSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -525,7 +525,7 @@ export const write = {
     return await spokeCommon.write.unregisterAddress(
       [params, accountId, folksChainIdToUnregister],
       {
-        account: getSignerAddress(signer),
+        account: getSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,

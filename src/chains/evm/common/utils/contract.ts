@@ -4,7 +4,7 @@ import { ChainType } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import { ERC20Abi } from "../constants/abi/erc-20-abi.js";
 
-import { getSignerAddress } from "./chain.js";
+import { getSignerAccount, getSignerAddress } from "./chain.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
 import type { Address, PublicClient, WalletClient } from "viem";
@@ -28,15 +28,16 @@ export async function sendERC20Approve(
   receiver: Address,
   amount: bigint,
 ) {
-  const sender = getSignerAddress(signer);
-
   const erc20 = getERC20Contract(provider, address, signer);
-  const allowance = await erc20.read.allowance([sender, receiver]);
+  const allowance = await erc20.read.allowance([
+    getSignerAddress(signer),
+    receiver,
+  ]);
 
   // approve if not enough
   if (allowance < amount)
     return await erc20.write.approve([receiver, BigInt(amount)], {
-      account: sender,
+      account: getSignerAccount(signer),
       chain: signer.chain,
     });
 }
