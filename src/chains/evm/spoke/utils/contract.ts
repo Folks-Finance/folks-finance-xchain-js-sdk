@@ -8,19 +8,19 @@ import { SpokeTokenAbi } from "../constants/abi/spoke-token-abi.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
 import type { GetReadContractReturnType } from "../../common/types/contract.js";
-import type { GetContractReturnType, PublicClient, WalletClient } from "viem";
+import type { GetContractReturnType, Client, WalletClient } from "viem";
 
 export function getSpokeCommonContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
 ): GetReadContractReturnType<typeof SpokeCommonAbi>;
 export function getSpokeCommonContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer: WalletClient,
-): GetContractReturnType<typeof SpokeCommonAbi, PublicClient>;
+): GetContractReturnType<typeof SpokeCommonAbi, Client>;
 export function getSpokeCommonContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
 ) {
@@ -32,7 +32,7 @@ export function getSpokeCommonContract(
 }
 
 export function getBridgeRouterSpokeContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
 ): GetReadContractReturnType<typeof BridgeRouterSpokeAbi> {
@@ -44,16 +44,16 @@ export function getBridgeRouterSpokeContract(
 }
 
 export function getSpokeTokenContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
 ): GetReadContractReturnType<typeof SpokeTokenAbi>;
 export function getSpokeTokenContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer: WalletClient,
-): GetContractReturnType<typeof SpokeTokenAbi, PublicClient>;
+): GetContractReturnType<typeof SpokeTokenAbi, Client>;
 export function getSpokeTokenContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
 ) {

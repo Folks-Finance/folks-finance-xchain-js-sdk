@@ -52,14 +52,14 @@ import type {
   Address,
   EstimateGasParameters,
   Hex,
-  PublicClient,
+  Client,
   WalletClient,
 } from "viem";
 
 export const prepare = {
   async createLoan(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -85,7 +85,7 @@ export const prepare = {
 
   async deleteLoan(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -109,7 +109,7 @@ export const prepare = {
 
   async deposit(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -137,7 +137,7 @@ export const prepare = {
 
   async withdraw(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -172,7 +172,7 @@ export const prepare = {
 
 export const prepareRaw = {
   async createLoan(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -236,7 +236,7 @@ export const prepareRaw = {
   },
 
   async deleteLoan(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -299,7 +299,7 @@ export const prepareRaw = {
   },
 
   async deposit(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -376,7 +376,7 @@ export const prepareRaw = {
   },
 
   async withdraw(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -462,7 +462,7 @@ export const prepareRaw = {
 
 export const write = {
   async createLoan(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     loanId: Hex,
@@ -504,7 +504,7 @@ export const write = {
   },
 
   async deleteLoan(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     loanId: Hex,
@@ -542,7 +542,7 @@ export const write = {
   },
 
   async deposit(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     loanId: Hex,
@@ -591,7 +591,7 @@ export const write = {
   },
 
   async withdraw(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     loanId: Hex,
