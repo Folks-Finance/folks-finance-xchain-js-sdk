@@ -1,10 +1,11 @@
 import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
 import { NetworkType, ChainType } from "../../../../common/types/chain.js";
 import { AdapterType } from "../../../../common/types/message.js";
+import { LoanType } from "../../../../common/types/module.js";
+import { FolksTokenId, TokenType } from "../../../../common/types/token.js";
 import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
 import type { FolksChainId } from "../../../../common/types/chain.js";
-import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { HubChain } from "../types/chain.js";
 import type { HubTokenData } from "../types/token.js";
 
@@ -29,51 +30,97 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
     hubAddress: convertToGenericAddress(
-      "0xb31b3411B51604fa0058AEf8fc2c1E498e3be4d4",
+      "0xaFcA3bE824b6210918D3BeB63762D6211f1e91C3",
       ChainType.EVM,
     ),
     bridgeRouterAddress: convertToGenericAddress(
-      "0x63EFE00C08f6AEAA5D469A063c44504369977e8D",
+      "0x46Db2e9cD0787bF791Df2c9AE9963E296847FF1D",
       ChainType.EVM,
     ),
     adapters: {
       [AdapterType.HUB]: convertToGenericAddress(
-        "0x52521e15f9C59aff55650011FAA45De233207bB8",
+        "0xB01296Ea267463FDe2fcE5Fad5067B4d875A44Ba",
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-        "0xaf10F2A98012fBA0106d7060069b0019A61137aa",
+        "0x7A6099E5cE3b66B042c9d11c3D472882bd42e23C",
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
-        "0x4e10f4dd1211152c901CCcF697aE82fb21920EcB",
+        "0xf7EB478F95470caF349d999047e1D4A713aD7a7f",
         ChainType.EVM,
       ),
       [AdapterType.CCIP_DATA]: convertToGenericAddress(
-        "0xB97A2FC865464ea740E1b4C47e676D1A91f396e2",
+        "0x498d72950d7cf912Be48BA5C8894e98A81E204fc",
         ChainType.EVM,
       ),
       [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
-        "0xd698B6cbfEa66675586aEcad5a89ef8385C77c9e",
+        "0x715Cd24a347552ae07e7d11Df2a59FFcEb2A9b66",
         ChainType.EVM,
       ),
     },
     oracleManagerAddress: convertToGenericAddress(
-      "0x1E8F9D289FdE82185824948Ca19965cD489e1616",
+      "0xc9cb1F8FcfBB804669d44349d44fB14BE4c665F0",
       ChainType.EVM,
     ),
     spokeManagerAddress: convertToGenericAddress(
-      "0xA63303A4a7abF395E8E5598DC5539e03AF149e5E",
+      "0xf27720C8B9C28d8E23bAA0A64347323FBB151CeD",
       ChainType.EVM,
     ),
     accountManagerAddress: convertToGenericAddress(
-      "0x369367f7A745Ac9003f5D78658F2B0323d3cc370",
+      "0x5Ff19CF35875C973F63a60e78445F449292c5575",
       ChainType.EVM,
     ),
     loanManagerAddress: convertToGenericAddress(
-      "0x21a91A04e452Ada77bFBF1fCa697F0D70B8917cA",
+      "0x24f0a8f4D41E8CBe18676F75e0d11b105d1cc0A6",
       ChainType.EVM,
     ),
-    tokens: {} as Record<FolksTokenId, HubTokenData>,
+    tokens: {
+      [FolksTokenId.USDC]: {
+        tokenType: TokenType.CIRCLE,
+        folksTokenId: FolksTokenId.USDC,
+        poolId: 128,
+        poolAddress: "0xA9F3dfff0E8939514E7C4A0F8CeB0dBED93BbEA5",
+        tokenAddress: "0x5425890298aed601595a70ab815c96711a31bc65",
+        tokenDecimals: 6,
+        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+      },
+      [FolksTokenId.AVAX]: {
+        tokenType: TokenType.NATIVE,
+        folksTokenId: FolksTokenId.AVAX,
+        poolId: 129,
+        poolAddress: "0x0922880C7e18112aB479E85Fc190Ba666c3F1020",
+        tokenAddress: null,
+        tokenDecimals: 18,
+        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+      },
+      [FolksTokenId.ETH_eth_sep]: {
+        tokenType: TokenType.NATIVE,
+        folksTokenId: FolksTokenId.ETH_eth_sep,
+        poolId: 131,
+        poolAddress: "0x58ad9F0e5Ced36401E36594C3265FA7475f24B3d",
+        tokenAddress: null,
+        tokenDecimals: 18,
+        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+      },
+      [FolksTokenId.ETH_base_sep]: {
+        tokenType: TokenType.NATIVE,
+        folksTokenId: FolksTokenId.ETH_base_sep,
+        poolId: 132,
+        poolAddress: "0x9c0D98AFAfB59F3e30F1d3B3221D59ac3A159e0b",
+        tokenAddress: null,
+        tokenDecimals: 18,
+        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+      },
+      [FolksTokenId.LINK_eth_sep]: {
+        tokenType: TokenType.ERC20,
+        folksTokenId: FolksTokenId.LINK_eth_sep,
+        poolId: 133,
+        poolAddress: "0xc276f7e429F46346c668E1896e527baAD4D21414",
+        tokenAddress: null,
+        tokenDecimals: 18,
+        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+      },
+    },
   },
 };
