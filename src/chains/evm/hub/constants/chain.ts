@@ -1,4 +1,5 @@
 import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
+import { TESTNET_POOLS } from "../../../../common/constants/pool.js";
 import { NetworkType, ChainType } from "../../../../common/types/chain.js";
 import { AdapterType } from "../../../../common/types/message.js";
 import { LoanType } from "../../../../common/types/module.js";
@@ -79,7 +80,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.USDC]: {
         tokenType: TokenType.CIRCLE,
         folksTokenId: FolksTokenId.USDC,
-        poolId: 128,
+        poolId: TESTNET_POOLS[FolksTokenId.USDC],
         poolAddress: convertToGenericAddress(
           "0xA9F3dfff0E8939514E7C4A0F8CeB0dBED93BbEA5",
           ChainType.EVM,
@@ -94,7 +95,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.AVAX]: {
         tokenType: TokenType.NATIVE,
         folksTokenId: FolksTokenId.AVAX,
-        poolId: 129,
+        poolId: TESTNET_POOLS[FolksTokenId.AVAX],
         poolAddress: convertToGenericAddress(
           "0x0922880C7e18112aB479E85Fc190Ba666c3F1020",
           ChainType.EVM,
@@ -106,7 +107,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.ETH_eth_sep]: {
         tokenType: TokenType.NATIVE,
         folksTokenId: FolksTokenId.ETH_eth_sep,
-        poolId: 131,
+        poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
         poolAddress: convertToGenericAddress(
           "0x58ad9F0e5Ced36401E36594C3265FA7475f24B3d",
           ChainType.EVM,
@@ -118,7 +119,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.ETH_base_sep]: {
         tokenType: TokenType.NATIVE,
         folksTokenId: FolksTokenId.ETH_base_sep,
-        poolId: 132,
+        poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
         poolAddress: convertToGenericAddress(
           "0x9c0D98AFAfB59F3e30F1d3B3221D59ac3A159e0b",
           ChainType.EVM,
@@ -130,7 +131,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.LINK_eth_sep]: {
         tokenType: TokenType.ERC20,
         folksTokenId: FolksTokenId.LINK_eth_sep,
-        poolId: 133,
+        poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
         poolAddress: convertToGenericAddress(
           "0xc276f7e429F46346c668E1896e527baAD4D21414",
           ChainType.EVM,

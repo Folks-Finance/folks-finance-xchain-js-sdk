@@ -9,6 +9,8 @@ import { AdapterType } from "../types/message.js";
 import { FolksTokenId, TokenType } from "../types/token.js";
 import { convertToGenericAddress } from "../utils/address.js";
 
+import { TESTNET_POOLS } from "./pool.js";
+
 import type {
   FolksChainId,
   FolksChain,
@@ -85,7 +87,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           tokenType: TokenType.CIRCLE,
           folksTokenId: FolksTokenId.USDC,
-          poolId: 128,
+          poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0xC8ad4B23B4F07A27CDDAB1A8AE2Da54377f87426",
             ChainType.EVM,
@@ -99,7 +101,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.AVAX]: {
           tokenType: TokenType.NATIVE,
           folksTokenId: FolksTokenId.AVAX,
-          poolId: 129,
+          poolId: TESTNET_POOLS[FolksTokenId.AVAX],
           spokeAddress: convertToGenericAddress(
             "0xF18F75595bA066efAdf4b24C7F263ba878C6B6f3",
             ChainType.EVM,
@@ -141,7 +143,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           tokenType: TokenType.CIRCLE,
           folksTokenId: FolksTokenId.USDC,
-          poolId: 128,
+          poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0x71EEc2B912a3Cef6Bf134899D437Ba17Fc9588D2",
             ChainType.EVM,
@@ -155,7 +157,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.ETH_eth_sep]: {
           tokenType: TokenType.NATIVE,
           folksTokenId: FolksTokenId.ETH_eth_sep,
-          poolId: 131,
+          poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
           spokeAddress: convertToGenericAddress(
             "0xD3743aBf2D83725c06b12EC2C97c6b9dAC0D8a6F",
             ChainType.EVM,
@@ -166,7 +168,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.LINK_eth_sep]: {
           tokenType: TokenType.ERC20,
           folksTokenId: FolksTokenId.LINK_eth_sep,
-          poolId: 133,
+          poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
           spokeAddress: convertToGenericAddress(
             "0xF85227ba19CC14e1b3FdcF9B2EBE199d64BE4CE9",
             ChainType.EVM,
@@ -211,7 +213,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           tokenType: TokenType.CIRCLE,
           folksTokenId: FolksTokenId.USDC,
-          poolId: 128,
+          poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0x6789da551F420bfb607Fffb43bf8936f9dfb7d4C",
             ChainType.EVM,
@@ -225,7 +227,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.ETH_base_sep]: {
           tokenType: TokenType.NATIVE,
           folksTokenId: FolksTokenId.ETH_base_sep,
-          poolId: 132,
+          poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
           spokeAddress: convertToGenericAddress(
             "0x457f30Bc85E885e4D519975C1dd87F397d4817B7",
             ChainType.EVM,
