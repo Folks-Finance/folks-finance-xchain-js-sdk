@@ -39,16 +39,16 @@ import type {
 } from "../../common/types/module.js";
 import type {
   Address,
+  Client,
   EstimateGasParameters,
   Hex,
-  PublicClient,
   WalletClient,
 } from "viem";
 
 export const prepare = {
   async createAccount(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -70,7 +70,7 @@ export const prepare = {
 
   async inviteAddress(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -96,7 +96,7 @@ export const prepare = {
 
   async acceptInvite(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -118,7 +118,7 @@ export const prepare = {
 
   async unregisterAddress(
     folksChainId: FolksChainId,
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -143,7 +143,7 @@ export const prepare = {
 
 export const prepareRaw = {
   async createAccount(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -205,7 +205,7 @@ export const prepareRaw = {
   },
 
   async inviteAddress(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -275,7 +275,7 @@ export const prepareRaw = {
   },
 
   async acceptInvite(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -337,7 +337,7 @@ export const prepareRaw = {
   },
 
   async unregisterAddress(
-    provider: PublicClient,
+    provider: Client,
     sender: Address,
     network: NetworkType,
     accountId: Hex,
@@ -401,7 +401,7 @@ export const prepareRaw = {
 
 export const write = {
   async createAccount(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     prepareCall: PrepareCreateAccountCall,
@@ -438,7 +438,7 @@ export const write = {
   },
 
   async inviteAddress(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     folksChainIdToInvite: number,
@@ -480,7 +480,7 @@ export const write = {
   },
 
   async acceptInvite(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     prepareCall: PrepareAcceptInviteAddressCall,
@@ -517,7 +517,7 @@ export const write = {
   },
 
   async unregisterAddress(
-    provider: PublicClient,
+    provider: Client,
     signer: WalletClient,
     accountId: Hex,
     folksChainIdToUnregister: FolksChainId,

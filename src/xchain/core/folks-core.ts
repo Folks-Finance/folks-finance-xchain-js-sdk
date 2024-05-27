@@ -17,7 +17,7 @@ import type {
   FolksSignerType,
   FolksProvider,
 } from "../../common/types/core.js";
-import type { PublicClient as EVMProvider } from "viem";
+import type { Client as EVMProvider } from "viem";
 
 export class FolksCore {
   private static instance: FolksCore | undefined;

@@ -7,10 +7,10 @@ import { ERC20Abi } from "../constants/abi/erc-20-abi.js";
 import { getSignerAccount, getSignerAddress } from "./chain.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
-import type { Address, PublicClient, WalletClient } from "viem";
+import type { Address, Client, WalletClient } from "viem";
 
 export function getERC20Contract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer: WalletClient,
 ) {
@@ -22,7 +22,7 @@ export function getERC20Contract(
 }
 
 export async function sendERC20Approve(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
   signer: WalletClient,
   receiver: Address,

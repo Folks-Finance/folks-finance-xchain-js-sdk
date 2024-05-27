@@ -24,10 +24,10 @@ import type {
   MessageToSend,
 } from "../../../../common/types/message.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { Hex, PublicClient } from "viem";
+import type { Client, Hex } from "viem";
 
 export function getSendTokenAdapterFees(
-  provider: PublicClient,
+  provider: Client,
   network: NetworkType,
   accountId: Hex,
   folksTokenId: FolksTokenId,

@@ -1,3 +1,5 @@
+import { multicall } from "viem/actions";
+
 import { getFolksChainIdsByNetwork } from "../../../../common/utils/chain.js";
 import { getHubChain } from "../utils/chain.js";
 import { getAccountManagerContract } from "../utils/contract.js";
@@ -7,10 +9,10 @@ import type {
   FolksChainId,
 } from "../../../../common/types/chain.js";
 import type { AccountInfo } from "../types/account.js";
-import type { Address, Hex, PublicClient } from "viem";
+import type { Address, Client, Hex } from "viem";
 
 export async function getAccountInfo(
-  provider: PublicClient,
+  provider: Client,
   network: NetworkType,
   accountId: Hex,
   folksChainIds?: Array<FolksChainId>,
@@ -31,7 +33,7 @@ export async function getAccountInfo(
   };
 
   // query for registered and invited addresses on each respective chain
-  const registeredAddresses = await provider.multicall({
+  const registeredAddresses = await multicall(provider, {
     contracts: folksChainIds.map((folksChainId) => ({
       address: accountManager.address,
       abi: accountManager.abi,
@@ -41,7 +43,7 @@ export async function getAccountInfo(
     allowFailure: true,
   });
 
-  const invitedAddresses = await provider.multicall({
+  const invitedAddresses = await multicall(provider, {
     contracts: folksChainIds.map((folksChainId) => ({
       address: accountManager.address,
       abi: accountManager.abi,

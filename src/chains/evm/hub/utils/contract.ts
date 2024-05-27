@@ -7,10 +7,10 @@ import { BridgeRouterHubAbi } from "../constants/abi/bridge-router-hub-abi.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
 import type { GetReadContractReturnType } from "../../common/types/contract.js";
-import type { Address, PublicClient, WalletClient } from "viem";
+import type { Address, Client, WalletClient } from "viem";
 
 export function getAccountManagerContract(
-  provider: PublicClient,
+  provider: Client,
   address: Address,
   signer?: WalletClient,
 ): GetReadContractReturnType<typeof AccountManagerAbi> {
@@ -22,7 +22,7 @@ export function getAccountManagerContract(
 }
 
 export function getBridgeRouterHubContract(
-  provider: PublicClient,
+  provider: Client,
   address: GenericAddress,
 ): GetReadContractReturnType<typeof BridgeRouterHubAbi> {
   return getContract({
