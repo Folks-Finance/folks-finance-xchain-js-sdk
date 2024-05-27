@@ -38,6 +38,10 @@ export class FolksCore {
     return FolksCore.instance;
   }
 
+  static isInitialized(): boolean {
+    return !!FolksCore.instance;
+  }
+
   static getInstance(): FolksCore {
     if (FolksCore.instance) return FolksCore.instance;
     throw new Error("FolksCore is not initialized");
