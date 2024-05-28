@@ -167,17 +167,33 @@ export const prepare = {
       folksChain.folksChainId,
       adapters.adapterId,
     );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const data = convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH);
+    const messageToSend = builMessageToSend(
+      accountId,
+      adapters,
+      Action.UnregisterAddress,
+      spokeChain.spokeCommonAddress,
+      hubChain.folksChainId,
+      hubChain.hubAddress,
+      data,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.unregisterAddress(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           folksChainIdToUnregister,
           adapters,
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);

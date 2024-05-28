@@ -1,15 +1,4 @@
-import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
-import { FINALITY } from "../../../../common/constants/message.js";
-import { Action } from "../../../../common/types/message.js";
-import { getRandomGenericAddress } from "../../../../common/utils/address.js";
-import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
-import { getSpokeChain } from "../../../../common/utils/chain.js";
-import {
-  DEFAULT_MESSAGE_PARAMS,
-  buildMessagePayload,
-} from "../../../../common/utils/messages.js";
 import { getSignerAccount } from "../../common/utils/chain.js";
-import { getHubChain } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
   getSpokeCommonContract,
@@ -18,17 +7,16 @@ import {
 import type {
   FolksChainId,
   SpokeChain,
-  NetworkType,
 } from "../../../../common/types/chain.js";
 import type {
   MessageAdapters,
-  MessageToSend,
   MessageParams,
+  MessageToSend,
 } from "../../../../common/types/message.js";
 import type {
+  PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
-  PrepareAcceptInviteAddressCall,
   PrepareUnregisterAddressCall,
 } from "../../common/types/module.js";
 import type {
@@ -172,41 +160,15 @@ export const prepare = {
   },
 
   async unregisterAddress(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    folksChainIdToUnregister: FolksChainId,
-    adapters: MessageAdapters,
-  ) {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
-
-    // use raw function
-    return prepareRaw.unregisterAddress(
-      provider,
-      sender,
-      network,
-      accountId,
-      folksChainIdToUnregister,
-      adapters,
-      spokeChain,
-    );
-  },
-};
-
-export const prepareRaw = {
-  async unregisterAddress(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
+    messageToSend: MessageToSend,
     accountId: Hex,
     folksChainIdToUnregister: FolksChainId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareUnregisterAddressCall> {
+  ) {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
@@ -215,31 +177,12 @@ export const prepareRaw = {
       spokeChain.bridgeRouterAddress,
     );
 
-    const hubChain = getHubChain(network);
-
-    // construct message
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    const message: MessageToSend = {
-      params,
-      sender: spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.UnregisterAddress,
-        accountId,
-        getRandomGenericAddress(),
-        convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH),
-      ),
-      finalityLevel: FINALITY.IMMEDIATE,
-      extraArgs: "0x",
-    };
-
     // get adapter fees
     const returnAdapterFee = BigInt(0);
-    const adapterFee = await bridgeRouter.read.getSendFee([message]);
+    const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.unregisterAddress(
-      [params, accountId, folksChainIdToUnregister],
+      [messageToSend.params, accountId, folksChainIdToUnregister],
       {
         value: adapterFee,
         ...transactionOptions,

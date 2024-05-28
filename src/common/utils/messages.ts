@@ -164,7 +164,22 @@ export function builMessageToSend(
       return message;
     }
     case Action.UnregisterAddress: {
-      throw new Error("Not implemented yet: Action.UnregisterAddress case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.UnregisterAddress,
+          accountId,
+          getRandomGenericAddress(),
+          data,
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs: "0x",
+      };
+      return message;
     }
     case Action.AddDelegate: {
       throw new Error("Not implemented yet: Action.AddDelegate case");
