@@ -1,4 +1,4 @@
-import type { GenericAddress } from "./chain.js";
+import type { FolksChainId, GenericAddress } from "./chain.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -55,3 +55,19 @@ export type MessageToSend = {
   finalityLevel: Finality;
   extraArgs: Hex;
 };
+
+export type DefaultMessageData = "0x";
+
+export type InviteAddressMessageData = {
+  folksChainIdToInvite: FolksChainId;
+  addressToInvite: GenericAddress;
+};
+
+export type UnregisterAddressMessageData = {
+  folksChainIdToUnregister: FolksChainId;
+};
+
+export type MessageData =
+  | DefaultMessageData
+  | InviteAddressMessageData
+  | UnregisterAddressMessageData;

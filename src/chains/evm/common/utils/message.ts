@@ -2,8 +2,10 @@ import { concat, isHex } from "viem";
 
 import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
+import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
 import {
+  convertToGenericAddress,
   getRandomGenericAddress,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
@@ -15,9 +17,12 @@ import type {
   GenericAddress,
 } from "../../../../common/types/chain.js";
 import type {
+  InviteAddressMessageData,
   MessageAdapters,
+  MessageData,
   MessageParams,
   MessageToSend,
+  UnregisterAddressMessageData,
 } from "../../../../common/types/message.js";
 import type { Hex } from "viem";
 
@@ -55,7 +60,7 @@ export function buildEvmMessageToSend(
   sender: GenericAddress,
   destinationChainId: FolksChainId,
   handler: GenericAddress,
-  data: Hex = "0x",
+  data: MessageData = "0x",
 ): MessageToSend {
   switch (action) {
     case Action.CreateAccount: {
@@ -77,6 +82,8 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.InviteAddress: {
+      const inviteAddressMessageData = data as InviteAddressMessageData;
+
       const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
@@ -87,7 +94,16 @@ export function buildEvmMessageToSend(
           Action.InviteAddress,
           accountId,
           getRandomGenericAddress(),
-          data,
+          concat([
+            convertNumberToBytes(
+              inviteAddressMessageData.folksChainIdToInvite,
+              UINT16_LENGTH,
+            ),
+            convertToGenericAddress<ChainType.EVM>(
+              inviteAddressMessageData.addressToInvite,
+              ChainType.EVM,
+            ),
+          ]),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",
@@ -113,6 +129,8 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.UnregisterAddress: {
+      const unregisterAddressMessageData = data as UnregisterAddressMessageData;
+
       const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
@@ -123,7 +141,10 @@ export function buildEvmMessageToSend(
           Action.UnregisterAddress,
           accountId,
           getRandomGenericAddress(),
-          data,
+          convertNumberToBytes(
+            unregisterAddressMessageData.folksChainIdToUnregister,
+            UINT16_LENGTH,
+          ),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",

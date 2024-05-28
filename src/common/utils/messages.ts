@@ -14,6 +14,7 @@ import type { FolksChainId, GenericAddress } from "../types/chain.js";
 import type {
   Action,
   MessageAdapters,
+  MessageData,
   MessageToSend,
 } from "../types/message.js";
 import type { SpokeTokenData } from "../types/token.js";
@@ -79,7 +80,7 @@ export function buildMessageToSend(
   sender: GenericAddress,
   destinationChainId: FolksChainId,
   handler: GenericAddress,
-  data: Hex = "0x",
+  data?: MessageData,
 ): MessageToSend {
   switch (chainType) {
     case ChainType.EVM: {

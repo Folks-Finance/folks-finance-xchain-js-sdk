@@ -1,15 +1,10 @@
-import { concat } from "viem";
-
 import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
-import { UINT16_LENGTH } from "../../common/constants/bytes.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
-import { convertToGenericAddress } from "../../common/utils/address.js";
-import { convertNumberToBytes } from "../../common/utils/bytes.js";
 import {
   assertSpokeChainSupported,
   getSpokeChain,
@@ -19,11 +14,15 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { FolksChainId } from "../../common/types/chain.js";
-import type { MessageAdapters } from "../../common/types/message.js";
 import type {
+  InviteAddressMessageData,
+  MessageAdapters,
+  UnregisterAddressMessageData,
+} from "../../common/types/message.js";
+import type {
+  PrepareAcceptInviteAddressCall,
   PrepareCreateAccountCall,
   PrepareInviteAddressCall,
-  PrepareAcceptInviteAddressCall,
   PrepareUnregisterAddressCall,
 } from "../../common/types/module.js";
 import type { Address, Hex } from "viem";
@@ -87,10 +86,10 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const data = concat([
-      convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
-      convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
-    ]);
+    const data: InviteAddressMessageData = {
+      folksChainIdToInvite,
+      addressToInvite,
+    };
     const messageToSend = buildMessageToSend(
       folksChain.chainType,
       accountId,
@@ -176,7 +175,9 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const data = convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH);
+    const data: UnregisterAddressMessageData = {
+      folksChainIdToUnregister,
+    };
     const messageToSend = buildMessageToSend(
       folksChain.chainType,
       accountId,
