@@ -2,7 +2,10 @@ import type { GenericAddress } from "./chain.js";
 
 export enum FolksTokenId {
   USDC = "USDC",
-  ETH = "ETH",
+  AVAX = "AVAX",
+  ETH_eth_sep = "ETH_eth_sep",
+  ETH_base_sep = "ETH_base_sep",
+  LINK_eth_sep = "LINK_eth_sep",
 }
 
 export enum TokenType {
