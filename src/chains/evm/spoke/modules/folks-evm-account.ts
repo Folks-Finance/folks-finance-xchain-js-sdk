@@ -47,25 +47,46 @@ import type {
 
 export const prepare = {
   async createAccount(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
-    network: NetworkType,
+    messageToSend: MessageToSend,
     accountId: Hex,
     adapters: MessageAdapters,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareCreateAccountCall> {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    // use raw function
-    return prepareRaw.createAccount(
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(
       provider,
-      sender,
-      network,
-      accountId,
-      adapters,
-      spokeChain,
+      spokeChain.bridgeRouterAddress,
     );
+
+    // get adapter fees
+    const returnAdapterFee = BigInt(0);
+    const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.createAccount(
+      [messageToSend.params, accountId],
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
+    );
+    const returnReceiveGasLimit = BigInt(0);
+    const receiveGasLimit = BigInt(300000); // TODO
+
+    return {
+      adapters,
+      adapterFee,
+      returnAdapterFee,
+      gasLimit,
+      receiveGasLimit,
+      returnReceiveGasLimit,
+      spokeCommonAddress,
+    };
   },
 
   async inviteAddress(
@@ -142,68 +163,6 @@ export const prepare = {
 };
 
 export const prepareRaw = {
-  async createAccount(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    adapters: MessageAdapters,
-    spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareCreateAccountCall> {
-    const spokeCommonAddress = spokeChain.spokeCommonAddress;
-
-    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
-
-    const hubChain = getHubChain(network);
-
-    // construct message
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    const message: MessageToSend = {
-      params,
-      sender: spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.CreateAccount,
-        accountId,
-        getRandomGenericAddress(),
-        "0x",
-      ),
-      finalityLevel: FINALITY.IMMEDIATE,
-      extraArgs: "0x",
-    };
-
-    // get adapter fees
-    const returnAdapterFee = BigInt(0);
-    const adapterFee = await bridgeRouter.read.getSendFee([message]);
-
-    // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createAccount(
-      [params, accountId],
-      {
-        value: adapterFee,
-        ...transactionOptions,
-      },
-    );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
-
-    return {
-      adapters,
-      adapterFee,
-      returnAdapterFee,
-      gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
-      spokeCommonAddress,
-    };
-  },
-
   async inviteAddress(
     provider: Client,
     sender: Address,
