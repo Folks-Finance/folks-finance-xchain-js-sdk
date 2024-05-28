@@ -146,7 +146,22 @@ export function builMessageToSend(
       return message;
     }
     case Action.AcceptInviteAddress: {
-      throw new Error("Not implemented yet: Action.AcceptInviteAddress case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.AcceptInviteAddress,
+          accountId,
+          getRandomGenericAddress(),
+          "0x",
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs: "0x",
+      };
+      return message;
     }
     case Action.UnregisterAddress: {
       throw new Error("Not implemented yet: Action.UnregisterAddress case");

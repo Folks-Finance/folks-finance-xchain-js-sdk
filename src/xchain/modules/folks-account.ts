@@ -125,16 +125,30 @@ export const prepare = {
       folksChain.folksChainId,
       adapters.adapterId,
     );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const messageToSend = builMessageToSend(
+      accountId,
+      adapters,
+      Action.AcceptInviteAddress,
+      spokeChain.spokeCommonAddress,
+      hubChain.folksChainId,
+      hubChain.hubAddress,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.acceptInvite(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           adapters,
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
