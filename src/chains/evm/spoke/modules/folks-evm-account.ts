@@ -1,13 +1,7 @@
-import { concat } from "viem";
-
 import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
-import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
-import {
-  getRandomGenericAddress,
-  convertToGenericAddress,
-} from "../../../../common/utils/address.js";
+import { getRandomGenericAddress } from "../../../../common/utils/address.js";
 import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
 import { getSpokeChain } from "../../../../common/utils/chain.js";
 import {
@@ -90,29 +84,48 @@ export const prepare = {
   },
 
   async inviteAddress(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
-    network: NetworkType,
+    messageToSend: MessageToSend,
     accountId: Hex,
     folksChainIdToInvite: number,
     addressToInvite: Address,
     adapters: MessageAdapters,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareInviteAddressCall> {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    // use raw function
-    return prepareRaw.inviteAddress(
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(
       provider,
-      sender,
-      network,
-      accountId,
-      folksChainIdToInvite,
-      addressToInvite,
-      adapters,
-      spokeChain,
+      spokeChain.bridgeRouterAddress,
     );
+
+    // get adapter fees
+    const returnAdapterFee = BigInt(0);
+    const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.inviteAddress(
+      [messageToSend.params, accountId, folksChainIdToInvite, addressToInvite],
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
+    );
+    const returnReceiveGasLimit = BigInt(0);
+    const receiveGasLimit = BigInt(300000); // TODO
+
+    return {
+      adapters,
+      adapterFee,
+      returnAdapterFee,
+      gasLimit,
+      receiveGasLimit,
+      returnReceiveGasLimit,
+      spokeCommonAddress,
+    };
   },
 
   async acceptInvite(
@@ -163,76 +176,6 @@ export const prepare = {
 };
 
 export const prepareRaw = {
-  async inviteAddress(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    folksChainIdToInvite: number,
-    addressToInvite: Address,
-    adapters: MessageAdapters,
-    spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareInviteAddressCall> {
-    const spokeCommonAddress = spokeChain.spokeCommonAddress;
-
-    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
-
-    const hubChain = getHubChain(network);
-
-    // construct message
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    const message: MessageToSend = {
-      params,
-      sender: spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.InviteAddress,
-        accountId,
-        getRandomGenericAddress(),
-        concat([
-          convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
-          convertToGenericAddress<ChainType.EVM>(
-            addressToInvite,
-            ChainType.EVM,
-          ),
-        ]),
-      ),
-      finalityLevel: FINALITY.IMMEDIATE,
-      extraArgs: "0x",
-    };
-
-    // get adapter fees
-    const returnAdapterFee = BigInt(0);
-    const adapterFee = await bridgeRouter.read.getSendFee([message]);
-
-    // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.inviteAddress(
-      [params, accountId, folksChainIdToInvite, addressToInvite],
-      {
-        value: adapterFee,
-        ...transactionOptions,
-      },
-    );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
-
-    return {
-      adapters,
-      adapterFee,
-      returnAdapterFee,
-      gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
-      spokeCommonAddress,
-    };
-  },
-
   async acceptInvite(
     provider: Client,
     sender: Address,

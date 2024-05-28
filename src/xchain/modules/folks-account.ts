@@ -1,10 +1,15 @@
+import { concat } from "viem";
+
 import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
+import { UINT16_LENGTH } from "../../common/constants/bytes.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
+import { convertToGenericAddress } from "../../common/utils/address.js";
+import { convertNumberToBytes } from "../../common/utils/bytes.js";
 import {
   assertSpokeChainSupported,
   getSpokeChain,
@@ -75,18 +80,37 @@ export const prepare = {
       folksChain.folksChainId,
       adapters.adapterId,
     );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const data = concat([
+      convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
+      convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
+    ]);
+    const messageToSend = builMessageToSend(
+      accountId,
+      adapters,
+      Action.InviteAddress,
+      spokeChain.spokeCommonAddress,
+      hubChain.folksChainId,
+      hubChain.hubAddress,
+      data,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.inviteAddress(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           folksChainIdToInvite,
           addressToInvite,
           adapters,
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);

@@ -105,6 +105,7 @@ export function builMessageToSend(
   sender: GenericAddress,
   destinationChainId: FolksChainId,
   handler: GenericAddress,
+  data: Hex = "0x",
 ): MessageToSend {
   switch (action) {
     case Action.CreateAccount: {
@@ -127,7 +128,22 @@ export function builMessageToSend(
       return message;
     }
     case Action.InviteAddress: {
-      throw new Error("Not implemented yet: Action.InviteAddress case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.InviteAddress,
+          accountId,
+          getRandomGenericAddress(),
+          data,
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs: "0x",
+      };
+      return message;
     }
     case Action.AcceptInviteAddress: {
       throw new Error("Not implemented yet: Action.AcceptInviteAddress case");
