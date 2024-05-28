@@ -44,6 +44,7 @@ export const prepare = {
     const hubChain = getHubChain(folksChain.network);
 
     const messageToSend = buildMessageToSend(
+      folksChain.chainType,
       accountId,
       adapters,
       Action.CreateAccount,
@@ -91,6 +92,7 @@ export const prepare = {
       convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
     ]);
     const messageToSend = buildMessageToSend(
+      folksChain.chainType,
       accountId,
       adapters,
       Action.InviteAddress,
@@ -132,6 +134,7 @@ export const prepare = {
     const hubChain = getHubChain(folksChain.network);
 
     const messageToSend = buildMessageToSend(
+      folksChain.chainType,
       accountId,
       adapters,
       Action.AcceptInviteAddress,
@@ -175,6 +178,7 @@ export const prepare = {
 
     const data = convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH);
     const messageToSend = buildMessageToSend(
+      folksChain.chainType,
       accountId,
       adapters,
       Action.UnregisterAddress,
