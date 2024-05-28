@@ -42,15 +42,15 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
       accountId,
       adapters,
-      Action.CreateAccount,
-      spokeChain.spokeCommonAddress,
-      hubChain.folksChainId,
-      hubChain.hubAddress,
-    );
+      action: Action.CreateAccount,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data: "0x",
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -90,16 +90,15 @@ export const prepare = {
       folksChainIdToInvite,
       addressToInvite,
     };
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
       accountId,
       adapters,
-      Action.InviteAddress,
-      spokeChain.spokeCommonAddress,
-      hubChain.folksChainId,
-      hubChain.hubAddress,
+      action: Action.InviteAddress,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
       data,
-    );
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -132,15 +131,15 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
       accountId,
       adapters,
-      Action.AcceptInviteAddress,
-      spokeChain.spokeCommonAddress,
-      hubChain.folksChainId,
-      hubChain.hubAddress,
-    );
+      action: Action.AcceptInviteAddress,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data: "0x",
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -178,16 +177,15 @@ export const prepare = {
     const data: UnregisterAddressMessageData = {
       folksChainIdToUnregister,
     };
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
       accountId,
       adapters,
-      Action.UnregisterAddress,
-      spokeChain.spokeCommonAddress,
-      hubChain.folksChainId,
-      hubChain.hubAddress,
+      action: Action.UnregisterAddress,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
       data,
-    );
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

@@ -12,17 +12,12 @@ import {
 import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
+import type { GenericAddress } from "../../../../common/types/chain.js";
 import type {
-  FolksChainId,
-  GenericAddress,
-} from "../../../../common/types/chain.js";
-import type {
-  InviteAddressMessageData,
   MessageAdapters,
-  MessageData,
   MessageParams,
   MessageToSend,
-  UnregisterAddressMessageData,
+  MessageToSendBuilderParams,
 } from "../../../../common/types/message.js";
 import type { Hex } from "viem";
 
@@ -54,14 +49,17 @@ export function buildMessagePayload(
 }
 
 export function buildEvmMessageToSend(
-  accountId: Hex,
-  adapters: MessageAdapters,
-  action: Action,
-  sender: GenericAddress,
-  destinationChainId: FolksChainId,
-  handler: GenericAddress,
-  data: MessageData = "0x",
+  messageToSendBuilderParams: MessageToSendBuilderParams,
 ): MessageToSend {
+  const {
+    accountId,
+    adapters,
+    sender,
+    destinationChainId,
+    handler,
+    action,
+    data,
+  } = messageToSendBuilderParams;
   switch (action) {
     case Action.CreateAccount: {
       const params = DEFAULT_MESSAGE_PARAMS(adapters);
@@ -74,7 +72,7 @@ export function buildEvmMessageToSend(
           Action.CreateAccount,
           accountId,
           getRandomGenericAddress(),
-          "0x",
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",
@@ -82,8 +80,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.InviteAddress: {
-      const inviteAddressMessageData = data as InviteAddressMessageData;
-
       const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
@@ -95,12 +91,9 @@ export function buildEvmMessageToSend(
           accountId,
           getRandomGenericAddress(),
           concat([
-            convertNumberToBytes(
-              inviteAddressMessageData.folksChainIdToInvite,
-              UINT16_LENGTH,
-            ),
+            convertNumberToBytes(data.folksChainIdToInvite, UINT16_LENGTH),
             convertToGenericAddress<ChainType.EVM>(
-              inviteAddressMessageData.addressToInvite,
+              data.addressToInvite,
               ChainType.EVM,
             ),
           ]),
@@ -121,7 +114,7 @@ export function buildEvmMessageToSend(
           Action.AcceptInviteAddress,
           accountId,
           getRandomGenericAddress(),
-          "0x",
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",
@@ -129,8 +122,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.UnregisterAddress: {
-      const unregisterAddressMessageData = data as UnregisterAddressMessageData;
-
       const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
@@ -141,10 +132,7 @@ export function buildEvmMessageToSend(
           Action.UnregisterAddress,
           accountId,
           getRandomGenericAddress(),
-          convertNumberToBytes(
-            unregisterAddressMessageData.folksChainIdToUnregister,
-            UINT16_LENGTH,
-          ),
+          convertNumberToBytes(data.folksChainIdToUnregister, UINT16_LENGTH),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",

@@ -10,12 +10,10 @@ import { isGenericAddress } from "./address.js";
 import { convertNumberToBytes } from "./bytes.js";
 
 import type { HubTokenData } from "../../chains/evm/hub/types/token.js";
-import type { FolksChainId, GenericAddress } from "../types/chain.js";
+import type { GenericAddress } from "../types/chain.js";
 import type {
-  Action,
-  MessageAdapters,
-  MessageData,
   MessageToSend,
+  MessageToSendBuilderParams,
 } from "../types/message.js";
 import type { SpokeTokenData } from "../types/token.js";
 import type { Hex } from "viem";
@@ -74,25 +72,11 @@ export function getSendTokenExtraArgsWhenRemoving(
 
 export function buildMessageToSend(
   chainType: ChainType,
-  accountId: Hex,
-  adapters: MessageAdapters,
-  action: Action,
-  sender: GenericAddress,
-  destinationChainId: FolksChainId,
-  handler: GenericAddress,
-  data?: MessageData,
+  messageToSendBuilderParams: MessageToSendBuilderParams,
 ): MessageToSend {
   switch (chainType) {
     case ChainType.EVM: {
-      return buildEvmMessageToSend(
-        accountId,
-        adapters,
-        action,
-        sender,
-        destinationChainId,
-        handler,
-        data,
-      );
+      return buildEvmMessageToSend(messageToSendBuilderParams);
     }
     default:
       return exhaustiveCheck(chainType);
