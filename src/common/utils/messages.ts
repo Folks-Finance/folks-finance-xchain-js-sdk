@@ -98,7 +98,7 @@ export function getSendTokenExtraArgsWhenRemoving(
   );
 }
 
-export function builMessageToSend(
+export function buildMessageToSend(
   accountId: Hex,
   adapters: MessageAdapters,
   action: Action,

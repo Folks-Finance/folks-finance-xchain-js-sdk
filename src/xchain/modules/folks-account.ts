@@ -14,7 +14,7 @@ import {
   assertSpokeChainSupported,
   getSpokeChain,
 } from "../../common/utils/chain.js";
-import { builMessageToSend } from "../../common/utils/messages.js";
+import { buildMessageToSend } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
@@ -43,7 +43,7 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const messageToSend = builMessageToSend(
+    const messageToSend = buildMessageToSend(
       accountId,
       adapters,
       Action.CreateAccount,
@@ -90,7 +90,7 @@ export const prepare = {
       convertNumberToBytes(folksChainIdToInvite, UINT16_LENGTH),
       convertToGenericAddress<ChainType.EVM>(addressToInvite, ChainType.EVM),
     ]);
-    const messageToSend = builMessageToSend(
+    const messageToSend = buildMessageToSend(
       accountId,
       adapters,
       Action.InviteAddress,
@@ -131,7 +131,7 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const messageToSend = builMessageToSend(
+    const messageToSend = buildMessageToSend(
       accountId,
       adapters,
       Action.AcceptInviteAddress,
@@ -174,7 +174,7 @@ export const prepare = {
     const hubChain = getHubChain(folksChain.network);
 
     const data = convertNumberToBytes(folksChainIdToUnregister, UINT16_LENGTH);
-    const messageToSend = builMessageToSend(
+    const messageToSend = buildMessageToSend(
       accountId,
       adapters,
       Action.UnregisterAddress,
