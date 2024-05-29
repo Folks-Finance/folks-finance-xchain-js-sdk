@@ -1,8 +1,5 @@
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
-import {
-  getHubChain,
-  getHubChainAdapterAddress,
-} from "../../chains/evm/hub/utils/chain.js";
+import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
@@ -12,7 +9,6 @@ import {
   assertSpokeChainSupported,
   getSignerGenericAddress,
   getSpokeChain,
-  getSpokeChainAdapterAddress,
 } from "../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -26,8 +22,8 @@ import type {
   InviteAddressMessageData,
   MessageAdapters,
   MessageBuilderParams,
-  UnregisterAddressMessageData,
   OptionalFeeParams,
+  UnregisterAddressMessageData,
 } from "../../common/types/message.js";
 import type {
   PrepareAcceptInviteAddressCall,
@@ -70,24 +66,11 @@ export const prepare = {
     };
     const feeParams: OptionalFeeParams = {};
 
-    const sourceAdapterAddress = getSpokeChainAdapterAddress(
-      folksChain.folksChainId,
-      folksChain.network,
-      adapters.adapterId,
-    );
-    const destAdapterAddress = getHubChainAdapterAddress(
-      folksChain.network,
-      adapters.adapterId,
-    );
-
     feeParams.gasLimit = await estimateReceiveGasLimit(
-      folksChain.folksChainId,
-      hubChain.folksChainId,
       FolksCore.getHubProvider(),
-      folksChain.network,
+      hubChain,
+      folksChain,
       adapters,
-      sourceAdapterAddress,
-      destAdapterAddress,
       messageBuilderParams,
     );
 
@@ -140,7 +123,7 @@ export const prepare = {
       folksChainIdToInvite,
       addressToInvite,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -150,7 +133,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data,
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -188,7 +186,7 @@ export const prepare = {
       chainType: folksChain.chainType,
     });
 
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -198,7 +196,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data: "0x",
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -241,7 +254,8 @@ export const prepare = {
     const data: UnregisterAddressMessageData = {
       folksChainIdToUnregister,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -251,7 +265,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data,
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
