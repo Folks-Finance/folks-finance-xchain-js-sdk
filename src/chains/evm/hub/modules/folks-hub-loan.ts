@@ -7,12 +7,16 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
-import { getSendTokenExtraArgsWhenRemoving } from "../../../../common/utils/messages.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
+  buildSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
-import { getHubChain, getHubTokenData } from "../utils/chain.js";
+import {
+  getHubChain,
+  getHubTokenAddress,
+  getHubTokenData,
+} from "../utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
 import type {
@@ -64,9 +68,10 @@ export function getSendTokenAdapterFees(
         convertNumberToBytes(amount, UINT256_LENGTH),
       ),
       finalityLevel: FINALITY.FINALISED,
-      extraArgs: getSendTokenExtraArgsWhenRemoving(
-        spokeTokenData,
-        hubTokenData,
+      extraArgs: buildSendTokenExtraArgsWhenRemoving(
+        hubTokenData.tokenType,
+        spokeTokenData.spokeAddress,
+        getHubTokenAddress(hubTokenData),
         amount,
       ),
     };

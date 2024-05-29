@@ -1,15 +1,23 @@
 import { concat, isHex } from "viem";
 
-import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
+import {
+  UINT16_LENGTH,
+  UINT256_LENGTH,
+  UINT8_LENGTH,
+} from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
+import { TokenType } from "../../../../common/types/token.js";
 import {
   convertToGenericAddress,
   getRandomGenericAddress,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
-import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
+import {
+  convertBooleanToByte,
+  convertNumberToBytes,
+} from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
@@ -48,6 +56,45 @@ export function buildMessagePayload(
   ]);
 }
 
+export function extraArgsToBytes(
+  tokenAddr: GenericAddress,
+  recipientAddr: GenericAddress,
+  amount: bigint,
+): Hex {
+  if (!isGenericAddress(tokenAddr)) throw Error("Unknown token address format");
+  if (!isGenericAddress(recipientAddr))
+    throw Error("Unknown recipient address format");
+
+  return concat([
+    "0x1b366e79",
+    tokenAddr,
+    recipientAddr,
+    convertNumberToBytes(amount, UINT256_LENGTH),
+  ]);
+}
+
+export function buildSendTokenExtraArgsWhenRemoving(
+  tokenType: TokenType,
+  spokeAddress: GenericAddress,
+  hubTokenAddress: GenericAddress,
+  amount: bigint,
+): Hex {
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  return extraArgsToBytes(hubTokenAddress, spokeAddress, BigInt(amount));
+}
+
+export function buildSendTokenExtraArgsWhenAdding(
+  tokenType: TokenType,
+  spokeTokenAddress: GenericAddress,
+  hubPoolAddress: GenericAddress,
+  amount: bigint,
+): Hex {
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  return extraArgsToBytes(spokeTokenAddress, hubPoolAddress, amount);
+}
+
 export function buildEvmMessageToSend(
   messageToSendBuilderParams: MessageToSendBuilderParams,
 ): MessageToSend {
@@ -59,6 +106,7 @@ export function buildEvmMessageToSend(
     handler,
     action,
     data,
+    extraArgs,
   } = messageToSendBuilderParams;
   switch (action) {
     case Action.CreateAccount: {
@@ -75,7 +123,7 @@ export function buildEvmMessageToSend(
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -117,7 +165,7 @@ export function buildEvmMessageToSend(
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -135,7 +183,7 @@ export function buildEvmMessageToSend(
           convertNumberToBytes(data.folksChainIdToUnregister, UINT16_LENGTH),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -146,19 +194,100 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      throw new Error("Not implemented yet: Action.CreateLoan case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.CreateLoan,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
+          ]),
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.DeleteLoan: {
-      throw new Error("Not implemented yet: Action.DeleteLoan case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.DeleteLoan,
+          data.accountId,
+          getRandomGenericAddress(),
+          data.loanId,
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.Deposit: {
-      throw new Error("Not implemented yet: Action.Deposit case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.Deposit,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.poolId, UINT8_LENGTH),
+            convertNumberToBytes(data.amount, UINT256_LENGTH),
+          ]),
+        ),
+        finalityLevel: FINALITY.FINALISED,
+        extraArgs: buildSendTokenExtraArgsWhenAdding(
+          extraArgs.tokenType,
+          extraArgs.spokeTokenAddress,
+          extraArgs.hubPoolAddress,
+          extraArgs.amount,
+        ),
+      };
+      return message;
     }
     case Action.DepositFToken: {
       throw new Error("Not implemented yet: Action.DepositFToken case");
     }
     case Action.Withdraw: {
-      throw new Error("Not implemented yet: Action.Withdraw case");
+      const params = {
+        ...DEFAULT_MESSAGE_PARAMS(adapters),
+        ...messageToSendBuilderParams.params,
+      };
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.Withdraw,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.poolId, UINT8_LENGTH),
+            convertNumberToBytes(data.receiverFolksChainId, UINT16_LENGTH),
+            convertNumberToBytes(data.amount, UINT256_LENGTH),
+            convertBooleanToByte(data.isFAmount),
+          ]),
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.WithdrawFToken: {
       throw new Error("Not implemented yet: Action.WithdrawFToken case");

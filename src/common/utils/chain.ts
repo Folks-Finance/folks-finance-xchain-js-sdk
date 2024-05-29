@@ -5,6 +5,7 @@ import type {
   NetworkType,
   FolksChain,
   SpokeChain,
+  GenericAddress,
 } from "../types/chain.js";
 import type { FolksTokenId, SpokeTokenData } from "../types/token.js";
 
@@ -97,4 +98,13 @@ export function assertSpokeChainSupportFolksToken(
     throw new Error(
       `Folks Token ${folksTokenId} is not supported on Folks Chain ${folksChainId}`,
     );
+}
+
+export function getSpokeTokenDataTokenAddress(
+  spokeTokenData: SpokeTokenData,
+): GenericAddress {
+  if (spokeTokenData.tokenAddress) return spokeTokenData.tokenAddress;
+  throw new Error(
+    `Token address not found for spokeTokenData for folks token: ${spokeTokenData.folksTokenId} in spoke: ${spokeTokenData.spokeAddress}`,
+  );
 }
