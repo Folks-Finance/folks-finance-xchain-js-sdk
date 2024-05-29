@@ -27,8 +27,6 @@ import type {
   MessageToSend,
   MessageToSendBuilderParams,
 } from "../../../../common/types/message.js";
-import type { SpokeTokenData } from "../../../../common/types/token.js";
-import type { HubTokenData } from "../../hub/types/token.js";
 import type { Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
@@ -75,21 +73,15 @@ export function extraArgsToBytes(
   ]);
 }
 
-export function getSendTokenExtraArgsWhenRemoving(
-  spokeTokenData: SpokeTokenData,
-  hubTokenData: HubTokenData,
+export function buildSendTokenExtraArgsWhenRemoving(
+  tokenType: TokenType,
+  spokeAddress: GenericAddress,
+  hubTokenAddress: GenericAddress,
   amount: bigint,
 ): Hex {
-  const { tokenType } = hubTokenData;
   if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
     return "0x";
-  if (hubTokenData.tokenAddress === null) throw Error("Unknown token address");
-
-  return extraArgsToBytes(
-    hubTokenData.tokenAddress,
-    spokeTokenData.spokeAddress,
-    BigInt(amount),
-  );
+  return extraArgsToBytes(hubTokenAddress, spokeAddress, BigInt(amount));
 }
 
 export function buildSendTokenExtraArgsWhenAdding(

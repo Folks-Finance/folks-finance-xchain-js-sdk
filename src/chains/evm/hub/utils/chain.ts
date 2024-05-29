@@ -2,6 +2,7 @@ import { HUB_CHAIN } from "../constants/chain.js";
 
 import type {
   FolksChainId,
+  GenericAddress,
   NetworkType,
 } from "../../../../common/types/chain.js";
 import type { LoanType } from "../../../../common/types/module.js";
@@ -46,4 +47,11 @@ export function assertLoanTypeSupported(
     throw new Error(
       `Loan type ${loanType} is not supported for folksTokenId: ${folksTokenId}`,
     );
+}
+
+export function getHubTokenAddress(hubTokenData: HubTokenData): GenericAddress {
+  if (hubTokenData.tokenAddress) return hubTokenData.tokenAddress;
+  throw new Error(
+    `Hub token address not found for folksTokenId: ${hubTokenData.folksTokenId}`,
+  );
 }
