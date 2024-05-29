@@ -2,10 +2,12 @@ import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
 import {
   assertLoanTypeSupported,
+  getHubChain,
   getHubTokenData,
 } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
+import { Action } from "../../common/types/message.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
@@ -13,12 +15,17 @@ import {
 import {
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
+  getSpokeChain,
 } from "../../common/utils/chain.js";
+import { buildMessageToSend } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { FolksChainId } from "../../common/types/chain.js";
-import type { MessageAdapters } from "../../common/types/message.js";
+import type {
+  CreateLoanMessageData,
+  MessageAdapters,
+} from "../../common/types/message.js";
 import type {
   LoanType,
   PrepareCreateLoanCall,
@@ -41,18 +48,37 @@ export const prepare = {
       folksChain.folksChainId,
       adapters.adapterId,
     );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const data: CreateLoanMessageData = {
+      loanId,
+      loanTypeId,
+    };
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
+      accountId,
+      adapters,
+      action: Action.CreateLoan,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.createLoan(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           loanId,
           loanTypeId,
           adapters,
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);

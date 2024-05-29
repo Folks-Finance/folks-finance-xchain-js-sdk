@@ -58,29 +58,48 @@ import type {
 
 export const prepare = {
   async createLoan(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
-    network: NetworkType,
+    messageToSend: MessageToSend,
     accountId: Hex,
     loanId: Hex,
     loanTypeId: number,
     adapters: MessageAdapters,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareCreateLoanCall> {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
-    // use raw function
-    return prepareRaw.createLoan(
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(
       provider,
-      sender,
-      network,
-      accountId,
-      loanId,
-      loanTypeId,
-      adapters,
-      spokeChain,
+      spokeChain.bridgeRouterAddress,
     );
+
+    // get adapter fees
+    const returnAdapterFee = BigInt(0);
+    const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.createLoan(
+      [messageToSend.params, accountId, loanId, loanTypeId],
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
+    );
+    const returnReceiveGasLimit = BigInt(0);
+    const receiveGasLimit = BigInt(300000); // TODO
+
+    return {
+      adapters,
+      adapterFee,
+      returnAdapterFee,
+      gasLimit,
+      receiveGasLimit,
+      returnReceiveGasLimit,
+      spokeCommonAddress,
+    };
   },
 
   async deleteLoan(
@@ -171,70 +190,6 @@ export const prepare = {
 };
 
 export const prepareRaw = {
-  async createLoan(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    loanId: Hex,
-    loanTypeId: number,
-    adapters: MessageAdapters,
-    spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareCreateLoanCall> {
-    const spokeCommonAddress = spokeChain.spokeCommonAddress;
-
-    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
-
-    const hubChain = getHubChain(network);
-
-    // construct message
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    const message: MessageToSend = {
-      params,
-      sender: spokeChain.spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.CreateLoan,
-        accountId,
-        getRandomGenericAddress(),
-        concat([loanId, convertNumberToBytes(loanTypeId, UINT16_LENGTH)]),
-      ),
-      finalityLevel: FINALITY.IMMEDIATE,
-      extraArgs: "0x",
-    };
-
-    // get adapter fees
-    const returnAdapterFee = BigInt(0);
-    const adapterFee = await bridgeRouter.read.getSendFee([message]);
-
-    // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createLoan(
-      [params, accountId, loanId, loanTypeId],
-      {
-        value: adapterFee,
-        ...transactionOptions,
-      },
-    );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
-
-    return {
-      adapters,
-      adapterFee,
-      returnAdapterFee,
-      gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
-      spokeCommonAddress,
-    };
-  },
-
   async deleteLoan(
     provider: Client,
     sender: Address,

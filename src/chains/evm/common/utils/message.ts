@@ -146,7 +146,25 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      throw new Error("Not implemented yet: Action.CreateLoan case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.CreateLoan,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
+          ]),
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs: "0x",
+      };
+      return message;
     }
     case Action.DeleteLoan: {
       throw new Error("Not implemented yet: Action.DeleteLoan case");

@@ -1,4 +1,5 @@
 import type { FolksChainId, GenericAddress } from "./chain.js";
+import type { LoanType } from "./module.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -59,6 +60,7 @@ export type MessageToSend = {
 // Data
 export type DefaultMessageData = "0x";
 
+// Data: account
 export type InviteAddressMessageData = {
   folksChainIdToInvite: FolksChainId;
   addressToInvite: GenericAddress;
@@ -68,6 +70,12 @@ export type UnregisterAddressMessageData = {
   folksChainIdToUnregister: FolksChainId;
 };
 
+// Data: loan
+export type CreateLoanMessageData = {
+  loanId: Hex;
+  loanTypeId: LoanType;
+};
+
 // Params
 export type DefaultMessageDataParams = {
   action:
@@ -75,7 +83,6 @@ export type DefaultMessageDataParams = {
     | Action.AcceptInviteAddress
     | Action.AddDelegate
     | Action.RemoveDelegate
-    | Action.CreateLoan
     | Action.DeleteLoan
     | Action.Deposit
     | Action.DepositFToken
@@ -90,6 +97,7 @@ export type DefaultMessageDataParams = {
   data: DefaultMessageData;
 };
 
+// Params: account
 export type InviteAddressMessageDataParams = {
   action: Action.InviteAddress;
   data: InviteAddressMessageData;
@@ -100,10 +108,17 @@ export type UnregisterAddressMessageDataParams = {
   data: UnregisterAddressMessageData;
 };
 
+// Params: loan
+export type CreateLoanMessageDataParams = {
+  action: Action.CreateLoan;
+  data: CreateLoanMessageData;
+};
+
 export type MessageDataParams =
   | DefaultMessageDataParams
   | InviteAddressMessageDataParams
-  | UnregisterAddressMessageDataParams;
+  | UnregisterAddressMessageDataParams
+  | CreateLoanMessageDataParams;
 
 export type MessageToSendBuilderParams = {
   accountId: Hex;
