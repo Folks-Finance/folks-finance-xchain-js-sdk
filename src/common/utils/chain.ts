@@ -7,6 +7,8 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/chain.js";
 import { ChainType } from "../types/chain.js";
 
+import { convertToGenericAddress } from "./address.js";
+
 import type {
   FolksChainId,
   NetworkType,
@@ -147,7 +149,10 @@ export function getSignerGenericAddress(
   const chainType = folksChainSigner.chainType;
   switch (chainType) {
     case ChainType.EVM:
-      return getEvmSignerAddress(folksChainSigner.signer);
+      return convertToGenericAddress(
+        getEvmSignerAddress(folksChainSigner.signer),
+        chainType,
+      );
     default:
       return exhaustiveCheck(chainType);
   }
