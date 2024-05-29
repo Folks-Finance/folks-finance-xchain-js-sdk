@@ -1,5 +1,5 @@
 import { TokenType } from "../../../../common/types/token.js";
-import { getSignerAccount } from "../../common/utils/chain.js";
+import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getHubTokenData } from "../../hub/utils/chain.js";
 import {
@@ -266,7 +266,7 @@ export const write = {
     return await spokeCommon.write.createLoan(
       [params, accountId, loanId, loanTypeId],
       {
-        account: getSignerAccount(signer),
+        account: getEvmSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,
@@ -305,7 +305,7 @@ export const write = {
     };
 
     return await spokeCommon.write.deleteLoan([params, accountId, loanId], {
-      account: getSignerAccount(signer),
+      account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -354,7 +354,7 @@ export const write = {
     };
 
     return await spokeToken.write.deposit([params, accountId, loanId, amount], {
-      account: getSignerAccount(signer),
+      account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -397,7 +397,7 @@ export const write = {
     return await spokeCommon.write.withdraw(
       [params, accountId, loanId, poolId, receiverChainId, amount, isFAmount],
       {
-        account: getSignerAccount(signer),
+        account: getEvmSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,

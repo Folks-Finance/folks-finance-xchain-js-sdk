@@ -176,6 +176,7 @@ export type MessageDataParams =
   | WithdrawMessageDataParams;
 
 export type MessageBuilderParams = {
+  userAddress: GenericAddress;
   accountId: Hex;
   adapters: MessageAdapters;
   sender: GenericAddress;

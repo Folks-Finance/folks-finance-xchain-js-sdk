@@ -1,12 +1,13 @@
-import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
+import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertSpokeChainSupported,
+  getSignerGenericAddress,
   getSpokeChain,
 } from "../../common/utils/chain.js";
 import {
@@ -47,7 +48,13 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
       accountId,
       adapters,
       action: Action.CreateAccount,
@@ -78,7 +85,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.createAccount(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           adapters,
@@ -108,11 +115,17 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const data: InviteAddressMessageData = {
       folksChainIdToInvite,
       addressToInvite,
     };
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.InviteAddress,
@@ -127,7 +140,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.inviteAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           folksChainIdToInvite,
@@ -154,7 +167,13 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.AcceptInviteAddress,
@@ -169,7 +188,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.acceptInvite(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           adapters,
@@ -198,10 +217,16 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const data: UnregisterAddressMessageData = {
       folksChainIdToUnregister,
     };
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.UnregisterAddress,
@@ -216,7 +241,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmAccount.prepare.unregisterAddress(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           folksChainIdToUnregister,

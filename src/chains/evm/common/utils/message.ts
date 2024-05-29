@@ -396,7 +396,7 @@ export async function estimateEVMWormholeDataGasLimit(
         buildMessagePayload(
           messageBuilderParams.action,
           messageBuilderParams.accountId,
-          getRandomGenericAddress(),
+          messageBuilderParams.userAddress,
           buildEvmMessageData(messageBuilderParams),
         ),
       ),

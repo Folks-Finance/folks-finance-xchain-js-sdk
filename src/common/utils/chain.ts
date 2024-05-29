@@ -1,8 +1,11 @@
+import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import {
   getHubChainAdapterAddress,
   isHubChain,
 } from "../../chains/evm/hub/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/chain.js";
+import { ChainType } from "../types/chain.js";
 
 import type {
   FolksChainId,
@@ -11,6 +14,7 @@ import type {
   SpokeChain,
   GenericAddress,
 } from "../types/chain.js";
+import type { FolksChainSigner } from "../types/core.js";
 import type { AdapterType } from "../types/message.js";
 import type { FolksTokenId, SpokeTokenData } from "../types/token.js";
 
@@ -135,4 +139,16 @@ export function getAdapterAddress(
   if (isHubChain(folksChainId, network))
     return getHubChainAdapterAddress(network, adapterType);
   return getSpokeChainAdapterAddress(folksChainId, network, adapterType);
+}
+
+export function getSignerGenericAddress(
+  folksChainSigner: FolksChainSigner,
+): GenericAddress {
+  const chainType = folksChainSigner.chainType;
+  switch (chainType) {
+    case ChainType.EVM:
+      return getEvmSignerAddress(folksChainSigner.signer);
+    default:
+      return exhaustiveCheck(chainType);
+  }
 }
