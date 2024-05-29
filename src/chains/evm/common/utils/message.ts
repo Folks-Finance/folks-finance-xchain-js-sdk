@@ -1,9 +1,14 @@
 import { concat, isHex } from "viem";
 
-import { UINT16_LENGTH } from "../../../../common/constants/bytes.js";
+import {
+  UINT16_LENGTH,
+  UINT256_LENGTH,
+  UINT8_LENGTH,
+} from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
+import { TokenType } from "../../../../common/types/token.js";
 import {
   convertToGenericAddress,
   getRandomGenericAddress,
@@ -19,6 +24,8 @@ import type {
   MessageToSend,
   MessageToSendBuilderParams,
 } from "../../../../common/types/message.js";
+import type { SpokeTokenData } from "../../../../common/types/token.js";
+import type { HubTokenData } from "../../hub/types/token.js";
 import type { Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
@@ -48,6 +55,51 @@ export function buildMessagePayload(
   ]);
 }
 
+export function extraArgsToBytes(
+  tokenAddr: GenericAddress,
+  recipientAddr: GenericAddress,
+  amount: bigint,
+): Hex {
+  if (!isGenericAddress(tokenAddr)) throw Error("Unknown token address format");
+  if (!isGenericAddress(recipientAddr))
+    throw Error("Unknown recipient address format");
+
+  return concat([
+    "0x1b366e79",
+    tokenAddr,
+    recipientAddr,
+    convertNumberToBytes(amount, UINT256_LENGTH),
+  ]);
+}
+
+export function getSendTokenExtraArgsWhenRemoving(
+  spokeTokenData: SpokeTokenData,
+  hubTokenData: HubTokenData,
+  amount: bigint,
+): Hex {
+  const { tokenType } = hubTokenData;
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  if (hubTokenData.tokenAddress === null) throw Error("Unknown token address");
+
+  return extraArgsToBytes(
+    hubTokenData.tokenAddress,
+    spokeTokenData.spokeAddress,
+    BigInt(amount),
+  );
+}
+
+export function buildSendTokenExtraArgsWhenAdding(
+  tokenType: TokenType,
+  spokeTokenAddress: GenericAddress,
+  hubPoolAddress: GenericAddress,
+  amount: bigint,
+): Hex {
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
+    return "0x";
+  return extraArgsToBytes(spokeTokenAddress, hubPoolAddress, amount);
+}
+
 export function buildEvmMessageToSend(
   messageToSendBuilderParams: MessageToSendBuilderParams,
 ): MessageToSend {
@@ -59,6 +111,7 @@ export function buildEvmMessageToSend(
     handler,
     action,
     data,
+    extraArgs,
   } = messageToSendBuilderParams;
   switch (action) {
     case Action.CreateAccount: {
@@ -75,7 +128,7 @@ export function buildEvmMessageToSend(
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -117,7 +170,7 @@ export function buildEvmMessageToSend(
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -135,7 +188,7 @@ export function buildEvmMessageToSend(
           convertNumberToBytes(data.folksChainIdToUnregister, UINT16_LENGTH),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -162,7 +215,7 @@ export function buildEvmMessageToSend(
           ]),
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
@@ -180,12 +233,36 @@ export function buildEvmMessageToSend(
           data.loanId,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
-        extraArgs: "0x",
+        extraArgs,
       };
       return message;
     }
     case Action.Deposit: {
-      throw new Error("Not implemented yet: Action.Deposit case");
+      const params = DEFAULT_MESSAGE_PARAMS(adapters);
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.Deposit,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.poolId, UINT8_LENGTH),
+            convertNumberToBytes(data.amount, UINT256_LENGTH),
+          ]),
+        ),
+        finalityLevel: FINALITY.FINALISED,
+        extraArgs: buildSendTokenExtraArgsWhenAdding(
+          extraArgs.tokenType,
+          extraArgs.spokeTokenAddress,
+          extraArgs.hubPoolAddress,
+          extraArgs.amount,
+        ),
+      };
+      return message;
     }
     case Action.DepositFToken: {
       throw new Error("Not implemented yet: Action.DepositFToken case");

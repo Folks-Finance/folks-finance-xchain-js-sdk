@@ -17,7 +17,6 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
-import { getSendTokenExtraArgsWhenAdding } from "../../../../common/utils/messages.js";
 import { getSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import {
@@ -41,7 +40,10 @@ import type {
   MessageToSend,
   MessageParams,
 } from "../../../../common/types/message.js";
-import type { FolksTokenId } from "../../../../common/types/token.js";
+import type {
+  FolksTokenId,
+  SpokeTokenData,
+} from "../../../../common/types/token.js";
 import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
@@ -147,31 +149,50 @@ export const prepare = {
   },
 
   async deposit(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
-    network: NetworkType,
+    messageToSend: MessageToSend,
     accountId: Hex,
     loanId: Hex,
-    folksTokenId: FolksTokenId,
     amount: bigint,
     adapters: MessageAdapters,
+    spokeChain: SpokeChain,
+    spokeTokenData: SpokeTokenData,
+    transactionOptions: EstimateGasParameters = { account: sender },
   ) {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
-
-    // use raw function
-    return prepareRaw.deposit(
+    const spokeToken = getSpokeTokenContract(
       provider,
-      sender,
-      network,
-      accountId,
-      loanId,
-      folksTokenId,
-      amount,
-      adapters,
-      spokeChain,
+      spokeTokenData.spokeAddress,
     );
+    const bridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fees
+    const returnAdapterFee = BigInt(0);
+    const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeToken.estimateGas.deposit(
+      [messageToSend.params, accountId, loanId, amount],
+      {
+        value: adapterFee,
+        ...transactionOptions,
+      },
+    );
+    const returnReceiveGasLimit = BigInt(0);
+    const receiveGasLimit = BigInt(500000); // TODO
+
+    return {
+      adapters,
+      adapterFee,
+      returnAdapterFee,
+      gasLimit,
+      receiveGasLimit,
+      returnReceiveGasLimit,
+      token: spokeTokenData,
+    };
   },
 
   async withdraw(
@@ -210,83 +231,6 @@ export const prepare = {
 };
 
 export const prepareRaw = {
-  async deposit(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    loanId: Hex,
-    folksTokenId: FolksTokenId,
-    amount: bigint,
-    adapters: MessageAdapters,
-    spokeChain: SpokeChain,
-    transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareDepositCall> {
-    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
-    const hubTokenData = getHubTokenData(folksTokenId, network);
-
-    const spokeToken = getSpokeTokenContract(
-      provider,
-      spokeTokenData.spokeAddress,
-    );
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
-
-    const hubChain = getHubChain(network);
-
-    // construct message
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    const message: MessageToSend = {
-      params,
-      sender: spokeToken.address,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.Deposit,
-        accountId,
-        getRandomGenericAddress(),
-        concat([
-          loanId,
-          convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
-          convertNumberToBytes(amount, UINT256_LENGTH),
-        ]),
-      ),
-      finalityLevel: FINALITY.FINALISED,
-      extraArgs: getSendTokenExtraArgsWhenAdding(
-        spokeTokenData,
-        hubTokenData,
-        amount,
-      ),
-    };
-
-    // get adapter fees
-    const returnAdapterFee = BigInt(0);
-    const adapterFee = await bridgeRouter.read.getSendFee([message]);
-
-    // get gas limits
-    const gasLimit = await spokeToken.estimateGas.deposit(
-      [params, accountId, loanId, amount],
-      {
-        value: adapterFee,
-        ...transactionOptions,
-      },
-    );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(500000); // TODO
-
-    return {
-      adapters,
-      adapterFee,
-      returnAdapterFee,
-      gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
-      token: spokeTokenData,
-    };
-  },
-
   async withdraw(
     provider: Client,
     sender: Address,

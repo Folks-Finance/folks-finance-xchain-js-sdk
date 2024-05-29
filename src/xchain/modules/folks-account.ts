@@ -50,6 +50,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data: "0x",
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {
@@ -98,6 +99,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {
@@ -139,6 +141,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data: "0x",
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {
@@ -185,6 +188,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {

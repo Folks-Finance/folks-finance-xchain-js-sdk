@@ -1,5 +1,6 @@
 import type { FolksChainId, GenericAddress } from "./chain.js";
 import type { LoanType } from "./module.js";
+import type { TokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -81,6 +82,23 @@ export type DeleteLoanMessageData = {
   loanId: Hex;
 };
 
+export type DepositMessageData = {
+  loanId: Hex;
+  poolId: number;
+  amount: bigint;
+};
+
+// Extra args
+export type DefaultExtraArgs = "0x";
+
+// Extra args: loan
+export type DepositExtraArgs = {
+  tokenType: TokenType;
+  spokeTokenAddress: GenericAddress;
+  hubPoolAddress: GenericAddress;
+  amount: bigint;
+};
+
 // Params
 export type DefaultMessageDataParams = {
   action:
@@ -88,7 +106,6 @@ export type DefaultMessageDataParams = {
     | Action.AcceptInviteAddress
     | Action.AddDelegate
     | Action.RemoveDelegate
-    | Action.Deposit
     | Action.DepositFToken
     | Action.Withdraw
     | Action.WithdrawFToken
@@ -99,28 +116,39 @@ export type DefaultMessageDataParams = {
     | Action.SwitchBorrowType
     | Action.SendToken;
   data: DefaultMessageData;
+  extraArgs: DefaultExtraArgs;
 };
 
 // Params: account
 export type InviteAddressMessageDataParams = {
   action: Action.InviteAddress;
   data: InviteAddressMessageData;
+  extraArgs: DefaultExtraArgs;
 };
 
 export type UnregisterAddressMessageDataParams = {
   action: Action.UnregisterAddress;
   data: UnregisterAddressMessageData;
+  extraArgs: DefaultExtraArgs;
 };
 
 // Params: loan
 export type CreateLoanMessageDataParams = {
   action: Action.CreateLoan;
   data: CreateLoanMessageData;
+  extraArgs: DefaultExtraArgs;
 };
 
 export type DeleteLoanMessageDataParams = {
   action: Action.DeleteLoan;
   data: DeleteLoanMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
+export type DepositMessageDataParams = {
+  action: Action.Deposit;
+  data: DepositMessageData;
+  extraArgs: DepositExtraArgs;
 };
 
 export type MessageDataParams =
@@ -128,7 +156,8 @@ export type MessageDataParams =
   | InviteAddressMessageDataParams
   | UnregisterAddressMessageDataParams
   | CreateLoanMessageDataParams
-  | DeleteLoanMessageDataParams;
+  | DeleteLoanMessageDataParams
+  | DepositMessageDataParams;
 
 export type MessageToSendBuilderParams = {
   accountId: Hex;

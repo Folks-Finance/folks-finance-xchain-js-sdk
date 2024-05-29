@@ -7,10 +7,10 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
-import { getSendTokenExtraArgsWhenRemoving } from "../../../../common/utils/messages.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
+  getSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
 import { getHubChain, getHubTokenData } from "../utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";

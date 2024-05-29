@@ -16,6 +16,8 @@ import {
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
   getSpokeChain,
+  getSpokeTokenData,
+  getSpokeTokenDataTokenAddress,
 } from "../../common/utils/chain.js";
 import { buildMessageToSend } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
@@ -25,6 +27,8 @@ import type { FolksChainId } from "../../common/types/chain.js";
 import type {
   CreateLoanMessageData,
   DeleteLoanMessageData,
+  DepositExtraArgs,
+  DepositMessageData,
   MessageAdapters,
 } from "../../common/types/message.js";
 import type {
@@ -67,6 +71,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {
@@ -111,6 +116,7 @@ export const prepare = {
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
+      extraArgs: "0x",
     });
 
     switch (folksChain.chainType) {
@@ -149,19 +155,49 @@ export const prepare = {
       folksChain.network,
     );
     assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    const data: DepositMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      amount,
+    };
+    const extraArgs: DepositExtraArgs = {
+      tokenType: spokeTokenData.tokenType,
+      spokeTokenAddress: getSpokeTokenDataTokenAddress(spokeTokenData),
+      hubPoolAddress: hubTokenData.poolAddress,
+      amount,
+    };
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
+      accountId,
+      adapters,
+      action: Action.Deposit,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs,
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.deposit(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           loanId,
-          folksTokenId,
           amount,
           adapters,
+          spokeChain,
+          spokeTokenData,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
