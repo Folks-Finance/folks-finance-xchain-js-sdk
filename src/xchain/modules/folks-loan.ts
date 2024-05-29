@@ -30,6 +30,7 @@ import type {
   DepositExtraArgs,
   DepositMessageData,
   MessageAdapters,
+  WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
   LoanType,
@@ -244,12 +245,39 @@ export const prepare = {
       adapters,
     );
 
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    const data: WithdrawMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      receiverFolksChainId: receiverFolksChainId,
+      amount,
+      isFAmount,
+    };
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
+      accountId,
+      adapters,
+      action: Action.Withdraw,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      params: { receiverValue: await getReturnAdapterFees() },
+      data,
+      extraArgs: "0x",
+    });
+
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.withdraw(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          messageToSend,
           folksChain.network,
           accountId,
           loanId,
@@ -258,7 +286,7 @@ export const prepare = {
           isFAmount,
           receiverFolksChainId,
           adapters,
-          await getReturnAdapterFees(),
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);

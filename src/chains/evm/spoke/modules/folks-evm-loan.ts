@@ -1,29 +1,7 @@
-import { concat } from "viem";
-
-import {
-  UINT16_LENGTH,
-  UINT8_LENGTH,
-  UINT256_LENGTH,
-} from "../../../../common/constants/bytes.js";
-import { FINALITY } from "../../../../common/constants/message.js";
-import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
-import { getRandomGenericAddress } from "../../../../common/utils/address.js";
-import {
-  convertNumberToBytes,
-  convertBooleanToByte,
-} from "../../../../common/utils/bytes.js";
-import {
-  getSpokeChain,
-  getSpokeTokenData,
-} from "../../../../common/utils/chain.js";
 import { getSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
-import {
-  DEFAULT_MESSAGE_PARAMS,
-  buildMessagePayload,
-} from "../../common/utils/message.js";
-import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
+import { getHubTokenData } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
   getSpokeCommonContract,
@@ -37,8 +15,8 @@ import type {
 } from "../../../../common/types/chain.js";
 import type {
   MessageAdapters,
-  MessageToSend,
   MessageParams,
+  MessageToSend,
 } from "../../../../common/types/message.js";
 import type {
   FolksTokenId,
@@ -52,9 +30,9 @@ import type {
 } from "../../common/types/module.js";
 import type {
   Address,
+  Client,
   EstimateGasParameters,
   Hex,
-  Client,
   WalletClient,
 } from "viem";
 
@@ -196,9 +174,9 @@ export const prepare = {
   },
 
   async withdraw(
-    folksChainId: FolksChainId,
     provider: Client,
     sender: Address,
+    messageToSend: MessageToSend,
     network: NetworkType,
     accountId: Hex,
     loanId: Hex,
@@ -207,46 +185,9 @@ export const prepare = {
     isFAmount: boolean,
     receiverFolksChainId: FolksChainId,
     adapters: MessageAdapters,
-    returnAdapterFees: bigint,
-  ) {
-    // get intended spoke
-    const spokeChain = getSpokeChain(folksChainId, network);
-
-    // use raw function
-    return prepareRaw.withdraw(
-      provider,
-      sender,
-      network,
-      accountId,
-      loanId,
-      folksTokenId,
-      amount,
-      isFAmount,
-      receiverFolksChainId,
-      adapters,
-      returnAdapterFees,
-      spokeChain,
-    );
-  },
-};
-
-export const prepareRaw = {
-  async withdraw(
-    provider: Client,
-    sender: Address,
-    network: NetworkType,
-    accountId: Hex,
-    loanId: Hex,
-    folksTokenId: FolksTokenId,
-    amount: bigint,
-    isFAmount: boolean,
-    receiverFolksChainId: FolksChainId,
-    adapters: MessageAdapters,
-    returnAdapterFee: bigint,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
-  ): Promise<PrepareWithdrawCall> {
-    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  ) {
     const hubTokenData = getHubTokenData(folksTokenId, network);
 
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
@@ -256,39 +197,13 @@ export const prepareRaw = {
       spokeChain.bridgeRouterAddress,
     );
 
-    const hubChain = getHubChain(network);
-
-    // construct message incl return adapter fee needed
-    const params = DEFAULT_MESSAGE_PARAMS(adapters);
-    params.receiverValue = returnAdapterFee;
-    const message: MessageToSend = {
-      params,
-      sender: spokeTokenData.spokeAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      payload: buildMessagePayload(
-        Action.Withdraw,
-        accountId,
-        getRandomGenericAddress(),
-        concat([
-          loanId,
-          convertNumberToBytes(hubTokenData.poolId, UINT8_LENGTH),
-          convertNumberToBytes(receiverFolksChainId, UINT16_LENGTH),
-          convertNumberToBytes(amount, UINT256_LENGTH),
-          convertBooleanToByte(isFAmount),
-        ]),
-      ),
-      finalityLevel: FINALITY.IMMEDIATE,
-      extraArgs: "0x",
-    };
-
     // get adapter fee
-    const adapterFee = await spokeBridgeRouter.read.getSendFee([message]);
+    const adapterFee = await spokeBridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.withdraw(
       [
-        params,
+        messageToSend.params,
         accountId,
         loanId,
         hubTokenData.poolId,
@@ -307,7 +222,7 @@ export const prepareRaw = {
     return {
       adapters,
       adapterFee,
-      returnAdapterFee,
+      returnAdapterFee: messageToSend.params.receiverValue,
       gasLimit,
       receiveGasLimit,
       returnReceiveGasLimit,

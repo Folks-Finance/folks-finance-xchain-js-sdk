@@ -14,7 +14,10 @@ import {
   getRandomGenericAddress,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
-import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
+import {
+  convertBooleanToByte,
+  convertNumberToBytes,
+} from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
@@ -268,7 +271,31 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.DepositFToken case");
     }
     case Action.Withdraw: {
-      throw new Error("Not implemented yet: Action.Withdraw case");
+      const params = {
+        ...DEFAULT_MESSAGE_PARAMS(adapters),
+        ...messageToSendBuilderParams.params,
+      };
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.Withdraw,
+          accountId,
+          getRandomGenericAddress(),
+          concat([
+            data.loanId,
+            convertNumberToBytes(data.poolId, UINT8_LENGTH),
+            convertNumberToBytes(data.receiverFolksChainId, UINT16_LENGTH),
+            convertNumberToBytes(data.amount, UINT256_LENGTH),
+            convertBooleanToByte(data.isFAmount),
+          ]),
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.WithdrawFToken: {
       throw new Error("Not implemented yet: Action.WithdrawFToken case");

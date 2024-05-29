@@ -88,6 +88,14 @@ export type DepositMessageData = {
   amount: bigint;
 };
 
+export type WithdrawMessageData = {
+  loanId: Hex;
+  poolId: number;
+  receiverFolksChainId: FolksChainId;
+  amount: bigint;
+  isFAmount: boolean;
+};
+
 // Extra args
 export type DefaultExtraArgs = "0x";
 
@@ -107,7 +115,6 @@ export type DefaultMessageDataParams = {
     | Action.AddDelegate
     | Action.RemoveDelegate
     | Action.DepositFToken
-    | Action.Withdraw
     | Action.WithdrawFToken
     | Action.Borrow
     | Action.Repay
@@ -145,6 +152,13 @@ export type DeleteLoanMessageDataParams = {
   extraArgs: DefaultExtraArgs;
 };
 
+export type WithdrawMessageDataParams = {
+  action: Action.Withdraw;
+  params: Partial<MessageParams>;
+  data: WithdrawMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
 export type DepositMessageDataParams = {
   action: Action.Deposit;
   data: DepositMessageData;
@@ -157,7 +171,8 @@ export type MessageDataParams =
   | UnregisterAddressMessageDataParams
   | CreateLoanMessageDataParams
   | DeleteLoanMessageDataParams
-  | DepositMessageDataParams;
+  | DepositMessageDataParams
+  | WithdrawMessageDataParams;
 
 export type MessageToSendBuilderParams = {
   accountId: Hex;
