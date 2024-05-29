@@ -2,15 +2,18 @@ import {
   buildEvmMessageToSend,
   estimateEVMWormholeDataGasLimit,
 } from "../../chains/evm/common/utils/message.js";
+import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { WORMHOLE_DATA } from "../constants/gmp.js";
 import { ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
-import { getFolksChain } from "./chain.js";
+import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
 
+import type { HubChain } from "../../chains/evm/hub/types/chain.js";
 import type {
+  FolksChain,
   FolksChainId,
   GenericAddress,
   NetworkType,
@@ -45,7 +48,7 @@ export function getWormholeData(folksChainId: FolksChainId): WormholeData {
   throw new Error(`Wormhole data not found for folksChainId: ${folksChainId}`);
 }
 
-export async function estimateReceiveGasLimit(
+async function estimateAdapterReceiveGasLimit(
   sourceFolksChainId: FolksChainId,
   destFolksChainId: FolksChainId,
   destFolksChainProvider: FolksProvider,
@@ -54,8 +57,8 @@ export async function estimateReceiveGasLimit(
   sourceAdapterAddress: GenericAddress,
   destAdapterAddress: GenericAddress,
   messageBuilderParams: MessageBuilderParams,
-  receiverValue = BigInt(0),
-  returnGasLimit = BigInt(0),
+  receiverValue: bigint,
+  returnGasLimit: bigint,
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
   switch (destFolksChain.chainType) {
@@ -102,4 +105,37 @@ export async function estimateReceiveGasLimit(
     default:
       return exhaustiveCheck(destFolksChain.chainType);
   }
+}
+
+export async function estimateReceiveGasLimit(
+  hubProvider: FolksProvider,
+  hubChain: HubChain,
+  folksChain: FolksChain,
+  adapters: MessageAdapters,
+  messageBuilderParams: MessageBuilderParams,
+  receiverValue = BigInt(0),
+  returnGasLimit = BigInt(0),
+) {
+  const sourceAdapterAddress = getSpokeChainAdapterAddress(
+    folksChain.folksChainId,
+    folksChain.network,
+    adapters.adapterId,
+  );
+  const destAdapterAddress = getHubChainAdapterAddress(
+    folksChain.network,
+    adapters.adapterId,
+  );
+
+  return await estimateAdapterReceiveGasLimit(
+    folksChain.folksChainId,
+    hubChain.folksChainId,
+    hubProvider,
+    folksChain.network,
+    adapters,
+    sourceAdapterAddress,
+    destAdapterAddress,
+    messageBuilderParams,
+    receiverValue,
+    returnGasLimit,
+  );
 }
