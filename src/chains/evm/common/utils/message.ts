@@ -7,11 +7,9 @@ import {
   UINT8_LENGTH,
 } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
-import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
 import {
-  convertToGenericAddress,
   getRandomGenericAddress,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
@@ -112,10 +110,7 @@ export function buildEvmMessageData(
     case Action.InviteAddress: {
       return concat([
         convertNumberToBytes(data.folksChainIdToInvite, UINT16_LENGTH),
-        convertToGenericAddress<ChainType.EVM>(
-          data.addressToInvite,
-          ChainType.EVM,
-        ),
+        data.addressToInvite,
       ]);
     }
     case Action.AcceptInviteAddress: {

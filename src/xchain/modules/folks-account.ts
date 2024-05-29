@@ -16,7 +16,7 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { FolksChainId } from "../../common/types/chain.js";
+import type { FolksChainId, GenericAddress } from "../../common/types/chain.js";
 import type {
   InviteAddressMessageData,
   MessageAdapters,
@@ -92,7 +92,7 @@ export const prepare = {
   async inviteAddress(
     accountId: Hex,
     folksChainIdToInvite: FolksChainId,
-    addressToInvite: Address,
+    addressToInvite: GenericAddress,
     adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
