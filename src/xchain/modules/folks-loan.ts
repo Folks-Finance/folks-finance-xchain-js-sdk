@@ -1,4 +1,3 @@
-import { getSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
 import {
   assertLoanTypeSupported,
@@ -12,9 +11,11 @@ import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
 } from "../../common/utils/adapter.js";
+import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
+  getSignerGenericAddress,
   getSpokeChain,
   getSpokeTokenData,
   getSpokeTokenDataTokenAddress,
@@ -30,6 +31,7 @@ import type {
   DepositExtraArgs,
   DepositMessageData,
   MessageAdapters,
+  OptionalFeeParams,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
@@ -60,11 +62,17 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const data: CreateLoanMessageData = {
       loanId,
       loanTypeId,
     };
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.CreateLoan,
@@ -79,7 +87,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.createLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           loanId,
@@ -105,11 +113,17 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const data: DeleteLoanMessageData = {
       accountId,
       loanId,
     };
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.DeleteLoan,
@@ -124,7 +138,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.deleteLoan(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           loanId,
@@ -165,6 +179,11 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
     const data: DepositMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
@@ -177,6 +196,7 @@ export const prepare = {
       amount,
     };
     const messageToSend = buildMessageToSend(folksChain.chainType, {
+      userAddress,
       accountId,
       adapters,
       action: Action.Deposit,
@@ -191,7 +211,7 @@ export const prepare = {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.deposit(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           loanId,
@@ -253,6 +273,15 @@ export const prepare = {
 
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const feeParams: OptionalFeeParams = {
+      receiverValue: await getReturnAdapterFees(),
+    };
+
     const data: WithdrawMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
@@ -260,23 +289,27 @@ export const prepare = {
       amount,
       isFAmount,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
-      accountId,
-      adapters,
-      action: Action.Withdraw,
-      sender: spokeChain.spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      params: { receiverValue: await getReturnAdapterFees() },
-      data,
-      extraArgs: "0x",
-    });
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      {
+        userAddress,
+        accountId,
+        adapters,
+        action: Action.Withdraw,
+        sender: spokeChain.spokeCommonAddress,
+        destinationChainId: hubChain.folksChainId,
+        handler: hubChain.hubAddress,
+        data,
+        extraArgs: "0x",
+      },
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.withdraw(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-          getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           folksChain.network,
           accountId,

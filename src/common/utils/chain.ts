@@ -1,4 +1,13 @@
+import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
+import {
+  getHubChainAdapterAddress,
+  isHubChain,
+} from "../../chains/evm/hub/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FOLKS_CHAIN, SPOKE_CHAIN } from "../constants/chain.js";
+import { ChainType } from "../types/chain.js";
+
+import { convertToGenericAddress } from "./address.js";
 
 import type {
   FolksChainId,
@@ -7,6 +16,8 @@ import type {
   SpokeChain,
   GenericAddress,
 } from "../types/chain.js";
+import type { FolksChainSigner } from "../types/core.js";
+import type { AdapterType } from "../types/message.js";
 import type { FolksTokenId, SpokeTokenData } from "../types/token.js";
 
 export function getFolksChain(
@@ -107,4 +118,42 @@ export function getSpokeTokenDataTokenAddress(
   throw new Error(
     `Token address not found for spokeTokenData for folks token: ${spokeTokenData.folksTokenId} in spoke: ${spokeTokenData.spokeAddress}`,
   );
+}
+
+export function getSpokeChainAdapterAddress(
+  folksChainId: FolksChainId,
+  network: NetworkType,
+  adapterType: AdapterType,
+): GenericAddress {
+  const spokeChain = getSpokeChain(folksChainId, network);
+  const adapterAddress = spokeChain.adapters[adapterType];
+  if (adapterAddress) return adapterAddress;
+  throw new Error(
+    `Adapter ${adapterType} not found for spoke chain ${folksChainId}`,
+  );
+}
+
+export function getAdapterAddress(
+  folksChainId: FolksChainId,
+  network: NetworkType,
+  adapterType: AdapterType,
+) {
+  if (isHubChain(folksChainId, network))
+    return getHubChainAdapterAddress(network, adapterType);
+  return getSpokeChainAdapterAddress(folksChainId, network, adapterType);
+}
+
+export function getSignerGenericAddress(
+  folksChainSigner: FolksChainSigner,
+): GenericAddress {
+  const chainType = folksChainSigner.chainType;
+  switch (chainType) {
+    case ChainType.EVM:
+      return convertToGenericAddress(
+        getEvmSignerAddress(folksChainSigner.signer),
+        chainType,
+      );
+    default:
+      return exhaustiveCheck(chainType);
+  }
 }

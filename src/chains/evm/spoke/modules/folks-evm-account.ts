@@ -1,4 +1,4 @@
-import { getSignerAccount } from "../../common/utils/chain.js";
+import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
   getSpokeCommonContract,
@@ -58,14 +58,13 @@ export const prepare = {
       },
     );
     const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
 
     return {
       adapters,
       adapterFee,
       returnAdapterFee,
       gasLimit,
-      receiveGasLimit,
+      receiveGasLimit: messageToSend.params.gasLimit,
       returnReceiveGasLimit,
       spokeCommonAddress,
     };
@@ -234,7 +233,7 @@ export const write = {
     };
 
     return await spokeCommon.write.createAccount([params, accountId], {
-      account: getSignerAccount(signer),
+      account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
       value: adapterFee,
@@ -275,7 +274,7 @@ export const write = {
     return await spokeCommon.write.inviteAddress(
       [params, accountId, folksChainIdToInvite, addressToInvite],
       {
-        account: getSignerAccount(signer),
+        account: getEvmSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,
@@ -313,7 +312,7 @@ export const write = {
     };
 
     return await spokeCommon.write.acceptInviteAddress([params, accountId], {
-      account: getSignerAccount(signer),
+      account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
       value: adapterFee,
@@ -353,7 +352,7 @@ export const write = {
     return await spokeCommon.write.unregisterAddress(
       [params, accountId, folksChainIdToUnregister],
       {
-        account: getSignerAccount(signer),
+        account: getEvmSignerAccount(signer),
         chain: signer.chain,
         gasLimit: gasLimit,
         value: adapterFee,

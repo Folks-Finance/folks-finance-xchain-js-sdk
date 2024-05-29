@@ -5,6 +5,7 @@ import type {
   GenericAddress,
   NetworkType,
 } from "../../../../common/types/chain.js";
+import type { AdapterType } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { HubChain } from "../types/chain.js";
@@ -54,4 +55,12 @@ export function getHubTokenAddress(hubTokenData: HubTokenData): GenericAddress {
   throw new Error(
     `Hub token address not found for folksTokenId: ${hubTokenData.folksTokenId}`,
   );
+}
+
+export function getHubChainAdapterAddress(
+  network: NetworkType,
+  adapterType: AdapterType,
+) {
+  const hubChain = getHubChain(network);
+  return hubChain.adapters[adapterType];
 }

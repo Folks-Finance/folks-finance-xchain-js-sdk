@@ -22,3 +22,10 @@ export type FolksCoreConfig = {
   network: NetworkType;
   provider: FolksCoreProvider;
 };
+
+export type FolksEvmSigner = {
+  signer: EVMSigner;
+  chainType: ChainType.EVM;
+};
+
+export type FolksChainSigner = FolksEvmSigner;
