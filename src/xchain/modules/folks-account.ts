@@ -9,7 +9,10 @@ import {
   assertSpokeChainSupported,
   getSpokeChain,
 } from "../../common/utils/chain.js";
-import { buildMessageToSend } from "../../common/utils/messages.js";
+import {
+  buildMessageToSend,
+  estimateReceiveGasLimit,
+} from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
@@ -17,7 +20,9 @@ import type { FolksChainId } from "../../common/types/chain.js";
 import type {
   InviteAddressMessageData,
   MessageAdapters,
+  MessageBuilderParams,
   UnregisterAddressMessageData,
+  OptionalMessageParams,
 } from "../../common/types/message.js";
 import type {
   PrepareAcceptInviteAddressCall,
@@ -42,7 +47,7 @@ export const prepare = {
     );
     const hubChain = getHubChain(folksChain.network);
 
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       accountId,
       adapters,
       action: Action.CreateAccount,
@@ -51,7 +56,23 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data: "0x",
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalMessageParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
+      FolksCore.getHubProvider(),
+      folksChain.network,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:

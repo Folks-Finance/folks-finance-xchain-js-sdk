@@ -58,14 +58,13 @@ export const prepare = {
       },
     );
     const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
 
     return {
       adapters,
       adapterFee,
       returnAdapterFee,
       gasLimit,
-      receiveGasLimit,
+      receiveGasLimit: messageToSend.params.gasLimit,
       returnReceiveGasLimit,
       spokeCommonAddress,
     };

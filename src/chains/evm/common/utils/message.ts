@@ -1,6 +1,7 @@
 import { concat, isHex } from "viem";
 
 import {
+  BYTES32_LENGTH,
   UINT16_LENGTH,
   UINT256_LENGTH,
   UINT8_LENGTH,
@@ -17,24 +18,29 @@ import {
 import {
   convertBooleanToByte,
   convertNumberToBytes,
+  getRandomBytes,
 } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
+
+import { getWormholeDataAdapterContract } from "./contract.js";
+import { encodeWormholeEvmPayloadWithMetadata } from "./gmp.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
 import type {
   MessageAdapters,
+  MessageBuilderParams,
   MessageParams,
   MessageToSend,
-  MessageToSendBuilderParams,
+  OptionalMessageParams,
 } from "../../../../common/types/message.js";
-import type { Hex } from "viem";
+import type { Client, Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
   adapters: MessageAdapters,
 ): MessageParams => ({
   ...adapters,
   receiverValue: BigInt(0),
-  gasLimit: BigInt(30000),
+  gasLimit: BigInt(0),
   returnGasLimit: BigInt(0),
 });
 
@@ -42,7 +48,7 @@ export function buildMessagePayload(
   action: Action,
   accountId: Hex,
   userAddr: GenericAddress,
-  data: string,
+  data: Hex,
 ): Hex {
   if (!isGenericAddress(accountId)) throw Error("Unknown account id format");
   if (!isGenericAddress(userAddr)) throw Error("Unknown user address format");
@@ -95,8 +101,92 @@ export function buildSendTokenExtraArgsWhenAdding(
   return extraArgsToBytes(spokeTokenAddress, hubPoolAddress, amount);
 }
 
+export function buildEvmMessageData(
+  messageToSendBuilderParams: MessageBuilderParams,
+): Hex {
+  const { action, data } = messageToSendBuilderParams;
+  switch (action) {
+    case Action.CreateAccount: {
+      return data;
+    }
+    case Action.InviteAddress: {
+      return concat([
+        convertNumberToBytes(data.folksChainIdToInvite, UINT16_LENGTH),
+        convertToGenericAddress<ChainType.EVM>(
+          data.addressToInvite,
+          ChainType.EVM,
+        ),
+      ]);
+    }
+    case Action.AcceptInviteAddress: {
+      return data;
+    }
+    case Action.UnregisterAddress: {
+      return convertNumberToBytes(data.folksChainIdToUnregister, UINT16_LENGTH);
+    }
+    case Action.AddDelegate: {
+      throw new Error("Not implemented yet: Action.AddDelegate case");
+    }
+    case Action.RemoveDelegate: {
+      throw new Error("Not implemented yet: Action.RemoveDelegate case");
+    }
+    case Action.CreateLoan: {
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
+      ]);
+    }
+    case Action.DeleteLoan: {
+      return data.loanId;
+    }
+    case Action.Deposit: {
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.amount, UINT256_LENGTH),
+      ]);
+    }
+    case Action.DepositFToken: {
+      throw new Error("Not implemented yet: Action.DepositFToken case");
+    }
+    case Action.Withdraw: {
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.receiverFolksChainId, UINT16_LENGTH),
+        convertNumberToBytes(data.amount, UINT256_LENGTH),
+        convertBooleanToByte(data.isFAmount),
+      ]);
+    }
+    case Action.WithdrawFToken: {
+      throw new Error("Not implemented yet: Action.WithdrawFToken case");
+    }
+    case Action.Borrow: {
+      throw new Error("Not implemented yet: Action.Borrow case");
+    }
+    case Action.Repay: {
+      throw new Error("Not implemented yet: Action.Repay case");
+    }
+    case Action.RepayWithCollateral: {
+      throw new Error("Not implemented yet: Action.RepayWithCollateral case");
+    }
+    case Action.Liquidate: {
+      throw new Error("Not implemented yet: Action.Liquidate case");
+    }
+    case Action.SwitchBorrowType: {
+      throw new Error("Not implemented yet: Action.SwitchBorrowType case");
+    }
+    case Action.SendToken: {
+      throw new Error("Not implemented yet: Action.SendToken case");
+    }
+    default:
+      return exhaustiveCheck(action);
+  }
+}
+
 export function buildEvmMessageToSend(
-  messageToSendBuilderParams: MessageToSendBuilderParams,
+  messageToSendBuilderParams: MessageBuilderParams,
+  feeParams: OptionalMessageParams,
 ): MessageToSend {
   const {
     accountId,
@@ -105,12 +195,12 @@ export function buildEvmMessageToSend(
     destinationChainId,
     handler,
     action,
-    data,
     extraArgs,
   } = messageToSendBuilderParams;
+  const data = buildEvmMessageData(messageToSendBuilderParams);
+  const params = { ...DEFAULT_MESSAGE_PARAMS(adapters), ...feeParams };
   switch (action) {
     case Action.CreateAccount: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -128,7 +218,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.InviteAddress: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -138,13 +227,7 @@ export function buildEvmMessageToSend(
           Action.InviteAddress,
           accountId,
           getRandomGenericAddress(),
-          concat([
-            convertNumberToBytes(data.folksChainIdToInvite, UINT16_LENGTH),
-            convertToGenericAddress<ChainType.EVM>(
-              data.addressToInvite,
-              ChainType.EVM,
-            ),
-          ]),
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",
@@ -152,7 +235,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.AcceptInviteAddress: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -170,7 +252,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.UnregisterAddress: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -180,7 +261,7 @@ export function buildEvmMessageToSend(
           Action.UnregisterAddress,
           accountId,
           getRandomGenericAddress(),
-          convertNumberToBytes(data.folksChainIdToUnregister, UINT16_LENGTH),
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
@@ -194,7 +275,6 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -204,10 +284,7 @@ export function buildEvmMessageToSend(
           Action.CreateLoan,
           accountId,
           getRandomGenericAddress(),
-          concat([
-            data.loanId,
-            convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
-          ]),
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
@@ -215,7 +292,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.DeleteLoan: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -223,9 +299,9 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(
           Action.DeleteLoan,
-          data.accountId,
+          accountId,
           getRandomGenericAddress(),
-          data.loanId,
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
@@ -233,7 +309,6 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.Deposit: {
-      const params = DEFAULT_MESSAGE_PARAMS(adapters);
       const message: MessageToSend = {
         params,
         sender,
@@ -243,11 +318,7 @@ export function buildEvmMessageToSend(
           Action.Deposit,
           accountId,
           getRandomGenericAddress(),
-          concat([
-            data.loanId,
-            convertNumberToBytes(data.poolId, UINT8_LENGTH),
-            convertNumberToBytes(data.amount, UINT256_LENGTH),
-          ]),
+          data,
         ),
         finalityLevel: FINALITY.FINALISED,
         extraArgs: buildSendTokenExtraArgsWhenAdding(
@@ -263,10 +334,6 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.DepositFToken case");
     }
     case Action.Withdraw: {
-      const params = {
-        ...DEFAULT_MESSAGE_PARAMS(adapters),
-        ...messageToSendBuilderParams.params,
-      };
       const message: MessageToSend = {
         params,
         sender,
@@ -276,13 +343,7 @@ export function buildEvmMessageToSend(
           Action.Withdraw,
           accountId,
           getRandomGenericAddress(),
-          concat([
-            data.loanId,
-            convertNumberToBytes(data.poolId, UINT8_LENGTH),
-            convertNumberToBytes(data.receiverFolksChainId, UINT16_LENGTH),
-            convertNumberToBytes(data.amount, UINT256_LENGTH),
-            convertBooleanToByte(data.isFAmount),
-          ]),
+          data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
@@ -313,4 +374,42 @@ export function buildEvmMessageToSend(
     default:
       return exhaustiveCheck(action);
   }
+}
+
+export async function estimateEVMWormholeDataGasLimit(
+  provider: Client,
+  messageBuilderParams: MessageBuilderParams,
+  receiverValue: bigint,
+  returnGasLimit: bigint,
+  sourceWormholeChainId: number,
+  wormholeRelayer: GenericAddress,
+  wormholeDataAdapterAddress: GenericAddress,
+  sourceWormholeDataAdapterAddress: GenericAddress,
+) {
+  const messageId = getRandomBytes(BYTES32_LENGTH);
+  const wormholeDataAdapter = getWormholeDataAdapterContract(
+    provider,
+    wormholeDataAdapterAddress,
+  );
+  return await wormholeDataAdapter.estimateGas.receiveWormholeMessages(
+    [
+      encodeWormholeEvmPayloadWithMetadata(
+        messageBuilderParams.adapters.returnAdapterId,
+        returnGasLimit,
+        messageBuilderParams.sender,
+        messageBuilderParams.handler,
+        buildMessagePayload(
+          messageBuilderParams.action,
+          messageBuilderParams.accountId,
+          getRandomGenericAddress(),
+          buildEvmMessageData(messageBuilderParams),
+        ),
+      ),
+      [],
+      sourceWormholeDataAdapterAddress,
+      sourceWormholeChainId,
+      messageId,
+    ],
+    { value: receiverValue, account: wormholeRelayer },
+  );
 }

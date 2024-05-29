@@ -48,6 +48,8 @@ export type MessageParams = {
   returnGasLimit: bigint;
 } & MessageAdapters;
 
+export type OptionalMessageParams = Partial<MessageParams>;
+
 export type MessageToSend = {
   params: MessageParams;
   sender: GenericAddress;
@@ -154,7 +156,6 @@ export type DeleteLoanMessageDataParams = {
 
 export type WithdrawMessageDataParams = {
   action: Action.Withdraw;
-  params: Partial<MessageParams>;
   data: WithdrawMessageData;
   extraArgs: DefaultExtraArgs;
 };
@@ -174,7 +175,7 @@ export type MessageDataParams =
   | DepositMessageDataParams
   | WithdrawMessageDataParams;
 
-export type MessageToSendBuilderParams = {
+export type MessageBuilderParams = {
   accountId: Hex;
   adapters: MessageAdapters;
   sender: GenericAddress;

@@ -30,6 +30,7 @@ import type {
   DepositExtraArgs,
   DepositMessageData,
   MessageAdapters,
+  OptionalMessageParams,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
@@ -253,6 +254,10 @@ export const prepare = {
 
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
+    const feeParams: OptionalMessageParams = {
+      receiverValue: await getReturnAdapterFees(),
+    };
+
     const data: WithdrawMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
@@ -260,17 +265,20 @@ export const prepare = {
       amount,
       isFAmount,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
-      accountId,
-      adapters,
-      action: Action.Withdraw,
-      sender: spokeChain.spokeCommonAddress,
-      destinationChainId: hubChain.folksChainId,
-      handler: hubChain.hubAddress,
-      params: { receiverValue: await getReturnAdapterFees() },
-      data,
-      extraArgs: "0x",
-    });
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      {
+        accountId,
+        adapters,
+        action: Action.Withdraw,
+        sender: spokeChain.spokeCommonAddress,
+        destinationChainId: hubChain.folksChainId,
+        handler: hubChain.hubAddress,
+        data,
+        extraArgs: "0x",
+      },
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
