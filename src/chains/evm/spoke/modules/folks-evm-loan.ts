@@ -17,13 +17,13 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
+import { getSendTokenExtraArgsWhenAdding } from "../../../../common/utils/messages.js";
+import { getSignerAccount } from "../../common/utils/chain.js";
+import { sendERC20Approve } from "../../common/utils/contract.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
-  getSendTokenExtraArgsWhenAdding,
-} from "../../../../common/utils/messages.js";
-import { getSignerAccount } from "../../common/utils/chain.js";
-import { sendERC20Approve } from "../../common/utils/contract.js";
+} from "../../common/utils/message.js";
 import { getHubChain, getHubTokenData } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,

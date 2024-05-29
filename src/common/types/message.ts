@@ -1,4 +1,4 @@
-import type { GenericAddress } from "./chain.js";
+import type { FolksChainId, GenericAddress } from "./chain.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -55,3 +55,60 @@ export type MessageToSend = {
   finalityLevel: Finality;
   extraArgs: Hex;
 };
+
+// Data
+export type DefaultMessageData = "0x";
+
+export type InviteAddressMessageData = {
+  folksChainIdToInvite: FolksChainId;
+  addressToInvite: GenericAddress;
+};
+
+export type UnregisterAddressMessageData = {
+  folksChainIdToUnregister: FolksChainId;
+};
+
+// Params
+export type DefaultMessageDataParams = {
+  action:
+    | Action.CreateAccount
+    | Action.AcceptInviteAddress
+    | Action.AddDelegate
+    | Action.RemoveDelegate
+    | Action.CreateLoan
+    | Action.DeleteLoan
+    | Action.Deposit
+    | Action.DepositFToken
+    | Action.Withdraw
+    | Action.WithdrawFToken
+    | Action.Borrow
+    | Action.Repay
+    | Action.RepayWithCollateral
+    | Action.Liquidate
+    | Action.SwitchBorrowType
+    | Action.SendToken;
+  data: DefaultMessageData;
+};
+
+export type InviteAddressMessageDataParams = {
+  action: Action.InviteAddress;
+  data: InviteAddressMessageData;
+};
+
+export type UnregisterAddressMessageDataParams = {
+  action: Action.UnregisterAddress;
+  data: UnregisterAddressMessageData;
+};
+
+export type MessageDataParams =
+  | DefaultMessageDataParams
+  | InviteAddressMessageDataParams
+  | UnregisterAddressMessageDataParams;
+
+export type MessageToSendBuilderParams = {
+  accountId: Hex;
+  adapters: MessageAdapters;
+  sender: GenericAddress;
+  destinationChainId: FolksChainId;
+  handler: GenericAddress;
+} & MessageDataParams;

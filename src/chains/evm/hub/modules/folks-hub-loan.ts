@@ -7,17 +7,17 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
+import { getSendTokenExtraArgsWhenRemoving } from "../../../../common/utils/messages.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
-  getSendTokenExtraArgsWhenRemoving,
-} from "../../../../common/utils/messages.js";
+} from "../../common/utils/message.js";
 import { getHubChain, getHubTokenData } from "../utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
 import type {
-  NetworkType,
   FolksChainId,
+  NetworkType,
 } from "../../../../common/types/chain.js";
 import type {
   MessageAdapters,

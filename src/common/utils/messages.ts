@@ -1,6 +1,9 @@
-import { concat, isHex } from "viem";
+import { concat } from "viem";
 
-import { UINT16_LENGTH, UINT256_LENGTH } from "../constants/bytes.js";
+import { buildEvmMessageToSend } from "../../chains/evm/common/utils/message.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
+import { UINT256_LENGTH } from "../constants/bytes.js";
+import { ChainType } from "../types/chain.js";
 import { TokenType } from "../types/token.js";
 
 import { isGenericAddress } from "./address.js";
@@ -9,39 +12,11 @@ import { convertNumberToBytes } from "./bytes.js";
 import type { HubTokenData } from "../../chains/evm/hub/types/token.js";
 import type { GenericAddress } from "../types/chain.js";
 import type {
-  MessageAdapters,
-  MessageParams,
-  Action,
+  MessageToSend,
+  MessageToSendBuilderParams,
 } from "../types/message.js";
 import type { SpokeTokenData } from "../types/token.js";
 import type { Hex } from "viem";
-
-export const DEFAULT_MESSAGE_PARAMS = (
-  adapters: MessageAdapters,
-): MessageParams => ({
-  ...adapters,
-  receiverValue: BigInt(0),
-  gasLimit: BigInt(30000),
-  returnGasLimit: BigInt(0),
-});
-
-export function buildMessagePayload(
-  action: Action,
-  accountId: Hex,
-  userAddr: GenericAddress,
-  data: string,
-): Hex {
-  if (!isGenericAddress(accountId)) throw Error("Unknown account id format");
-  if (!isGenericAddress(userAddr)) throw Error("Unknown user address format");
-  if (!isHex(data)) throw Error("Unknown data format");
-
-  return concat([
-    convertNumberToBytes(action, UINT16_LENGTH),
-    accountId,
-    userAddr,
-    data,
-  ]);
-}
 
 export function extraArgsToBytes(
   tokenAddr: GenericAddress,
@@ -93,4 +68,17 @@ export function getSendTokenExtraArgsWhenRemoving(
     spokeTokenData.spokeAddress,
     BigInt(amount),
   );
+}
+
+export function buildMessageToSend(
+  chainType: ChainType,
+  messageToSendBuilderParams: MessageToSendBuilderParams,
+): MessageToSend {
+  switch (chainType) {
+    case ChainType.EVM: {
+      return buildEvmMessageToSend(messageToSendBuilderParams);
+    }
+    default:
+      return exhaustiveCheck(chainType);
+  }
 }
