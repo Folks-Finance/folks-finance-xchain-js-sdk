@@ -21,14 +21,14 @@ import type {
   MessageAdapters,
   MessageToSend,
   MessageBuilderParams,
-  OptionalMessageParams,
+  OptionalFeeParams,
 } from "../types/message.js";
 import type { Client as EVMProvider } from "viem";
 
 export function buildMessageToSend(
   chainType: ChainType,
   messageToSendBuilderParams: MessageBuilderParams,
-  feeParams: OptionalMessageParams = {},
+  feeParams: OptionalFeeParams = {},
 ): MessageToSend {
   switch (chainType) {
     case ChainType.EVM: {

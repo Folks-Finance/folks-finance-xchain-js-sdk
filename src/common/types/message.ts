@@ -42,13 +42,15 @@ export type MessageAdapters = {
   returnAdapterId: AdapterType;
 };
 
-export type MessageParams = {
+export type FeeParams = {
   receiverValue: bigint;
   gasLimit: bigint;
   returnGasLimit: bigint;
-} & MessageAdapters;
+};
 
-export type OptionalMessageParams = Partial<MessageParams>;
+export type MessageParams = FeeParams & MessageAdapters;
+
+export type OptionalFeeParams = Partial<FeeParams>;
 
 export type MessageToSend = {
   params: MessageParams;

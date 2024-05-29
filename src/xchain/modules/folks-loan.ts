@@ -31,7 +31,7 @@ import type {
   DepositExtraArgs,
   DepositMessageData,
   MessageAdapters,
-  OptionalMessageParams,
+  OptionalFeeParams,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
@@ -278,7 +278,7 @@ export const prepare = {
       chainType: folksChain.chainType,
     });
 
-    const feeParams: OptionalMessageParams = {
+    const feeParams: OptionalFeeParams = {
       receiverValue: await getReturnAdapterFees(),
     };
 

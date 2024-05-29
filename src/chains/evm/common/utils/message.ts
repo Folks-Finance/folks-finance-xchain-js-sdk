@@ -29,7 +29,7 @@ import type {
   MessageBuilderParams,
   MessageParams,
   MessageToSend,
-  OptionalMessageParams,
+  OptionalFeeParams,
 } from "../../../../common/types/message.js";
 import type { Client, Hex } from "viem";
 
@@ -181,7 +181,7 @@ export function buildEvmMessageData(
 
 export function buildEvmMessageToSend(
   messageToSendBuilderParams: MessageBuilderParams,
-  feeParams: OptionalMessageParams,
+  feeParams: OptionalFeeParams,
 ): MessageToSend {
   const {
     accountId,

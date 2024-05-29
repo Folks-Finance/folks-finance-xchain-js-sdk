@@ -27,7 +27,7 @@ import type {
   MessageAdapters,
   MessageBuilderParams,
   UnregisterAddressMessageData,
-  OptionalMessageParams,
+  OptionalFeeParams,
 } from "../../common/types/message.js";
 import type {
   PrepareAcceptInviteAddressCall,
@@ -68,7 +68,7 @@ export const prepare = {
       data: "0x",
       extraArgs: "0x",
     };
-    const feeParams: OptionalMessageParams = {};
+    const feeParams: OptionalFeeParams = {};
 
     const sourceAdapterAddress = getSpokeChainAdapterAddress(
       folksChain.folksChainId,
