@@ -8,9 +8,13 @@ import { ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
-import { getAdapterAddress, getFolksChain } from "./chain.js";
+import { getFolksChain } from "./chain.js";
 
-import type { FolksChainId, NetworkType } from "../types/chain.js";
+import type {
+  FolksChainId,
+  GenericAddress,
+  NetworkType,
+} from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type { WormholeData } from "../types/gmp.js";
 import type {
@@ -47,6 +51,8 @@ export async function estimateReceiveGasLimit(
   destFolksChainProvider: FolksProvider,
   network: NetworkType,
   adapters: MessageAdapters,
+  sourceAdapterAddress: GenericAddress,
+  destAdapterAddress: GenericAddress,
   messageBuilderParams: MessageBuilderParams,
   receiverValue = BigInt(0),
   returnGasLimit = BigInt(0),
@@ -62,16 +68,7 @@ export async function estimateReceiveGasLimit(
             getWormholeData(destFolksChainId).wormholeRelayer,
             ChainType.EVM,
           );
-          const wormholeDataAdapterAddress = getAdapterAddress(
-            destFolksChainId,
-            network,
-            adapters.adapterId,
-          );
-          const sourceWormholeDataAdapterAddress = getAdapterAddress(
-            sourceFolksChainId,
-            network,
-            adapters.adapterId,
-          );
+
           return await estimateEVMWormholeDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
@@ -80,8 +77,8 @@ export async function estimateReceiveGasLimit(
             returnGasLimit,
             sourceWormholeChainId,
             wormholeRelayer,
-            wormholeDataAdapterAddress,
-            sourceWormholeDataAdapterAddress,
+            destAdapterAddress,
+            sourceAdapterAddress,
           );
         }
         case AdapterType.WORMHOLE_CCTP: {

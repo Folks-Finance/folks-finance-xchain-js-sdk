@@ -1,5 +1,8 @@
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
-import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
+import {
+  getHubChain,
+  getHubChainAdapterAddress,
+} from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
@@ -9,6 +12,7 @@ import {
   assertSpokeChainSupported,
   getSignerGenericAddress,
   getSpokeChain,
+  getSpokeChainAdapterAddress,
 } from "../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -66,12 +70,24 @@ export const prepare = {
     };
     const feeParams: OptionalMessageParams = {};
 
+    const sourceAdapterAddress = getSpokeChainAdapterAddress(
+      folksChain.folksChainId,
+      folksChain.network,
+      adapters.adapterId,
+    );
+    const destAdapterAddress = getHubChainAdapterAddress(
+      folksChain.network,
+      adapters.adapterId,
+    );
+
     feeParams.gasLimit = await estimateReceiveGasLimit(
       folksChain.folksChainId,
       hubChain.folksChainId,
       FolksCore.getHubProvider(),
       folksChain.network,
       adapters,
+      sourceAdapterAddress,
+      destAdapterAddress,
       messageBuilderParams,
     );
 
