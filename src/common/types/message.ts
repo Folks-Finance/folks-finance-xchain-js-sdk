@@ -76,6 +76,11 @@ export type CreateLoanMessageData = {
   loanTypeId: LoanType;
 };
 
+export type DeleteLoanMessageData = {
+  accountId: Hex;
+  loanId: Hex;
+};
+
 // Params
 export type DefaultMessageDataParams = {
   action:
@@ -83,7 +88,6 @@ export type DefaultMessageDataParams = {
     | Action.AcceptInviteAddress
     | Action.AddDelegate
     | Action.RemoveDelegate
-    | Action.DeleteLoan
     | Action.Deposit
     | Action.DepositFToken
     | Action.Withdraw
@@ -114,11 +118,17 @@ export type CreateLoanMessageDataParams = {
   data: CreateLoanMessageData;
 };
 
+export type DeleteLoanMessageDataParams = {
+  action: Action.DeleteLoan;
+  data: DeleteLoanMessageData;
+};
+
 export type MessageDataParams =
   | DefaultMessageDataParams
   | InviteAddressMessageDataParams
   | UnregisterAddressMessageDataParams
-  | CreateLoanMessageDataParams;
+  | CreateLoanMessageDataParams
+  | DeleteLoanMessageDataParams;
 
 export type MessageToSendBuilderParams = {
   accountId: Hex;

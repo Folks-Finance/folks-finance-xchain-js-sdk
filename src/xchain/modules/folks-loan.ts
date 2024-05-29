@@ -24,6 +24,7 @@ import { FolksCore } from "../core/folks-core.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type {
   CreateLoanMessageData,
+  DeleteLoanMessageData,
   MessageAdapters,
 } from "../../common/types/message.js";
 import type {
@@ -92,17 +93,36 @@ export const prepare = {
       folksChain.folksChainId,
       adapters.adapterId,
     );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const data: DeleteLoanMessageData = {
+      accountId,
+      loanId,
+    };
+    const messageToSend = buildMessageToSend(folksChain.chainType, {
+      accountId,
+      adapters,
+      action: Action.DeleteLoan,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+    });
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
         return await FolksEvmLoan.prepare.deleteLoan(
-          folksChain.folksChainId,
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           getSignerAddress(FolksCore.getSigner<ChainType.EVM>()),
-          folksChain.network,
+          messageToSend,
           accountId,
           loanId,
           adapters,
+          spokeChain,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
