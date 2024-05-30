@@ -7,7 +7,6 @@ import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js"
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertSpokeChainSupported,
-  getFolksChain,
   getSignerGenericAddress,
   getSpokeChain,
 } from "../../common/utils/chain.js";
@@ -104,10 +103,6 @@ export const prepare = {
     adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
-    const folksChainToInvite = getFolksChain(
-      folksChainIdToInvite,
-      folksChain.network,
-    );
 
     // check adapters are compatible
     assertAdapterSupportsDataMessage(
@@ -164,10 +159,7 @@ export const prepare = {
           messageToSend,
           accountId,
           folksChainIdToInvite,
-          convertFromGenericAddress(
-            addressToInvite,
-            folksChainToInvite.chainType,
-          ),
+          addressToInvite,
           adapters,
           spokeChain,
         );

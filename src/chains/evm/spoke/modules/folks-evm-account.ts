@@ -4,7 +4,10 @@ import {
   getSpokeCommonContract,
 } from "../utils/contract.js";
 
-import type { EvmAddress } from "../../../../common/types/address.js";
+import type {
+  EvmAddress,
+  GenericAddress,
+} from "../../../../common/types/address.js";
 import type {
   FolksChainId,
   SpokeChain,
@@ -72,7 +75,7 @@ export const prepare = {
     messageToSend: MessageToSend,
     accountId: AccountId,
     folksChainIdToInvite: number,
-    addressToInvite: EvmAddress,
+    addressToInvite: GenericAddress,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
