@@ -10,7 +10,7 @@ import type { GenericAddress } from "../../../../common/types/chain.js";
 import type { AdapterType } from "../../../../common/types/message.js";
 import type { Hex } from "viem";
 
-export function encodeWormholeEvmPayloadWithMetadata(
+export function encodeEvmPayloadWithMetadata(
   returnAdapterId: AdapterType,
   returnGasLimit: bigint,
   sender: GenericAddress,

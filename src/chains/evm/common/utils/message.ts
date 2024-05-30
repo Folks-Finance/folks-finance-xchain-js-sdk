@@ -20,8 +20,11 @@ import {
 } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
-import { getWormholeDataAdapterContract } from "./contract.js";
-import { encodeWormholeEvmPayloadWithMetadata } from "./gmp.js";
+import {
+  getCCIPDataAdapterContract as getCcipDataAdapterContract,
+  getWormholeDataAdapterContract,
+} from "./contract.js";
+import { encodeEvmPayloadWithMetadata } from "./gmp.js";
 
 import type { GenericAddress } from "../../../../common/types/chain.js";
 import type {
@@ -31,6 +34,7 @@ import type {
   MessageToSend,
   OptionalFeeParams,
 } from "../../../../common/types/message.js";
+import type { CCIPMessageReceived } from "../types/gmp.js";
 import type { Client, Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
@@ -371,7 +375,7 @@ export function buildEvmMessageToSend(
   }
 }
 
-export async function estimateEVMWormholeDataGasLimit(
+export async function estimateEvmWormholeDataGasLimit(
   provider: Client,
   messageBuilderParams: MessageBuilderParams,
   receiverValue: bigint,
@@ -388,7 +392,7 @@ export async function estimateEVMWormholeDataGasLimit(
   );
   return await wormholeDataAdapter.estimateGas.receiveWormholeMessages(
     [
-      encodeWormholeEvmPayloadWithMetadata(
+      encodeEvmPayloadWithMetadata(
         messageBuilderParams.adapters.returnAdapterId,
         returnGasLimit,
         messageBuilderParams.sender,
@@ -407,4 +411,43 @@ export async function estimateEVMWormholeDataGasLimit(
     ],
     { value: receiverValue, account: wormholeRelayer },
   );
+}
+
+export async function estimateEvmCcipDataGasLimit(
+  provider: Client,
+  messageBuilderParams: MessageBuilderParams,
+  returnGasLimit: bigint,
+  sourceCcipChainId: bigint,
+  ccipRouter: GenericAddress,
+  ccipDataAdapterAddress: GenericAddress,
+  sourceCcipDataAdapterAddress: GenericAddress,
+) {
+  const messageId = getRandomBytes(BYTES32_LENGTH);
+
+  const ccipMessage: CCIPMessageReceived = {
+    messageId,
+    sourceChainSelector: sourceCcipChainId,
+    sender: sourceCcipDataAdapterAddress,
+    data: encodeEvmPayloadWithMetadata(
+      messageBuilderParams.adapters.returnAdapterId,
+      returnGasLimit,
+      messageBuilderParams.sender,
+      messageBuilderParams.handler,
+      buildMessagePayload(
+        messageBuilderParams.action,
+        messageBuilderParams.accountId,
+        messageBuilderParams.userAddress,
+        buildEvmMessageData(messageBuilderParams),
+      ),
+    ),
+    destTokenAmounts: [],
+  };
+
+  const ccipDataAdapter = getCcipDataAdapterContract(
+    provider,
+    ccipDataAdapterAddress,
+  );
+  return await ccipDataAdapter.estimateGas.ccipReceive([ccipMessage], {
+    account: ccipRouter,
+  });
 }

@@ -1,15 +1,16 @@
 import {
   buildEvmMessageToSend,
-  estimateEVMWormholeDataGasLimit,
+  estimateEvmCcipDataGasLimit,
+  estimateEvmWormholeDataGasLimit,
 } from "../../chains/evm/common/utils/message.js";
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
-import { WORMHOLE_DATA } from "../constants/gmp.js";
 import { ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
+import { getCcipData, getWormholeData } from "./gmp.js";
 
 import type { HubChain } from "../../chains/evm/hub/types/chain.js";
 import type {
@@ -19,11 +20,10 @@ import type {
   NetworkType,
 } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
-import type { WormholeData } from "../types/gmp.js";
 import type {
   MessageAdapters,
-  MessageToSend,
   MessageBuilderParams,
+  MessageToSend,
   OptionalFeeParams,
 } from "../types/message.js";
 import type { Client as EVMProvider } from "viem";
@@ -40,12 +40,6 @@ export function buildMessageToSend(
     default:
       return exhaustiveCheck(chainType);
   }
-}
-
-export function getWormholeData(folksChainId: FolksChainId): WormholeData {
-  const wormholeData = WORMHOLE_DATA[folksChainId];
-  if (wormholeData) return wormholeData;
-  throw new Error(`Wormhole data not found for folksChainId: ${folksChainId}`);
 }
 
 async function estimateAdapterReceiveGasLimit(
@@ -72,7 +66,7 @@ async function estimateAdapterReceiveGasLimit(
             ChainType.EVM,
           );
 
-          return await estimateEVMWormholeDataGasLimit(
+          return await estimateEvmWormholeDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
             messageBuilderParams,
@@ -93,7 +87,21 @@ async function estimateAdapterReceiveGasLimit(
           throw new Error("Not implemented yet: AdapterType.HUB case");
         }
         case AdapterType.CCIP_DATA: {
-          throw new Error("Not implemented yet: AdapterType.CCIP_DATA case");
+          const sourceCcipChainId = getCcipData(sourceFolksChainId).ccipChainId;
+          const ccipRouter = convertFromGenericAddress(
+            getCcipData(destFolksChainId).ccipRouter,
+            ChainType.EVM,
+          );
+          return await estimateEvmCcipDataGasLimit(
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            destFolksChainProvider as EVMProvider,
+            messageBuilderParams,
+            returnGasLimit,
+            sourceCcipChainId,
+            ccipRouter,
+            destAdapterAddress,
+            sourceAdapterAddress,
+          );
         }
         case AdapterType.CCIP_TOKEN: {
           throw new Error("Not implemented yet: AdapterType.CCIP_TOKEN case");
