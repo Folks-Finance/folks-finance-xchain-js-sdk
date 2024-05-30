@@ -5,9 +5,14 @@ import {
 } from "../utils/contract.js";
 
 import type {
+  EvmAddress,
+  GenericAddress,
+} from "../../../../common/types/address.js";
+import type {
   FolksChainId,
   SpokeChain,
 } from "../../../../common/types/chain.js";
+import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageParams,
@@ -19,20 +24,14 @@ import type {
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
 } from "../../common/types/module.js";
-import type {
-  Address,
-  Client,
-  EstimateGasParameters,
-  Hex,
-  WalletClient,
-} from "viem";
+import type { Client, EstimateGasParameters, WalletClient } from "viem";
 
 export const prepare = {
   async createAccount(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
+    accountId: AccountId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -72,11 +71,11 @@ export const prepare = {
 
   async inviteAddress(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToInvite: number,
-    addressToInvite: Address,
+    addressToInvite: GenericAddress,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -117,9 +116,9 @@ export const prepare = {
 
   async acceptInvite(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
+    accountId: AccountId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -160,9 +159,9 @@ export const prepare = {
 
   async unregisterAddress(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToUnregister: FolksChainId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
@@ -206,7 +205,7 @@ export const write = {
   async createAccount(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
+    accountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
   ) {
     const {
@@ -243,9 +242,9 @@ export const write = {
   async inviteAddress(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToInvite: number,
-    addressToInvite: Address,
+    addressToInvite: EvmAddress,
     prepareCall: PrepareInviteAddressCall,
   ) {
     const {
@@ -285,7 +284,7 @@ export const write = {
   async acceptInvite(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
+    accountId: AccountId,
     prepareCall: PrepareAcceptInviteAddressCall,
   ) {
     const {
@@ -322,7 +321,7 @@ export const write = {
   async unregisterAddress(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToUnregister: FolksChainId,
     prepareCall: PrepareUnregisterAddressCall,
   ) {

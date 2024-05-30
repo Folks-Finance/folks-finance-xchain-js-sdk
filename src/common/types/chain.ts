@@ -1,3 +1,4 @@
+import type { GenericAddress } from "./address.js";
 import type { AdapterType } from "./message.js";
 import type { FolksTokenId, SpokeTokenData } from "./token.js";
 import type { EvmChainName } from "../../chains/evm/common/types/chain.js";
@@ -14,8 +15,6 @@ export enum NetworkType {
 
 export type FolksChainName = EvmChainName;
 export type FolksChainId = (typeof FOLKS_CHAIN_ID)[keyof typeof FOLKS_CHAIN_ID];
-
-export type GenericAddress = `0x${string}`;
 
 export type IFolksChain = {
   folksChainId: FolksChainId;

@@ -11,6 +11,7 @@ import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
 import {
   getRandomGenericAddress,
+  isAccountId,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
 import {
@@ -23,7 +24,11 @@ import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 import { getWormholeDataAdapterContract } from "./contract.js";
 import { encodeWormholeEvmPayloadWithMetadata } from "./gmp.js";
 
-import type { GenericAddress } from "../../../../common/types/chain.js";
+import type {
+  EvmAddress,
+  GenericAddress,
+} from "../../../../common/types/address.js";
+import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageBuilderParams,
@@ -44,11 +49,11 @@ export const DEFAULT_MESSAGE_PARAMS = (
 
 export function buildMessagePayload(
   action: Action,
-  accountId: Hex,
+  accountId: AccountId,
   userAddr: GenericAddress,
   data: Hex,
 ): Hex {
-  if (!isGenericAddress(accountId)) throw Error("Unknown account id format");
+  if (!isAccountId(accountId)) throw Error("Unknown account id format");
   if (!isGenericAddress(userAddr)) throw Error("Unknown user address format");
   if (!isHex(data)) throw Error("Unknown data format");
 
@@ -377,7 +382,7 @@ export async function estimateEVMWormholeDataGasLimit(
   receiverValue: bigint,
   returnGasLimit: bigint,
   sourceWormholeChainId: number,
-  wormholeRelayer: GenericAddress,
+  wormholeRelayer: EvmAddress,
   wormholeDataAdapterAddress: GenericAddress,
   sourceWormholeDataAdapterAddress: GenericAddress,
 ) {

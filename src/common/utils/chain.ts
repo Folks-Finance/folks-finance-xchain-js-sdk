@@ -9,12 +9,12 @@ import { ChainType } from "../types/chain.js";
 
 import { convertToGenericAddress } from "./address.js";
 
+import type { GenericAddress } from "../types/address.js";
 import type {
+  FolksChain,
   FolksChainId,
   NetworkType,
-  FolksChain,
   SpokeChain,
-  GenericAddress,
 } from "../types/chain.js";
 import type { FolksChainSigner } from "../types/core.js";
 import type { AdapterType } from "../types/message.js";

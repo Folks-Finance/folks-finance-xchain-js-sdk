@@ -10,8 +10,8 @@ import {
   FOLKS_CHAIN_ID,
 } from "../src/index.js";
 
+import type { AccountId } from "../src/common/types/lending.js";
 import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
-import type { Hex } from "viem";
 
 async function main() {
   const folksConfig: FolksCoreConfig = {
@@ -22,7 +22,7 @@ async function main() {
   FolksCore.init(folksConfig);
   FolksCore.setNetwork(NetworkType.TESTNET);
 
-  const accountId: Hex = randomBytes(32).toString("hex") as Hex;
+  const accountId: AccountId = randomBytes(32).toString("hex") as AccountId;
 
   // read
   const accountInfo = await FolksAccount.read.accountInfo(accountId);

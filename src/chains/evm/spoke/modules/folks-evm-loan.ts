@@ -8,16 +8,19 @@ import {
   getSpokeTokenContract,
 } from "../utils/contract.js";
 
+import type { EvmAddress } from "../../../../common/types/address.js";
 import type {
   FolksChainId,
   NetworkType,
   SpokeChain,
 } from "../../../../common/types/chain.js";
+import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageParams,
   MessageToSend,
 } from "../../../../common/types/message.js";
+import type { LoanType } from "../../../../common/types/module.js";
 import type {
   FolksTokenId,
   SpokeTokenData,
@@ -28,22 +31,16 @@ import type {
   PrepareDepositCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
-import type {
-  Address,
-  Client,
-  EstimateGasParameters,
-  Hex,
-  WalletClient,
-} from "viem";
+import type { Client, EstimateGasParameters, WalletClient } from "viem";
 
 export const prepare = {
   async createLoan(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
-    loanId: Hex,
-    loanTypeId: number,
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanType,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -84,10 +81,10 @@ export const prepare = {
 
   async deleteLoan(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -128,10 +125,10 @@ export const prepare = {
 
   async deposit(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     amount: bigint,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
@@ -175,11 +172,11 @@ export const prepare = {
 
   async withdraw(
     provider: Client,
-    sender: Address,
+    sender: EvmAddress,
     messageToSend: MessageToSend,
     network: NetworkType,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     isFAmount: boolean,
@@ -235,9 +232,9 @@ export const write = {
   async createLoan(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
-    loanId: Hex,
-    loanTypeId: number,
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanType,
     prepareCall: PrepareCreateLoanCall,
   ) {
     const {
@@ -277,8 +274,8 @@ export const write = {
   async deleteLoan(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     prepareCall: PrepareDeleteLoanCall,
   ) {
     const {
@@ -315,8 +312,8 @@ export const write = {
   async deposit(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     amount: bigint,
     includeApprove = true,
     prepareCall: PrepareDepositCall,
@@ -342,7 +339,7 @@ export const write = {
         provider,
         token.spokeAddress,
         signer,
-        spokeToken.address,
+        spokeToken.address as EvmAddress,
         amount,
       );
 
@@ -364,8 +361,8 @@ export const write = {
   async withdraw(
     provider: Client,
     signer: WalletClient,
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     poolId: number,
     amount: bigint,
     isFAmount: boolean,

@@ -1,4 +1,4 @@
-import type { GenericAddress } from "../../../../common/types/chain.js";
+import type { GenericAddress } from "../../../../common/types/address.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { ITokenData, TokenType } from "../../../../common/types/token.js";
 
