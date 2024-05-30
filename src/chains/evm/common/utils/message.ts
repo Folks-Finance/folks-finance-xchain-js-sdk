@@ -39,7 +39,7 @@ import type {
   MessageToSend,
   OptionalFeeParams,
 } from "../../../../common/types/message.js";
-import type { CCIPMessageReceived } from "../types/gmp.js";
+import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex } from "viem";
 
 export const DEFAULT_MESSAGE_PARAMS = (
@@ -429,7 +429,7 @@ export async function estimateEvmCcipDataGasLimit(
 ) {
   const messageId = getRandomBytes(BYTES32_LENGTH);
 
-  const ccipMessage: CCIPMessageReceived = {
+  const ccipMessage: CCIPAny2EvmMessage = {
     messageId,
     sourceChainSelector: sourceCcipChainId,
     sender: sourceCcipDataAdapterAddress,

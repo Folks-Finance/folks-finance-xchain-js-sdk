@@ -1,12 +1,15 @@
-import type { GenericAddress } from "../../../../common/types/address.js";
+import type {
+  EvmAddress,
+  GenericAddress,
+} from "../../../../common/types/address.js";
 import type { Hex } from "viem";
 
 type CCIPTokenAmount = {
-  token: GenericAddress;
+  token: EvmAddress;
   amount: bigint;
 };
 
-export type CCIPMessageReceived = {
+export type CCIPAny2EvmMessage = {
   messageId: Hex;
   sourceChainSelector: bigint;
   sender: GenericAddress;
