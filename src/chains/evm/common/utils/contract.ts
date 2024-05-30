@@ -8,9 +8,12 @@ import { WormholeDataAdapterAbi } from "../constants/abi/wormhole-data-adapter-a
 
 import { getEvmSignerAccount, getEvmSignerAddress } from "./chain.js";
 
-import type { GenericAddress } from "../../../../common/types/chain.js";
+import type {
+  EvmAddress,
+  GenericAddress,
+} from "../../../../common/types/address.js";
 import type { GetReadContractReturnType } from "../types/contract.js";
-import type { Address, Client, WalletClient } from "viem";
+import type { Client, WalletClient } from "viem";
 
 export function getERC20Contract(
   provider: Client,
@@ -28,7 +31,7 @@ export async function sendERC20Approve(
   provider: Client,
   address: GenericAddress,
   signer: WalletClient,
-  receiver: Address,
+  receiver: EvmAddress,
   amount: bigint,
 ) {
   const erc20 = getERC20Contract(provider, address, signer);
@@ -47,7 +50,7 @@ export async function sendERC20Approve(
 
 export function getWormholeDataAdapterContract(
   provider: Client,
-  address: Address,
+  address: GenericAddress,
 ): GetReadContractReturnType<typeof WormholeDataAdapterAbi> {
   return getContract({
     abi: WormholeDataAdapterAbi,

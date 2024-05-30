@@ -13,12 +13,8 @@ import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
 import { getCcipData, getWormholeData } from "./gmp.js";
 
 import type { HubChain } from "../../chains/evm/hub/types/chain.js";
-import type {
-  FolksChain,
-  FolksChainId,
-  GenericAddress,
-  NetworkType,
-} from "../types/chain.js";
+import type { GenericAddress } from "../types/address.js";
+import type { FolksChain, FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type {
   MessageAdapters,

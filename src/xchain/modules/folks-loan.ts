@@ -25,6 +25,7 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { FolksChainId } from "../../common/types/chain.js";
+import type { AccountId, LoanId } from "../../common/types/lending.js";
 import type {
   CreateLoanMessageData,
   DeleteLoanMessageData,
@@ -41,12 +42,11 @@ import type {
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
-import type { Hex } from "viem";
 
 export const prepare = {
   async createLoan(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     loanTypeId: LoanType,
     adapters: MessageAdapters,
   ) {
@@ -100,7 +100,11 @@ export const prepare = {
     }
   },
 
-  async deleteLoan(accountId: Hex, loanId: Hex, adapters: MessageAdapters) {
+  async deleteLoan(
+    accountId: AccountId,
+    loanId: LoanId,
+    adapters: MessageAdapters,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertAdapterSupportsDataMessage(
@@ -151,8 +155,8 @@ export const prepare = {
   },
 
   async deposit(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     loanType: LoanType,
     folksTokenId: FolksTokenId,
     amount: bigint,
@@ -226,8 +230,8 @@ export const prepare = {
   },
 
   async withdraw(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     isFAmount: boolean,
@@ -329,8 +333,8 @@ export const prepare = {
 
 export const write = {
   async createLoan(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     loanTypeId: LoanType,
     prepareCall: PrepareCreateLoanCall,
   ) {
@@ -354,8 +358,8 @@ export const write = {
   },
 
   async deleteLoan(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     prepareCall: PrepareCreateLoanCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -377,8 +381,8 @@ export const write = {
   },
 
   async deposit(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     amount: bigint,
     includeApproval: boolean,
     prepareCall: PrepareDepositCall,
@@ -404,8 +408,8 @@ export const write = {
   },
 
   async withdraw(
-    accountId: Hex,
-    loanId: Hex,
+    accountId: AccountId,
+    loanId: LoanId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     isFAmount: boolean,

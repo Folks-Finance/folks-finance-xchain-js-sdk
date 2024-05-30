@@ -23,17 +23,18 @@ import type {
   FolksChainId,
   NetworkType,
 } from "../../../../common/types/chain.js";
+import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageToSend,
 } from "../../../../common/types/message.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { Client, Hex } from "viem";
+import type { Client } from "viem";
 
 export function getSendTokenAdapterFees(
   provider: Client,
   network: NetworkType,
-  accountId: Hex,
+  accountId: AccountId,
   folksTokenId: FolksTokenId,
   amount: bigint,
   receiverFolksChainId: FolksChainId,

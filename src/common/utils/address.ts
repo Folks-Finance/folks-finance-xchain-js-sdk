@@ -8,18 +8,25 @@ import {
 } from "../constants/bytes.js";
 import { ChainType } from "../types/chain.js";
 
-import type { AddressType } from "../types/address.js";
-import type { GenericAddress } from "../types/chain.js";
-import type { Address } from "viem";
+import type {
+  AddressType,
+  EvmAddress,
+  GenericAddress,
+} from "../types/address.js";
+import type { AccountId } from "../types/lending.js";
 
 export function getRandomGenericAddress(): GenericAddress {
   return pad(privateKeyToAccount(generatePrivateKey()).address, {
     size: BYTES32_LENGTH,
-  });
+  }) as GenericAddress;
 }
 
 export function isGenericAddress(address: GenericAddress): boolean {
-  return address.length === 64 + 2 && address.startsWith("0x");
+  return address.length === 64 + 2;
+}
+
+export function isAccountId(accountId: AccountId): boolean {
+  return accountId.length === 64 + 2;
 }
 
 export function convertToGenericAddress<T extends ChainType>(
@@ -28,7 +35,9 @@ export function convertToGenericAddress<T extends ChainType>(
 ): GenericAddress {
   switch (fromChainType) {
     case ChainType.EVM:
-      return pad(address as Address, { size: BYTES32_LENGTH });
+      return pad(address as EvmAddress, {
+        size: BYTES32_LENGTH,
+      }) as GenericAddress;
     default:
       return exhaustiveCheck(fromChainType);
   }
@@ -42,7 +51,7 @@ export function convertFromGenericAddress<T extends ChainType>(
     case ChainType.EVM:
       return getAddress(
         sliceHex(address, BYTES32_LENGTH - EVM_ADDRESS_BYTES_LENGTH),
-      );
+      ) as EvmAddress;
     default:
       return exhaustiveCheck(toChainType);
   }

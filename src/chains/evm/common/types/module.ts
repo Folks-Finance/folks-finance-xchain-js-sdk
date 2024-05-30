@@ -1,6 +1,6 @@
+import type { GenericAddress } from "../../../../common/types/address.js";
 import type { MessageAdapters } from "../../../../common/types/message.js";
 import type { SpokeTokenData } from "../../../../common/types/token.js";
-import type { Address } from "viem";
 
 export type PrepareCall = {
   adapters: MessageAdapters;
@@ -12,35 +12,35 @@ export type PrepareCall = {
 };
 
 export type PrepareCreateAccountCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareInviteAddressCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareAcceptInviteAddressCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareUnregisterAddressCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareAddDelegateCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareRemoveDelegateCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareCreateLoanCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareDeleteLoanCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareDepositCall = {
@@ -48,11 +48,11 @@ export type PrepareDepositCall = {
 } & PrepareCall;
 
 export type PrepareWithdrawCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareBorrowCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareRepayCall = {
@@ -60,9 +60,9 @@ export type PrepareRepayCall = {
 } & PrepareCall;
 
 export type PrepareRepayWithCollateralCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
 export type PrepareSwitchBorrowTypeCall = {
-  spokeCommonAddress: Address;
+  spokeCommonAddress: GenericAddress;
 } & PrepareCall;

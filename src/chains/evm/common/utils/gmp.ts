@@ -6,7 +6,7 @@ import {
 } from "../../../../common/constants/bytes.js";
 import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
 
-import type { GenericAddress } from "../../../../common/types/chain.js";
+import type { GenericAddress } from "../../../../common/types/address.js";
 import type { AdapterType } from "../../../../common/types/message.js";
 import type { Hex } from "viem";
 

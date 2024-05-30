@@ -1,4 +1,6 @@
-import type { FolksChainId, GenericAddress } from "./chain.js";
+import type { GenericAddress } from "./address.js";
+import type { FolksChainId } from "./chain.js";
+import type { AccountId, LoanId } from "./lending.js";
 import type { LoanType } from "./module.js";
 import type { TokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
@@ -77,23 +79,23 @@ export type UnregisterAddressMessageData = {
 
 // Data: loan
 export type CreateLoanMessageData = {
-  loanId: Hex;
+  loanId: LoanId;
   loanTypeId: LoanType;
 };
 
 export type DeleteLoanMessageData = {
-  accountId: Hex;
-  loanId: Hex;
+  accountId: AccountId;
+  loanId: LoanId;
 };
 
 export type DepositMessageData = {
-  loanId: Hex;
+  loanId: LoanId;
   poolId: number;
   amount: bigint;
 };
 
 export type WithdrawMessageData = {
-  loanId: Hex;
+  loanId: LoanId;
   poolId: number;
   receiverFolksChainId: FolksChainId;
   amount: bigint;
@@ -179,7 +181,7 @@ export type MessageDataParams =
 
 export type MessageBuilderParams = {
   userAddress: GenericAddress;
-  accountId: Hex;
+  accountId: AccountId;
   adapters: MessageAdapters;
   sender: GenericAddress;
   destinationChainId: FolksChainId;
