@@ -61,7 +61,7 @@ export function getWormholeDataAdapterContract(
 
 export function getCCIPDataAdapterContract(
   provider: Client,
-  address: Address,
+  address: GenericAddress,
 ): GetReadContractReturnType<typeof CCIPDataAdapterAbi> {
   return getContract({
     abi: CCIPDataAdapterAbi,

@@ -35,21 +35,21 @@ export const CCIP_DATA: Partial<Record<FolksChainId, CCIPData>> = {
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     ccipChainId: BigInt("14767482510784806043"),
     ccipRouter: convertToGenericAddress(
-      "0xF694E193200268f9a4868e4Aa017A0118C9a8177",
+      "0xF694E193200268f9a4868e4Aa017A0118C9a8177" as EvmAddress,
       ChainType.EVM,
     ),
   },
   [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
     ccipChainId: BigInt("16015286601757825753"),
     ccipRouter: convertToGenericAddress(
-      "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59",
+      "0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59" as EvmAddress,
       ChainType.EVM,
     ),
   },
   [FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
     ccipChainId: BigInt("10344971235874465080"),
     ccipRouter: convertToGenericAddress(
-      "0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93",
+      "0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93" as EvmAddress,
       ChainType.EVM,
     ),
   },

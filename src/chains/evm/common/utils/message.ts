@@ -423,7 +423,7 @@ export async function estimateEvmCcipDataGasLimit(
   messageBuilderParams: MessageBuilderParams,
   returnGasLimit: bigint,
   sourceCcipChainId: bigint,
-  ccipRouter: GenericAddress,
+  ccipRouter: EvmAddress,
   ccipDataAdapterAddress: GenericAddress,
   sourceCcipDataAdapterAddress: GenericAddress,
 ) {
