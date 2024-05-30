@@ -1,10 +1,11 @@
 import { EVM_FOLKS_CHAIN_ID } from "../constants/chain.js";
 
+import type { EvmAddress } from "../../../../common/types/address.js";
 import type { EvmChainId } from "../types/chain.js";
-import type { Account, Address, WalletClient } from "viem";
+import type { Account, WalletClient } from "viem";
 
-export function getEvmSignerAddress(signer: WalletClient): Address {
-  if (signer.account?.address) return signer.account.address;
+export function getEvmSignerAddress(signer: WalletClient): EvmAddress {
+  if (signer.account?.address) return signer.account.address as EvmAddress;
   throw new Error("EVM Signer address is not set");
 }
 

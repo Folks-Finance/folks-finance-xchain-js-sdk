@@ -5,13 +5,13 @@ import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import { AccountManagerAbi } from "../constants/abi/account-manager-abi.js";
 import { BridgeRouterHubAbi } from "../constants/abi/bridge-router-hub-abi.js";
 
-import type { GenericAddress } from "../../../../common/types/chain.js";
+import type { GenericAddress } from "../../../../common/types/address.js";
 import type { GetReadContractReturnType } from "../../common/types/contract.js";
-import type { Address, Client, WalletClient } from "viem";
+import type { Client, WalletClient } from "viem";
 
 export function getAccountManagerContract(
   provider: Client,
-  address: Address,
+  address: GenericAddress,
   signer?: WalletClient,
 ): GetReadContractReturnType<typeof AccountManagerAbi> {
   return getContract({

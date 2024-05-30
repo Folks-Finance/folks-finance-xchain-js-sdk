@@ -7,6 +7,7 @@ import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js"
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertSpokeChainSupported,
+  getFolksChain,
   getSignerGenericAddress,
   getSpokeChain,
 } from "../../common/utils/chain.js";
@@ -17,7 +18,9 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { FolksChainId, GenericAddress } from "../../common/types/chain.js";
+import type { EvmAddress, GenericAddress } from "../../common/types/address.js";
+import type { FolksChainId } from "../../common/types/chain.js";
+import type { AccountId } from "../../common/types/lending.js";
 import type {
   InviteAddressMessageData,
   MessageAdapters,
@@ -31,10 +34,9 @@ import type {
   PrepareInviteAddressCall,
   PrepareUnregisterAddressCall,
 } from "../../common/types/module.js";
-import type { Address, Hex } from "viem";
 
 export const prepare = {
-  async createAccount(accountId: Hex, adapters: MessageAdapters) {
+  async createAccount(accountId: AccountId, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
@@ -96,12 +98,16 @@ export const prepare = {
   },
 
   async inviteAddress(
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
     adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
+    const folksChainToInvite = getFolksChain(
+      folksChainIdToInvite,
+      folksChain.network,
+    );
 
     // check adapters are compatible
     assertAdapterSupportsDataMessage(
@@ -158,7 +164,10 @@ export const prepare = {
           messageToSend,
           accountId,
           folksChainIdToInvite,
-          addressToInvite,
+          convertFromGenericAddress(
+            addressToInvite,
+            folksChainToInvite.chainType,
+          ),
           adapters,
           spokeChain,
         );
@@ -167,7 +176,7 @@ export const prepare = {
     }
   },
 
-  async acceptInvite(accountId: Hex, adapters: MessageAdapters) {
+  async acceptInvite(accountId: AccountId, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
@@ -229,7 +238,7 @@ export const prepare = {
   },
 
   async unregisterAddress(
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToUnregister: FolksChainId,
     adapters: MessageAdapters,
   ) {
@@ -300,7 +309,10 @@ export const prepare = {
 };
 
 export const write = {
-  async createAccount(accountId: Hex, prepareCall: PrepareCreateAccountCall) {
+  async createAccount(
+    accountId: AccountId,
+    prepareCall: PrepareCreateAccountCall,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -319,9 +331,9 @@ export const write = {
   },
 
   async inviteAddress(
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToInvite: number,
-    addressToInvite: Address,
+    addressToInvite: EvmAddress,
     prepareCall: PrepareInviteAddressCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -344,7 +356,7 @@ export const write = {
   },
 
   async acceptInvite(
-    accountId: Hex,
+    accountId: AccountId,
     prepareCall: PrepareAcceptInviteAddressCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -365,7 +377,7 @@ export const write = {
   },
 
   async unregisterAddress(
-    accountId: Hex,
+    accountId: AccountId,
     folksChainIdToUnregister: FolksChainId,
     prepareCall: PrepareUnregisterAddressCall,
   ) {
@@ -389,7 +401,7 @@ export const write = {
 };
 
 export const read = {
-  async accountInfo(accountId: Hex, folksChainIds?: Array<FolksChainId>) {
+  async accountInfo(accountId: AccountId, folksChainIds?: Array<FolksChainId>) {
     return FolksHubAccount.getAccountInfo(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),

@@ -4,17 +4,19 @@ import { getFolksChainIdsByNetwork } from "../../../../common/utils/chain.js";
 import { getHubChain } from "../utils/chain.js";
 import { getAccountManagerContract } from "../utils/contract.js";
 
+import type { EvmAddress } from "../../../../common/types/address.js";
 import type {
-  NetworkType,
   FolksChainId,
+  NetworkType,
 } from "../../../../common/types/chain.js";
+import type { AccountId } from "../../../../common/types/lending.js";
 import type { AccountInfo } from "../types/account.js";
-import type { Address, Client, Hex } from "viem";
+import type { Client } from "viem";
 
 export async function getAccountInfo(
   provider: Client,
   network: NetworkType,
-  accountId: Hex,
+  accountId: AccountId,
   folksChainIds?: Array<FolksChainId>,
 ): Promise<AccountInfo> {
   const hubChain = getHubChain(network);
@@ -56,12 +58,12 @@ export async function getAccountInfo(
   for (const [index, result] of registeredAddresses.entries()) {
     const chainId = folksChainIds[index];
     if (result.status === "success")
-      accountInfo.registered.set(chainId, result.result as Address);
+      accountInfo.registered.set(chainId, result.result as EvmAddress);
   }
   for (const [index, result] of invitedAddresses.entries()) {
     const chainId = folksChainIds[index];
     if (result.status === "success")
-      accountInfo.invited.set(chainId, result.result as Address);
+      accountInfo.invited.set(chainId, result.result as EvmAddress);
   }
 
   return accountInfo;
