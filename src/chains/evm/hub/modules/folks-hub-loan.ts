@@ -31,7 +31,7 @@ import type {
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Client } from "viem";
 
-export function getSendTokenAdapterFees(
+export async function getSendTokenAdapterFees(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
@@ -39,45 +39,43 @@ export function getSendTokenAdapterFees(
   amount: bigint,
   receiverFolksChainId: FolksChainId,
   adapters: MessageAdapters,
-): () => Promise<bigint> {
-  return async (): Promise<bigint> => {
-    const hubChain = getHubChain(network);
-    const hubTokenData = getHubTokenData(folksTokenId, network);
-    const hubBridgeRouter = getBridgeRouterHubContract(
-      provider,
-      hubChain.bridgeRouterAddress,
-    );
+): Promise<bigint> {
+  const hubChain = getHubChain(network);
+  const hubTokenData = getHubTokenData(folksTokenId, network);
+  const hubBridgeRouter = getBridgeRouterHubContract(
+    provider,
+    hubChain.bridgeRouterAddress,
+  );
 
-    const spokeChain = getSpokeChain(receiverFolksChainId, network);
-    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  const spokeChain = getSpokeChain(receiverFolksChainId, network);
+  const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
 
-    // construct return message
-    const { returnAdapterId } = adapters;
-    const returnParams = DEFAULT_MESSAGE_PARAMS({
-      adapterId: returnAdapterId,
-      returnAdapterId,
-    });
-    const returnMessage: MessageToSend = {
-      params: returnParams,
-      sender: hubChain.hubAddress,
-      destinationChainId: receiverFolksChainId,
-      handler: getRandomGenericAddress(),
-      payload: buildMessagePayload(
-        Action.SendToken,
-        accountId,
-        getRandomGenericAddress(),
-        convertNumberToBytes(amount, UINT256_LENGTH),
-      ),
-      finalityLevel: FINALITY.FINALISED,
-      extraArgs: buildSendTokenExtraArgsWhenRemoving(
-        hubTokenData.tokenType,
-        spokeTokenData.spokeAddress,
-        getHubTokenAddress(hubTokenData),
-        amount,
-      ),
-    };
-
-    // get return adapter fee
-    return await hubBridgeRouter.read.getSendFee([returnMessage]);
+  // construct return message
+  const { returnAdapterId } = adapters;
+  const returnParams = DEFAULT_MESSAGE_PARAMS({
+    adapterId: returnAdapterId,
+    returnAdapterId,
+  });
+  const returnMessage: MessageToSend = {
+    params: returnParams,
+    sender: hubChain.hubAddress,
+    destinationChainId: receiverFolksChainId,
+    handler: getRandomGenericAddress(),
+    payload: buildMessagePayload(
+      Action.SendToken,
+      accountId,
+      getRandomGenericAddress(),
+      convertNumberToBytes(amount, UINT256_LENGTH),
+    ),
+    finalityLevel: FINALITY.FINALISED,
+    extraArgs: buildSendTokenExtraArgsWhenRemoving(
+      hubTokenData.tokenType,
+      spokeTokenData.spokeAddress,
+      getHubTokenAddress(hubTokenData),
+      amount,
+    ),
   };
+
+  // get return adapter fee
+  return await hubBridgeRouter.read.getSendFee([returnMessage]);
 }
