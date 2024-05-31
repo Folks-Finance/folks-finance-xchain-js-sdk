@@ -357,6 +357,7 @@ export const prepare = {
       amount,
       receiverFolksChainId,
       adapters,
+      feeParams,
     );
     feeParams.gasLimit = await estimateReceiveGasLimit(
       FolksCore.getHubProvider(),

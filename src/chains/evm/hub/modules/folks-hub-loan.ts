@@ -8,7 +8,7 @@ import {
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
 import {
-  DEFAULT_MESSAGE_PARAMS,
+  buildMessageParams,
   buildMessagePayload,
   buildSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
@@ -27,6 +27,7 @@ import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageToSend,
+  OptionalFeeParams,
 } from "../../../../common/types/message.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Client } from "viem";
@@ -39,6 +40,7 @@ export async function getSendTokenAdapterFees(
   amount: bigint,
   receiverFolksChainId: FolksChainId,
   adapters: MessageAdapters,
+  feeParams: OptionalFeeParams = {},
 ): Promise<bigint> {
   const hubChain = getHubChain(network);
   const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -51,11 +53,7 @@ export async function getSendTokenAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
 
   // construct return message
-  const { returnAdapterId } = adapters;
-  const returnParams = DEFAULT_MESSAGE_PARAMS({
-    adapterId: returnAdapterId,
-    returnAdapterId,
-  });
+  const returnParams = buildMessageParams({ adapters, ...feeParams });
   const returnMessage: MessageToSend = {
     params: returnParams,
     sender: hubChain.hubAddress,
