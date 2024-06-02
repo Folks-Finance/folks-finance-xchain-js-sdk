@@ -22,11 +22,19 @@ export function getHubChain(network: NetworkType): HubChain {
   return HUB_CHAIN[network];
 }
 
+export function getHubTokensData(
+  network: NetworkType,
+): Partial<Record<FolksTokenId, HubTokenData>> {
+  return HUB_CHAIN[network].tokens;
+}
+
 export function getHubTokenData(
   folksTokenId: FolksTokenId,
   network: NetworkType,
 ): HubTokenData {
   const token = HUB_CHAIN[network].tokens[folksTokenId];
+  if (!token)
+    throw new Error(`Hub token not found for folksTokenId: ${folksTokenId}`);
   return token;
 }
 

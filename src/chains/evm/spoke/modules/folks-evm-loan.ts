@@ -1,4 +1,10 @@
+import { multicall } from "viem/actions";
+
 import { TokenType } from "../../../../common/types/token.js";
+import {
+  calcNextPeriodReset,
+  calcPeriodNumber,
+} from "../../../../common/utils/formulae.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getHubTokenData } from "../../hub/utils/chain.js";
@@ -31,6 +37,7 @@ import type {
   PrepareDepositCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
+import type { TokenRateLimit } from "../types/pool.js";
 import type { Client, EstimateGasParameters, WalletClient } from "viem";
 
 export const prepare = {
@@ -400,5 +407,62 @@ export const write = {
         value: adapterFee,
       },
     );
+  },
+};
+
+export const read = {
+  async rateLimitInfo(
+    provider: Client,
+    token: SpokeTokenData,
+  ): Promise<TokenRateLimit> {
+    const spokeToken = getSpokeTokenContract(provider, token.spokeAddress);
+
+    // get rate limit data
+    const [bucketConfig, oldPeriodNumber, oldCurrentCapacity] = await multicall(
+      provider,
+      {
+        contracts: [
+          {
+            address: spokeToken.address,
+            abi: spokeToken.abi,
+            functionName: "bucketConfig",
+          },
+          {
+            address: spokeToken.address,
+            abi: spokeToken.abi,
+            functionName: "currentPeriodNumber",
+          },
+          {
+            address: spokeToken.address,
+            abi: spokeToken.abi,
+            functionName: "currentCapacity",
+          },
+        ],
+        allowFailure: false,
+      },
+    );
+
+    // TODO consider min limit
+    const [periodLength, periodOffset, periodLimit] = bucketConfig;
+    const newPeriodNumber = calcPeriodNumber(
+      BigInt(periodOffset),
+      BigInt(periodLength),
+    );
+    const isNewPeriod = newPeriodNumber !== BigInt(oldPeriodNumber);
+    const currentCapacity = isNewPeriod ? periodLimit : oldCurrentCapacity;
+    const nextPeriodReset = calcNextPeriodReset(
+      newPeriodNumber,
+      BigInt(periodOffset),
+      BigInt(periodLength),
+    );
+
+    // build rate limit info
+    return {
+      periodLength: BigInt(periodLength),
+      periodOffset: BigInt(periodOffset),
+      periodLimit: BigInt(periodLimit),
+      currentCapacity,
+      nextPeriodReset,
+    };
   },
 };
