@@ -243,8 +243,8 @@ export const write = {
     provider: Client,
     signer: WalletClient,
     accountId: AccountId,
-    folksChainIdToInvite: number,
-    addressToInvite: EvmAddress,
+    folksChainIdToInvite: FolksChainId,
+    addressToInvite: GenericAddress,
     prepareCall: PrepareInviteAddressCall,
   ) {
     const {
