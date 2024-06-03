@@ -27,6 +27,8 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
+import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
+import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../common/types/lending.js";
@@ -486,6 +488,32 @@ export const read = {
       network,
       loanTypeId,
       tokensData,
+    );
+  },
+
+  async userLoansInfo(
+    accountId: AccountId,
+    poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
+    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+    oraclePrices: OraclePrices,
+  ) {
+    const network = FolksCore.getSelectedNetwork();
+
+    // get active user loans
+    const loanIds = await FolksHubLoan.getUserLoanIds(
+      FolksCore.getHubProvider(),
+      network,
+      accountId,
+    );
+
+    // get info of each user loan
+    return await FolksHubLoan.userLoansInfo(
+      FolksCore.getHubProvider(),
+      network,
+      loanIds,
+      poolsInfo,
+      loanTypesInfo,
+      oraclePrices,
     );
   },
 };

@@ -1,3 +1,4 @@
+import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Dnum } from "Dnum";
 
 type FeeData = {
@@ -53,6 +54,7 @@ type ConfigData = {
 };
 
 export type PoolInfo = {
+  folksTokenId: FolksTokenId;
   poolId: number;
   feeData: FeeData;
   depositData: DepositData;

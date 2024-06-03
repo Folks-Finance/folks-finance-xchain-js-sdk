@@ -122,6 +122,7 @@ export async function getPoolInfo(
 
   // build pool info
   return {
+    folksTokenId,
     poolId,
     feeData: {
       flashLoanFee: [BigInt(flashLoanFee), 6],

@@ -29,14 +29,22 @@ import type {
   FolksChainId,
   NetworkType,
 } from "../../../../common/types/chain.js";
-import type { AccountId } from "../../../../common/types/lending.js";
+import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageToSend,
 } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { AbiLoanPool, LoanPoolInfo, LoanTypeInfo } from "../types/loan.js";
+import type {
+  AbiLoanPool,
+  AbiUserLoan,
+  LoanPoolInfo,
+  LoanTypeInfo,
+  UserLoanInfo,
+} from "../types/loan.js";
+import type { OraclePrices } from "../types/oracle.js";
+import type { PoolInfo } from "../types/pool.js";
 import type { HubTokenData } from "../types/token.js";
 import type { Client, ContractFunctionParameters } from "viem";
 
@@ -159,6 +167,8 @@ export async function loanTypeInfo(
     } = reward;
 
     pools[token.folksTokenId] = {
+      folksTokenId: token.folksTokenId,
+      poolId: token.poolId,
       collateralUsed,
       borrowUsed,
       collateralCap,
@@ -191,8 +201,86 @@ export async function loanTypeInfo(
   }
 
   return {
+    loanTypeId,
     deprecated: deprecated as boolean,
     loanTargetHealth: [BigInt(loanTargetHealth as number), 4],
     pools,
   };
+}
+
+export async function getUserLoanIds(
+  provider: Client,
+  network: NetworkType,
+  accountId: AccountId,
+): Promise<Array<LoanId>> {
+  const hubChain = getHubChain(network);
+  const loanManager = getLoanManagerContract(
+    provider,
+    hubChain.loanManagerAddress,
+  );
+
+  // loan ids can be reused so must include if created more times than deleted
+  const loanIds = new Map<LoanId, number>();
+
+  // add created
+  const createLogs = await loanManager.getEvents.CreateUserLoan(
+    { accountId },
+    { strict: true },
+  );
+  for (const log of createLogs) {
+    const loanId = log.args.loanId as LoanId;
+    const num = loanIds.get(loanId) ?? 0;
+    loanIds.set(loanId, num + 1);
+  }
+
+  // remove deleted
+  const deletedLogs = await loanManager.getEvents.DeleteUserLoan(
+    { accountId },
+    { strict: true },
+  );
+  for (const log of deletedLogs) {
+    const loanId = log.args.loanId as LoanId;
+    const num = loanIds.get(loanId) ?? 1;
+    num === 1 ? loanIds.delete(loanId) : loanIds.set(loanId, num - 1);
+  }
+
+  // return remaining
+  return Array.from(loanIds.keys());
+}
+
+export async function userLoansInfo(
+  provider: Client,
+  network: NetworkType,
+  loanIds: Array<LoanId>,
+  poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
+  loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+  oraclePrices: OraclePrices,
+): Promise<Record<LoanId, UserLoanInfo>> {
+  const hubChain = getHubChain(network);
+  const loanManager = getLoanManagerContract(
+    provider,
+    hubChain.loanManagerAddress,
+  );
+
+  const getUserLoans: Array<ContractFunctionParameters> = loanIds.map(
+    (loanId) => ({
+      address: loanManager.address,
+      abi: loanManager.abi,
+      functionName: "getUserLoan",
+      args: [loanId],
+    }),
+  );
+
+  const userLoans = (await multicall(provider, {
+    contracts: getUserLoans,
+    allowFailure: false,
+  })) as Array<AbiUserLoan>;
+
+  const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
+  userLoans;
+  poolsInfo;
+  loanTypesInfo;
+  oraclePrices;
+
+  return userLoansInfo;
 }
