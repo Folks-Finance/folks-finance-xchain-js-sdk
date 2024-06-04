@@ -48,7 +48,7 @@
     "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
-    "viem": "^2.10.5"
+    "viem": "^2.13.2"
   },
   "config": {
     "commitizen": {
