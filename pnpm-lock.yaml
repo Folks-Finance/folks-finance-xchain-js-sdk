@@ -12,7 +12,7 @@ importers:
         specifier: ^2.12.0
         version: 2.12.0
       viem:
-        specifier: ^2.13.2
+        specifier: ^2.10.5
         version: 2.13.2(typescript@5.4.5)
     devDependencies:
       '@commitlint/cli':
