@@ -42,13 +42,21 @@ import type {
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex } from "viem";
 
-export const DEFAULT_MESSAGE_PARAMS = (
-  adapters: MessageAdapters,
-): MessageParams => ({
+export const buildMessageParams = ({
+  adapters,
+  receiverValue = BigInt(0),
+  gasLimit = BigInt(0),
+  returnGasLimit = BigInt(0),
+}: {
+  adapters: MessageAdapters;
+  receiverValue?: bigint;
+  gasLimit?: bigint;
+  returnGasLimit?: bigint;
+}): MessageParams => ({
   ...adapters,
-  receiverValue: BigInt(0),
-  gasLimit: BigInt(0),
-  returnGasLimit: BigInt(0),
+  receiverValue,
+  gasLimit,
+  returnGasLimit,
 });
 
 export function buildMessagePayload(
@@ -202,7 +210,7 @@ export function buildEvmMessageToSend(
     extraArgs,
   } = messageToSendBuilderParams;
   const data = buildEvmMessageData(messageToSendBuilderParams);
-  const params = { ...DEFAULT_MESSAGE_PARAMS(adapters), ...feeParams };
+  const params = buildMessageParams({ adapters, ...feeParams });
   switch (action) {
     case Action.CreateAccount: {
       const message: MessageToSend = {
@@ -414,7 +422,11 @@ export async function estimateEvmWormholeDataGasLimit(
       sourceWormholeChainId,
       messageId,
     ],
-    { value: receiverValue, account: wormholeRelayer },
+    {
+      value: receiverValue,
+      account: wormholeRelayer,
+      stateOverride: [{ address: wormholeRelayer, balance: receiverValue }],
+    },
   );
 }
 
