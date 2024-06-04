@@ -422,7 +422,11 @@ export async function estimateEvmWormholeDataGasLimit(
       sourceWormholeChainId,
       messageId,
     ],
-    { value: receiverValue, account: wormholeRelayer },
+    {
+      value: receiverValue,
+      account: wormholeRelayer,
+      stateOverride: [{ address: wormholeRelayer, balance: receiverValue }],
+    },
   );
 }
 
