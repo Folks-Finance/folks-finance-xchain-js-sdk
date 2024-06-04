@@ -1,4 +1,4 @@
-import type { LoanId } from "../../../../common/types/lending.js";
+import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Dnum } from "dnum";
@@ -79,7 +79,6 @@ export type UserLoanInfoCollateral = {
   tokenDecimals: number;
   tokenPrice: Dnum;
   collateralFactor: Dnum;
-  depositInterestIndex: Dnum;
   fTokenBalance: bigint;
   tokenBalance: bigint;
   balanceValue: Dnum;
@@ -109,6 +108,7 @@ export type UserLoanInfoBorrow = {
 export type UserLoanInfo = {
   loanId: LoanId;
   loanTypeId: LoanType;
+  accountId: AccountId;
   collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>>;
   borrows: Partial<Record<FolksTokenId, UserLoanInfoBorrow>>;
   netRate: Dnum;

@@ -1,3 +1,4 @@
+import * as dn from "dnum";
 import { multicall } from "viem/actions";
 
 import { UINT256_LENGTH } from "../../../../common/constants/bytes.js";
@@ -9,7 +10,18 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../../../common/utils/chain.js";
-import { calcRewardIndex } from "../../../../common/utils/formulae.js";
+import {
+  calcBorrowAssetLoanValue,
+  calcBorrowBalance,
+  calcBorrowInterestIndex,
+  calcBorrowUtilisationRatio,
+  calcCollateralAssetLoanValue,
+  calcLiquidationMargin,
+  calcLtvRatio,
+  calcRewardIndex,
+  toUnderlyingAmount,
+} from "../../../../common/utils/formulae.js";
+import { compoundEverySecond } from "../../../../common/utils/math-lib.js";
 import {
   DEFAULT_MESSAGE_PARAMS,
   buildMessagePayload,
@@ -42,10 +54,13 @@ import type {
   LoanPoolInfo,
   LoanTypeInfo,
   UserLoanInfo,
+  UserLoanInfoBorrow,
+  UserLoanInfoCollateral,
 } from "../types/loan.js";
 import type { OraclePrices } from "../types/oracle.js";
 import type { PoolInfo } from "../types/pool.js";
 import type { HubTokenData } from "../types/token.js";
+import type { Dnum } from "dnum";
 import type { Client, ContractFunctionParameters } from "viem";
 
 export function getSendTokenAdapterFees(
@@ -261,6 +276,12 @@ export async function userLoansInfo(
     provider,
     hubChain.loanManagerAddress,
   );
+  const poolIdToFolksTokenId = new Map(
+    Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [
+      poolId,
+      folksTokenId,
+    ]),
+  );
 
   const getUserLoans: Array<ContractFunctionParameters> = loanIds.map(
     (loanId) => ({
@@ -277,10 +298,224 @@ export async function userLoansInfo(
   })) as Array<AbiUserLoan>;
 
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
-  userLoans;
-  poolsInfo;
-  loanTypesInfo;
-  oraclePrices;
+  for (let i = 0; i < userLoans.length; i++) {
+    const loanId = loanIds[i];
+    const [accountId, loanTypeId, colPools, borPools, cols, bors] =
+      userLoans[i];
+
+    const loanTypeInfo = loanTypesInfo[loanTypeId as LoanType];
+    if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
+
+    // common to collaterals and borrows
+    let netRate = dn.from(0, 18);
+    let netYield = dn.from(0, 18);
+
+    // collaterals
+    const collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>> =
+      {};
+    let totalCollateralBalanceValue: Dnum = dn.from(0, 8);
+    let totalEffectiveCollateralBalanceValue: Dnum = dn.from(0, 8);
+    for (let j = 0; j < cols.length; i++) {
+      const poolId = colPools[j];
+      const { balance: fTokenBalance } = cols[j];
+
+      const folksTokenId = poolIdToFolksTokenId.get(poolId);
+      if (!folksTokenId) throw new Error(`Unknown pool id ${poolId}`);
+
+      const poolInfo = poolsInfo[folksTokenId];
+      const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
+      const tokenPrice = oraclePrices[folksTokenId];
+      if (!poolInfo || !loanPoolInfo || !tokenPrice)
+        throw new Error(`Unknown folks token id ${folksTokenId}`);
+
+      const { tokenDecimals, depositData } = poolInfo;
+      const { interestRate, interestIndex, interestYield } = depositData;
+      const { collateralFactor } = loanPoolInfo;
+
+      const tokenBalance = toUnderlyingAmount(fTokenBalance, interestIndex);
+      const balanceValue = calcCollateralAssetLoanValue(
+        tokenBalance,
+        tokenPrice,
+        tokenDecimals,
+        dn.from(1, 4),
+      );
+      const effectiveBalanceValue = calcCollateralAssetLoanValue(
+        tokenBalance,
+        tokenPrice,
+        tokenDecimals,
+        collateralFactor,
+      );
+
+      totalCollateralBalanceValue = dn.add(
+        totalCollateralBalanceValue,
+        balanceValue,
+      );
+      totalEffectiveCollateralBalanceValue = dn.add(
+        totalEffectiveCollateralBalanceValue,
+        effectiveBalanceValue,
+      );
+      netRate = dn.add(netRate, dn.mul(balanceValue, interestRate));
+      netYield = dn.add(netYield, dn.mul(balanceValue, interestYield));
+
+      collaterals[folksTokenId] = {
+        folksTokenId,
+        poolId,
+        tokenDecimals,
+        tokenPrice,
+        collateralFactor,
+        fTokenBalance,
+        tokenBalance,
+        balanceValue,
+        effectiveBalanceValue,
+        interestRate,
+        interestYield,
+      };
+    }
+
+    // borrows
+    const borrows: Partial<Record<FolksTokenId, UserLoanInfoBorrow>> = {};
+    let totalBorrowedAmountValue: Dnum = dn.from(0, 8);
+    let totalBorrowBalanceValue: Dnum = dn.from(0, 8);
+    let totalEffectiveBorrowBalanceValue: Dnum = dn.from(0, 8);
+    for (let j = 0; j < bors.length; i++) {
+      const poolId = borPools[j];
+      const {
+        amount: borrowedAmount,
+        balance: oldBorrowBalance,
+        lastInterestIndex: lii,
+        stableInterestRate: sbir,
+        lastStableUpdateTimestamp,
+      } = bors[j];
+      const lastBorrowInterestIndex: Dnum = [lii, 18];
+      const stableBorrowInterestRate: Dnum = [sbir, 18];
+
+      const folksTokenId = poolIdToFolksTokenId.get(poolId);
+      if (!folksTokenId) throw new Error(`Unknown pool id ${poolId}`);
+
+      const poolInfo = poolsInfo[folksTokenId];
+      const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
+      const tokenPrice = oraclePrices[folksTokenId];
+      if (!poolInfo || !loanPoolInfo || !tokenPrice)
+        throw new Error(`Unknown folks token id ${folksTokenId}`);
+
+      const { tokenDecimals, variableBorrowData } = poolInfo;
+      const {
+        interestRate: variableBorrowInterestRate,
+        interestIndex: variableBorrowInterestIndex,
+      } = variableBorrowData;
+      const { borrowFactor } = loanPoolInfo;
+
+      const isStable = lastStableUpdateTimestamp > 0n;
+      const bororwInterestIndex = isStable
+        ? calcBorrowInterestIndex(
+            stableBorrowInterestRate,
+            lastBorrowInterestIndex,
+            lastStableUpdateTimestamp,
+          )
+        : variableBorrowInterestIndex;
+      const borrowedAmountValue = calcBorrowAssetLoanValue(
+        borrowedAmount,
+        tokenPrice,
+        tokenDecimals,
+        dn.from(1, 4),
+      );
+      const borrowBalance = calcBorrowBalance(
+        oldBorrowBalance,
+        bororwInterestIndex,
+        lastBorrowInterestIndex,
+      );
+      const borrowBalanceValue = calcBorrowAssetLoanValue(
+        borrowBalance,
+        tokenPrice,
+        tokenDecimals,
+        dn.from(1, 4),
+      );
+      const effectiveBorrowBalanceValue = calcBorrowAssetLoanValue(
+        borrowBalance,
+        tokenPrice,
+        tokenDecimals,
+        borrowFactor,
+      );
+      const accruedInterest = borrowBalance - borrowedAmount;
+      const accruedInterestValue = dn.sub(
+        borrowBalanceValue,
+        borrowedAmountValue,
+      );
+      const interestRate = isStable
+        ? stableBorrowInterestRate
+        : variableBorrowInterestRate;
+      const interestYield = compoundEverySecond(interestRate);
+
+      totalBorrowedAmountValue = dn.add(
+        totalBorrowedAmountValue,
+        borrowedAmountValue,
+      );
+      totalBorrowBalanceValue = dn.add(
+        totalBorrowBalanceValue,
+        borrowBalanceValue,
+      );
+      totalEffectiveBorrowBalanceValue = dn.add(
+        totalEffectiveBorrowBalanceValue,
+        effectiveBorrowBalanceValue,
+      );
+      netRate = dn.sub(netRate, dn.mul(borrowBalanceValue, interestRate));
+      netYield = dn.sub(netYield, dn.mul(borrowBalanceValue, interestYield));
+
+      borrows[folksTokenId] = {
+        folksTokenId,
+        poolId,
+        tokenDecimals,
+        tokenPrice,
+        isStable,
+        borrowFactor,
+        borrowedAmount,
+        borrowedAmountValue,
+        borrowBalance,
+        borrowBalanceValue,
+        effectiveBorrowBalanceValue,
+        accruedInterest,
+        accruedInterestValue,
+        interestRate,
+        interestYield,
+      };
+    }
+
+    if (dn.greaterThan(totalCollateralBalanceValue, 0)) {
+      netRate = dn.div(netRate, totalCollateralBalanceValue);
+      netYield = dn.div(netRate, totalCollateralBalanceValue);
+    }
+
+    const loanToValueRatio = calcLtvRatio(
+      totalBorrowBalanceValue,
+      totalCollateralBalanceValue,
+    );
+    const borrowUtilisationRatio = calcBorrowUtilisationRatio(
+      totalEffectiveBorrowBalanceValue,
+      totalEffectiveCollateralBalanceValue,
+    );
+    const liquidationMargin = calcLiquidationMargin(
+      totalEffectiveBorrowBalanceValue,
+      totalEffectiveCollateralBalanceValue,
+    );
+
+    userLoansInfo[loanId] = {
+      loanId,
+      loanTypeId,
+      accountId: accountId as AccountId,
+      collaterals,
+      borrows,
+      netRate,
+      netYield,
+      totalCollateralBalanceValue,
+      totalBorrowedAmountValue,
+      totalBorrowBalanceValue,
+      totalEffectiveCollateralBalanceValue,
+      totalEffectiveBorrowBalanceValue,
+      loanToValueRatio,
+      borrowUtilisationRatio,
+      liquidationMargin,
+    };
+  }
 
   return userLoansInfo;
 }

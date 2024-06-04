@@ -21,7 +21,7 @@ export async function getPoolInfo(
   network: NetworkType,
   folksTokenId: FolksTokenId,
 ): Promise<PoolInfo> {
-  const { poolAddress } = getHubTokenData(folksTokenId, network);
+  const { poolAddress, tokenDecimals } = getHubTokenData(folksTokenId, network);
   const hubPool = getHubPoolContract(provider, poolAddress);
 
   // get pool data
@@ -124,6 +124,7 @@ export async function getPoolInfo(
   return {
     folksTokenId,
     poolId,
+    tokenDecimals,
     feeData: {
       flashLoanFee: [BigInt(flashLoanFee), 6],
       retentionRate: [BigInt(retentionRate), 6],

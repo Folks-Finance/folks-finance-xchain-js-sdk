@@ -51,3 +51,89 @@ export function calcRewardIndex(
   const dt = BigInt(unixTime()) - latestUpdate;
   return dn.add(rit1, dn.div(dn.mul(rs, dt), used));
 }
+
+export function toFAmount(underlyingAmount: bigint, diit: Dnum): bigint {
+  return dn.div(underlyingAmount, diit)[0];
+}
+
+export function toUnderlyingAmount(fAmount: bigint, diit: Dnum): bigint {
+  return dn.mul(fAmount, diit)[0];
+}
+
+function calcAssetDollarValue(
+  amount: bigint,
+  tokenPrice: Dnum,
+  tokenDecimals: number,
+): Dnum {
+  return dn.mul([amount, tokenDecimals], tokenPrice);
+}
+
+export function calcCollateralAssetLoanValue(
+  amount: bigint,
+  tokenPrice: Dnum,
+  tokenDecimals: number,
+  collateralFactor: Dnum,
+): Dnum {
+  return dn.mul(
+    calcAssetDollarValue(amount, tokenPrice, tokenDecimals),
+    collateralFactor,
+  );
+}
+
+export function calcBorrowAssetLoanValue(
+  amount: bigint,
+  tokenPrice: Dnum,
+  tokenDecimals: number,
+  borrowFactor: Dnum,
+): Dnum {
+  return dn.mul(
+    calcAssetDollarValue(amount, tokenPrice, tokenDecimals),
+    borrowFactor,
+  );
+}
+
+export function calcBorrowBalance(
+  bbtn1: bigint,
+  biit: Dnum,
+  biitn1: Dnum,
+): bigint {
+  return dn.mul(bbtn1, dn.div(biit, biitn1))[0];
+}
+
+export function calcLtvRatio(
+  totalBorrowBalanceValue: Dnum,
+  totalCollateralBalanceValue: Dnum,
+): Dnum {
+  const [, decimals] = totalBorrowBalanceValue;
+  if (dn.equal(totalCollateralBalanceValue, 0)) return dn.from(0, decimals);
+  return dn.div(totalBorrowBalanceValue, totalCollateralBalanceValue);
+}
+
+export function calcBorrowUtilisationRatio(
+  totalEffectiveBorrowBalanceValue: Dnum,
+  totalEffectiveCollateralBalanceValue: Dnum,
+): Dnum {
+  const [, decimals] = totalEffectiveBorrowBalanceValue;
+  if (dn.equal(totalEffectiveCollateralBalanceValue, 0))
+    return dn.from(0, decimals);
+  return dn.div(
+    totalEffectiveBorrowBalanceValue,
+    totalEffectiveCollateralBalanceValue,
+  );
+}
+
+export function calcLiquidationMargin(
+  totalEffectiveBorrowBalanceValue: Dnum,
+  totalEffectiveCollateralBalanceValue: Dnum,
+): Dnum {
+  const [, decimals] = totalEffectiveBorrowBalanceValue;
+  if (dn.equal(totalEffectiveCollateralBalanceValue, 0))
+    return dn.from(0, decimals);
+  return dn.div(
+    dn.sub(
+      totalEffectiveCollateralBalanceValue,
+      totalEffectiveBorrowBalanceValue,
+    ),
+    totalEffectiveCollateralBalanceValue,
+  );
+}

@@ -56,6 +56,7 @@ type ConfigData = {
 export type PoolInfo = {
   folksTokenId: FolksTokenId;
   poolId: number;
+  tokenDecimals: number;
   feeData: FeeData;
   depositData: DepositData;
   variableBorrowData: VariableBorrowData;
