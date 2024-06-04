@@ -2,7 +2,7 @@ import * as dn from "dnum";
 
 import { SECONDS_IN_YEAR, expBySquaring, unixTime } from "./math-lib.js";
 
-import type { Dnum } from "Dnum";
+import type { Dnum } from "dnum";
 
 export function calcPeriodNumber(offset: bigint, length: bigint): bigint {
   return (BigInt(unixTime()) + offset) / length;

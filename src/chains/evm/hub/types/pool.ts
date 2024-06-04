@@ -1,5 +1,5 @@
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { Dnum } from "Dnum";
+import type { Dnum } from "dnum";
 
 type FeeData = {
   flashLoanFee: Dnum;
