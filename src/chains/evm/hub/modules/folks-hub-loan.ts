@@ -28,6 +28,7 @@ import type {
   MessageAdapters,
   MessageToSend,
   OptionalFeeParams,
+  AdapterType,
 } from "../../../../common/types/message.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Client } from "viem";
@@ -53,7 +54,13 @@ export async function getSendTokenAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
 
   // construct return message
-  const returnParams = buildMessageParams({ adapters, ...feeParams });
+  const returnParams = buildMessageParams({
+    adapters: {
+      adapterId: adapters.returnAdapterId,
+      returnAdapterId: 0 as AdapterType,
+    },
+    gasLimit: feeParams.returnGasLimit,
+  });
   const returnMessage: MessageToSend = {
     params: returnParams,
     sender: hubChain.hubAddress,
