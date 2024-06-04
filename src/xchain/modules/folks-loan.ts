@@ -15,12 +15,17 @@ import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
+  getFolksChain,
   getSignerGenericAddress,
   getSpokeChain,
   getSpokeTokenData,
   getSpokeTokenDataTokenAddress,
 } from "../../common/utils/chain.js";
-import { buildMessageToSend } from "../../common/utils/messages.js";
+import {
+  buildMessageToSend,
+  estimateReceiveGasLimit,
+  estimateReturnReceiveGasLimit,
+} from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
@@ -32,6 +37,7 @@ import type {
   DepositExtraArgs,
   DepositMessageData,
   MessageAdapters,
+  MessageBuilderParams,
   OptionalFeeParams,
   WithdrawMessageData,
 } from "../../common/types/message.js";
@@ -71,7 +77,7 @@ export const prepare = {
       loanId,
       loanTypeId,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -81,7 +87,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data,
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -126,7 +147,7 @@ export const prepare = {
       accountId,
       loanId,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -136,7 +157,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data,
       extraArgs: "0x",
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -199,7 +235,7 @@ export const prepare = {
       hubPoolAddress: hubTokenData.poolAddress,
       amount,
     };
-    const messageToSend = buildMessageToSend(folksChain.chainType, {
+    const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
       adapters,
@@ -209,7 +245,22 @@ export const prepare = {
       handler: hubChain.hubAddress,
       data,
       extraArgs,
-    });
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -239,6 +290,8 @@ export const prepare = {
     adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
+    const network = folksChain.network;
+    const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
 
     assertAdapterSupportsDataMessage(
       folksChain.folksChainId,
@@ -251,40 +304,23 @@ export const prepare = {
     assertSpokeChainSupportFolksToken(
       folksChain.folksChainId,
       folksTokenId,
-      folksChain.network,
+      network,
     );
     assertSpokeChainSupportFolksToken(
       receiverFolksChainId,
       folksTokenId,
-      folksChain.network,
+      network,
     );
 
-    const getReturnAdapterFees = FolksHubLoan.getSendTokenAdapterFees(
-      FolksCore.getHubProvider(),
-      folksChain.network,
-      accountId,
-      folksTokenId,
-      amount,
-      receiverFolksChainId,
-      adapters,
-    );
+    const hubChain = getHubChain(network);
+    const hubTokenData = getHubTokenData(folksTokenId, network);
 
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
-    const hubChain = getHubChain(folksChain.network);
-
-    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
       chainType: folksChain.chainType,
     });
-
-    const feeParams: OptionalFeeParams = {
-      receiverValue: await getReturnAdapterFees(),
-    };
 
     const data: WithdrawMessageData = {
       loanId,
@@ -293,19 +329,49 @@ export const prepare = {
       amount,
       isFAmount,
     };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.Withdraw,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs: "0x",
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.returnGasLimit = await estimateReturnReceiveGasLimit(
+      FolksCore.getProvider(receiverFolksChainId),
+      receiverFolksChain,
+      hubChain,
+      adapters,
+      messageBuilderParams,
+    );
+    feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
+      FolksCore.getHubProvider(),
+      network,
+      accountId,
+      folksTokenId,
+      amount,
+      receiverFolksChainId,
+      adapters,
+      feeParams,
+    );
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+      feeParams.receiverValue,
+      feeParams.returnGasLimit,
+    );
+
     const messageToSend = buildMessageToSend(
       folksChain.chainType,
-      {
-        userAddress,
-        accountId,
-        adapters,
-        action: Action.Withdraw,
-        sender: spokeChain.spokeCommonAddress,
-        destinationChainId: hubChain.folksChainId,
-        handler: hubChain.hubAddress,
-        data,
-        extraArgs: "0x",
-      },
+      messageBuilderParams,
       feeParams,
     );
 
@@ -315,7 +381,7 @@ export const prepare = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
-          folksChain.network,
+          network,
           accountId,
           loanId,
           folksTokenId,

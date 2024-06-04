@@ -43,7 +43,7 @@ async function estimateAdapterReceiveGasLimit(
   destFolksChainId: FolksChainId,
   destFolksChainProvider: FolksProvider,
   network: NetworkType,
-  adapters: MessageAdapters,
+  adapterId: AdapterType,
   sourceAdapterAddress: GenericAddress,
   destAdapterAddress: GenericAddress,
   messageBuilderParams: MessageBuilderParams,
@@ -53,7 +53,7 @@ async function estimateAdapterReceiveGasLimit(
   const destFolksChain = getFolksChain(destFolksChainId, network);
   switch (destFolksChain.chainType) {
     case ChainType.EVM:
-      switch (adapters.adapterId) {
+      switch (adapterId) {
         case AdapterType.WORMHOLE_DATA: {
           const sourceWormholeChainId =
             getWormholeData(sourceFolksChainId).wormholeChainId;
@@ -103,7 +103,7 @@ async function estimateAdapterReceiveGasLimit(
           throw new Error("Not implemented yet: AdapterType.CCIP_TOKEN case");
         }
         default:
-          return exhaustiveCheck(adapters.adapterId);
+          return exhaustiveCheck(adapterId);
       }
 
     default:
@@ -135,11 +135,42 @@ export async function estimateReceiveGasLimit(
     hubChain.folksChainId,
     hubProvider,
     folksChain.network,
-    adapters,
+    adapters.adapterId,
     sourceAdapterAddress,
     destAdapterAddress,
     messageBuilderParams,
     receiverValue,
     returnGasLimit,
+  );
+}
+
+export async function estimateReturnReceiveGasLimit(
+  receiverFolksChainProvider: FolksProvider,
+  receiverFolksChain: FolksChain,
+  hubChain: HubChain,
+  adapters: MessageAdapters,
+  messageBuilderParams: MessageBuilderParams,
+) {
+  const sourceAdapterAddress = getHubChainAdapterAddress(
+    receiverFolksChain.network,
+    adapters.returnAdapterId,
+  );
+  const destAdapterAddress = getSpokeChainAdapterAddress(
+    receiverFolksChain.folksChainId,
+    receiverFolksChain.network,
+    adapters.returnAdapterId,
+  );
+
+  return await estimateAdapterReceiveGasLimit(
+    hubChain.folksChainId,
+    receiverFolksChain.folksChainId,
+    receiverFolksChainProvider,
+    receiverFolksChain.network,
+    adapters.returnAdapterId,
+    sourceAdapterAddress,
+    destAdapterAddress,
+    messageBuilderParams,
+    BigInt(0),
+    BigInt(0),
   );
 }
