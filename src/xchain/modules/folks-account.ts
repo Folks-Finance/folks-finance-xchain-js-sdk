@@ -17,6 +17,10 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type {
+  AccountIdByAddress,
+  AccountInfo,
+} from "../../chains/evm/hub/types/account.js";
 import type { GenericAddress } from "../../common/types/address.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId } from "../../common/types/lending.js";
@@ -407,12 +411,37 @@ export const write = {
 };
 
 export const read = {
-  async accountInfo(accountId: AccountId, folksChainIds?: Array<FolksChainId>) {
+  async accountInfo(
+    accountId: AccountId,
+    folksChainIds?: Array<FolksChainId>,
+  ): Promise<AccountInfo> {
     return FolksHubAccount.getAccountInfo(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       accountId,
       folksChainIds,
+    );
+  },
+
+  async accountIdByAddress(
+    address: GenericAddress,
+  ): Promise<AccountIdByAddress> {
+    return FolksHubAccount.getAccountIdByAddress(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+    );
+  },
+
+  async accountIdByAddressOnChain(
+    address: GenericAddress,
+    folksChainId: FolksChainId,
+  ): Promise<AccountId> {
+    return FolksHubAccount.getAccountIdByAddressOnChain(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+      folksChainId,
     );
   },
 };
