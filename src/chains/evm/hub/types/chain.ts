@@ -12,5 +12,5 @@ export type HubChain = {
   spokeManagerAddress: GenericAddress;
   accountManagerAddress: GenericAddress;
   loanManagerAddress: GenericAddress;
-  tokens: Record<FolksTokenId, HubTokenData>;
+  tokens: Partial<Record<FolksTokenId, HubTokenData>>;
 } & IFolksChain;

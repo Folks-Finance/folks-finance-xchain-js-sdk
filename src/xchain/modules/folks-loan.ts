@@ -3,6 +3,7 @@ import {
   assertLoanTypeSupported,
   getHubChain,
   getHubTokenData,
+  getHubTokensData,
 } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
@@ -29,6 +30,10 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
+import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
+import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
+import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../common/types/lending.js";
 import type {
@@ -501,4 +506,77 @@ export const write = {
   },
 };
 
-export const read = {};
+export const read = {
+  async rateLimit(
+    folksTokenId: FolksTokenId,
+    folksChainId: FolksChainId,
+  ): Promise<TokenRateLimit> {
+    const network = FolksCore.getSelectedNetwork();
+    const folksChain = getFolksChain(folksChainId, network);
+
+    assertSpokeChainSupportFolksToken(
+      folksChain.folksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.read.rateLimitInfo(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          spokeTokenData,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async loanTypeInfo(loanTypeId: LoanType): Promise<LoanTypeInfo> {
+    const network = FolksCore.getSelectedNetwork();
+
+    // filter for all tokens supported in loan type
+    const tokensData = Object.values(getHubTokensData(network)).filter(
+      (tokenData) => tokenData.supportedLoanTypes.has(loanTypeId),
+    );
+
+    return await FolksHubLoan.getLoanTypeInfo(
+      FolksCore.getHubProvider(),
+      network,
+      loanTypeId,
+      tokensData,
+    );
+  },
+
+  async userLoansInfo(
+    accountId: AccountId,
+    poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
+    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+    oraclePrices: OraclePrices,
+    loanTypeIdFilter?: LoanType,
+  ) {
+    const network = FolksCore.getSelectedNetwork();
+
+    // get active user loans
+    const loanIds = await FolksHubLoan.getUserLoanIds(
+      FolksCore.getHubProvider(),
+      network,
+      accountId,
+      loanTypeIdFilter,
+    );
+
+    // get info of each user loan
+    return await FolksHubLoan.getUserLoansInfo(
+      FolksCore.getHubProvider(),
+      network,
+      loanIds,
+      poolsInfo,
+      loanTypesInfo,
+      oraclePrices,
+    );
+  },
+};

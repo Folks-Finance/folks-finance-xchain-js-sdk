@@ -27,6 +27,10 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "dnum": "^2.13.1",
+    "viem": "^2.13.2"
+  },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
@@ -46,9 +50,6 @@
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.9.0"
-  },
-  "dependencies": {
-    "viem": "^2.13.2"
   },
   "config": {
     "commitizen": {

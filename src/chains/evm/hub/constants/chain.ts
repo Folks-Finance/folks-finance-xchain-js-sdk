@@ -12,7 +12,6 @@ import type {
 } from "../../../../common/types/address.js";
 import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { HubChain } from "../types/chain.js";
-import type { HubTokenData } from "../types/token.js";
 
 export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.MAINNET]: {
@@ -30,7 +29,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
     spokeManagerAddress: "0x" as GenericAddress,
     accountManagerAddress: "0x" as GenericAddress,
     loanManagerAddress: "0x" as GenericAddress,
-    tokens: {} as Record<FolksTokenId, HubTokenData>,
+    tokens: {},
   },
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
