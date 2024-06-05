@@ -312,11 +312,6 @@ export const prepare = {
       adapters.returnAdapterId,
     );
     assertSpokeChainSupportFolksToken(
-      folksChain.folksChainId,
-      folksTokenId,
-      network,
-    );
-    assertSpokeChainSupportFolksToken(
       receiverFolksChainId,
       folksTokenId,
       network,
