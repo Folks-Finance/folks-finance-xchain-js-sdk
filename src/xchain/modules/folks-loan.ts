@@ -8,6 +8,7 @@ import {
 import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
+import { TokenType } from "../../common/types/token.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
@@ -203,10 +204,6 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
     assertSpokeChainSupportFolksToken(
       folksChain.folksChainId,
       folksTokenId,
@@ -221,6 +218,17 @@ export const prepare = {
 
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+    else
+      assertAdapterSupportsDataMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
