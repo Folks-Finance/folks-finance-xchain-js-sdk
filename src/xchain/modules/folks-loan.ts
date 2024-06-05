@@ -113,7 +113,6 @@ export const prepare = {
           accountId,
           loanId,
           loanTypeId,
-          adapters,
           spokeChain,
         );
       default:
@@ -182,7 +181,6 @@ export const prepare = {
           messageToSend,
           accountId,
           loanId,
-          adapters,
           spokeChain,
         );
       default:
@@ -271,7 +269,6 @@ export const prepare = {
           accountId,
           loanId,
           amount,
-          adapters,
           spokeChain,
           spokeTokenData,
         );
@@ -388,7 +385,6 @@ export const prepare = {
           amount,
           isFAmount,
           receiverFolksChainId,
-          adapters,
           spokeChain,
         );
       default:
