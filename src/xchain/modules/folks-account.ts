@@ -432,7 +432,7 @@ export const read = {
   async accountIdByAddressOnChain(
     address: GenericAddress,
     folksChainId: FolksChainId,
-  ): Promise<AccountId> {
+  ): Promise<AccountId | null> {
     return FolksHubAccount.getAccountIdByAddressOnChain(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),

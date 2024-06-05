@@ -184,7 +184,12 @@ export function buildEvmMessageData(
       ]);
     }
     case Action.Repay: {
-      throw new Error("Not implemented yet: Action.Repay case");
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.amount, UINT256_LENGTH),
+        convertNumberToBytes(data.maxOverRepayment, UINT256_LENGTH),
+      ]);
     }
     case Action.RepayWithCollateral: {
       throw new Error("Not implemented yet: Action.RepayWithCollateral case");
@@ -390,7 +395,26 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.Repay: {
-      throw new Error("Not implemented yet: Action.Repay case");
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.Repay,
+          accountId,
+          getRandomGenericAddress(),
+          data,
+        ),
+        finalityLevel: FINALITY.FINALISED,
+        extraArgs: buildSendTokenExtraArgsWhenAdding(
+          extraArgs.tokenType,
+          extraArgs.spokeTokenAddress,
+          extraArgs.hubPoolAddress,
+          extraArgs.amount,
+        ),
+      };
+      return message;
     }
     case Action.RepayWithCollateral: {
       throw new Error("Not implemented yet: Action.RepayWithCollateral case");
