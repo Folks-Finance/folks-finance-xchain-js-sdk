@@ -18,14 +18,14 @@ export function expBySquaring(x: Dnum, n: bigint): Dnum {
   let y = one;
   while (n > BigInt(1)) {
     if (n % BigInt(2)) {
-      y = dn.mul(x, y);
+      y = dn.mul(x, y, { rounding: "ROUND_DOWN" });
       n = (n - BigInt(1)) / BigInt(2);
     } else {
       n = n / BigInt(2);
     }
-    x = dn.mul(x, x);
+    x = dn.mul(x, x, { rounding: "ROUND_DOWN" });
   }
-  return dn.mul(x, y);
+  return dn.mul(x, y, { rounding: "ROUND_DOWN" });
 }
 
 function compound(rate: Dnum, period: bigint): Dnum {

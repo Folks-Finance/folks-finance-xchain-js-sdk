@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       dnum:
-        specifier: ^2.12.0
-        version: 2.12.0
+        specifier: ^2.13.1
+        version: 2.13.1
       viem:
-        specifier: ^2.10.5
+        specifier: ^2.13.2
         version: 2.13.2(typescript@5.4.5)
     devDependencies:
       '@commitlint/cli':
@@ -660,8 +660,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  dnum@2.12.0:
-    resolution: {integrity: sha512-9KadprQFF6ftkN4MqVE2pbbvh7p5YL2z1EHon1j+OFzxTn+BhC9iufWJX0oDhLRzqzMpNramTspIS697lSfrSA==}
+  dnum@2.13.1:
+    resolution: {integrity: sha512-4oZ+BtlvNtKFJji1Fc5073LyJFvgioBQ0PNu/C+r1A8P09Yvka/aXYYD5bsUHMTUPEu01iv4bk+5nPQmt5AA8A==}
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -2679,7 +2679,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  dnum@2.12.0:
+  dnum@2.13.1:
     dependencies:
       from-exponential: 1.1.1
 
