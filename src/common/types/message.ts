@@ -107,6 +107,21 @@ export type WithdrawMessageData = {
   isFAmount: boolean;
 };
 
+export type BorrowMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  receiverFolksChainId: FolksChainId;
+  amount: bigint;
+  maxStableRate: bigint;
+};
+
+export type RepayMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  amount: bigint;
+  maxOverRepayment: bigint;
+};
+
 export type RepayWithCollateralMessageData = {
   loanId: LoanId;
   poolId: number;
@@ -124,6 +139,13 @@ export type DepositExtraArgs = {
   amount: bigint;
 };
 
+export type RepayExtraArgs = {
+  tokenType: TokenType;
+  spokeTokenAddress: GenericAddress;
+  hubPoolAddress: GenericAddress;
+  amount: bigint;
+};
+
 // Params
 export type DefaultMessageDataParams = {
   action:
@@ -132,8 +154,6 @@ export type DefaultMessageDataParams = {
     | Action.RemoveDelegate
     | Action.DepositFToken
     | Action.WithdrawFToken
-    | Action.Borrow
-    | Action.Repay
     | Action.Liquidate
     | Action.SwitchBorrowType
     | Action.SendToken;
@@ -185,6 +205,18 @@ export type DepositMessageDataParams = {
   extraArgs: DepositExtraArgs;
 };
 
+export type BorrowMessageDataParams = {
+  action: Action.Borrow;
+  data: BorrowMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
+export type RepayMessageDataParams = {
+  action: Action.Repay;
+  data: RepayMessageData;
+  extraArgs: RepayExtraArgs;
+};
+
 export type RepayWithCollateralMessageDataParams = {
   action: Action.RepayWithCollateral;
   data: RepayWithCollateralMessageData;
@@ -200,6 +232,8 @@ export type MessageDataParams =
   | DeleteLoanMessageDataParams
   | DepositMessageDataParams
   | WithdrawMessageDataParams
+  | BorrowMessageDataParams
+  | RepayMessageDataParams
   | RepayWithCollateralMessageDataParams;
 
 export type MessageBuilderParams = {

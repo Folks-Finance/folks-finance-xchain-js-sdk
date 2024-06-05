@@ -28,9 +28,11 @@ import type {
   SpokeTokenData,
 } from "../../../../common/types/token.js";
 import type {
+  PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
+  PrepareRepayCall,
   PrepareRepayWithCollateralCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
@@ -204,6 +206,98 @@ export const prepare = {
     };
   },
 
+  async borrow(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    network: NetworkType,
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    maxStableRate: bigint,
+    receiverFolksChainId: FolksChainId,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ): Promise<PrepareBorrowCall> {
+    const hubTokenData = getHubTokenData(folksTokenId, network);
+
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const spokeBridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fee
+    const msgValue = await spokeBridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.borrow(
+      [
+        messageToSend.params,
+        accountId,
+        loanId,
+        hubTokenData.poolId,
+        receiverFolksChainId,
+        amount,
+        maxStableRate,
+      ],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      spokeCommonAddress,
+    };
+  },
+
+  async repay(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    spokeChain: SpokeChain,
+    spokeTokenData: SpokeTokenData,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ): Promise<PrepareRepayCall> {
+    const spokeToken = getSpokeTokenContract(
+      provider,
+      spokeTokenData.spokeAddress,
+    );
+    const bridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fees
+    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeToken.estimateGas.repay(
+      [messageToSend.params, accountId, loanId, amount, maxOverRepayment],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      token: spokeTokenData,
+    };
+  },
+
   async repayWithCollateral(
     provider: Client,
     sender: EvmAddress,
@@ -370,6 +464,83 @@ export const write = {
         amount,
         isFAmount,
       ],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
+  },
+
+  async borrow(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    poolId: number,
+    amount: bigint,
+    maxStableRate: bigint,
+    receiverChainId: FolksChainId,
+    prepareCall: PrepareBorrowCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
+      prepareCall;
+
+    const spokeCommon = getSpokeCommonContract(
+      provider,
+      spokeCommonAddress,
+      signer,
+    );
+
+    return await spokeCommon.write.borrow(
+      [
+        messageParams,
+        accountId,
+        loanId,
+        poolId,
+        receiverChainId,
+        amount,
+        maxStableRate,
+      ],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
+  },
+
+  async repay(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    includeApprove = true,
+    prepareCall: PrepareRepayCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, token } = prepareCall;
+
+    const spokeToken = getSpokeTokenContract(
+      provider,
+      token.spokeAddress,
+      signer,
+    );
+
+    if (includeApprove && token.tokenType !== TokenType.NATIVE)
+      await sendERC20Approve(
+        provider,
+        token.spokeAddress,
+        signer,
+        spokeToken.address as EvmAddress,
+        amount,
+      );
+
+    return await spokeToken.write.repay(
+      [messageParams, accountId, loanId, amount, maxOverRepayment],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,

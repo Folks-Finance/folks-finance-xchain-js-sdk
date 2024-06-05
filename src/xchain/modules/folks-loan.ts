@@ -8,6 +8,7 @@ import {
 import { FolksEvmLoan } from "../../chains/evm/spoke/modules/index.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
+import { TokenType } from "../../common/types/token.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsTokenMessage,
@@ -37,6 +38,7 @@ import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../common/types/lending.js";
 import type {
+  BorrowMessageData,
   CreateLoanMessageData,
   DeleteLoanMessageData,
   DepositExtraArgs,
@@ -44,13 +46,17 @@ import type {
   MessageAdapters,
   MessageBuilderParams,
   OptionalFeeParams,
+  RepayExtraArgs,
+  RepayMessageData,
   RepayWithCollateralMessageData,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
   LoanType,
+  PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
+  PrepareRepayCall,
   PrepareRepayWithCollateralCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
@@ -205,10 +211,6 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
     assertSpokeChainSupportFolksToken(
       folksChain.folksChainId,
       folksTokenId,
@@ -223,6 +225,17 @@ export const prepare = {
 
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+    else
+      assertAdapterSupportsDataMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
@@ -306,11 +319,6 @@ export const prepare = {
       adapters.returnAdapterId,
     );
     assertSpokeChainSupportFolksToken(
-      folksChain.folksChainId,
-      folksTokenId,
-      network,
-    );
-    assertSpokeChainSupportFolksToken(
       receiverFolksChainId,
       folksTokenId,
       network,
@@ -329,7 +337,7 @@ export const prepare = {
     const data: WithdrawMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
-      receiverFolksChainId: receiverFolksChainId,
+      receiverFolksChainId,
       amount,
       isFAmount,
     };
@@ -393,6 +401,215 @@ export const prepare = {
           isFAmount,
           receiverFolksChainId,
           spokeChain,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async borrow(
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    maxStableRate: bigint,
+    receiverFolksChainId: FolksChainId,
+    adapters: MessageAdapters,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+    const network = folksChain.network;
+    const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
+
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
+    assertAdapterSupportsTokenMessage(
+      receiverFolksChainId,
+      adapters.returnAdapterId,
+    );
+    assertSpokeChainSupportFolksToken(
+      receiverFolksChainId,
+      folksTokenId,
+      network,
+    );
+
+    const hubChain = getHubChain(network);
+    const hubTokenData = getHubTokenData(folksTokenId, network);
+
+    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: BorrowMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      receiverFolksChainId,
+      amount,
+      maxStableRate,
+    };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.Borrow,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs: "0x",
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.returnGasLimit = await estimateReturnReceiveGasLimit(
+      FolksCore.getProvider(receiverFolksChainId),
+      receiverFolksChain,
+      hubChain,
+      adapters,
+      messageBuilderParams,
+    );
+    feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
+      FolksCore.getHubProvider(),
+      network,
+      accountId,
+      folksTokenId,
+      amount,
+      receiverFolksChainId,
+      adapters,
+      feeParams,
+    );
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+      feeParams.receiverValue,
+      feeParams.returnGasLimit,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.prepare.borrow(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
+          messageToSend,
+          network,
+          accountId,
+          loanId,
+          folksTokenId,
+          amount,
+          maxStableRate,
+          receiverFolksChainId,
+          spokeChain,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async repay(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanType: LoanType,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    adapters: MessageAdapters,
+  ): Promise<PrepareRepayCall> {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupportFolksToken(
+      folksChain.folksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
+    assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+    else
+      assertAdapterSupportsDataMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: RepayMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      amount,
+      maxOverRepayment,
+    };
+    const extraArgs: RepayExtraArgs = {
+      tokenType: spokeTokenData.tokenType,
+      spokeTokenAddress: getSpokeTokenDataTokenAddress(spokeTokenData),
+      hubPoolAddress: hubTokenData.poolAddress,
+      amount,
+    };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.Repay,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs,
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.prepare.repay(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
+          messageToSend,
+          accountId,
+          loanId,
+          amount,
+          maxOverRepayment,
+          spokeChain,
+          spokeTokenData,
         );
       default:
         return exhaustiveCheck(folksChain.chainType);
@@ -575,6 +792,66 @@ export const write = {
           amount,
           isFAmount,
           receiverFolksChainId,
+          prepareCall,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async borrow(
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    maxStableRate: bigint,
+    receiverFolksChainId: FolksChainId,
+    prepareCall: PrepareBorrowCall,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    const { poolId } = getHubTokenData(folksTokenId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.write.borrow(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          loanId,
+          poolId,
+          amount,
+          maxStableRate,
+          receiverFolksChainId,
+          prepareCall,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async repay(
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    includeApproval: boolean,
+    prepareCall: PrepareRepayCall,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.write.repay(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          loanId,
+          amount,
+          maxOverRepayment,
+          includeApproval,
           prepareCall,
         );
       default:

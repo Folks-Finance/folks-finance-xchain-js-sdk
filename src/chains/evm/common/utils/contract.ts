@@ -1,4 +1,4 @@
-import { getContract } from "viem";
+import { BaseError, ContractFunctionRevertedError, getContract } from "viem";
 
 import { ChainType } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
@@ -68,4 +68,18 @@ export function getCCIPDataAdapterContract(
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
     client: { public: provider },
   });
+}
+
+export function extractRevertErrorName(err: unknown): string | undefined {
+  if (err instanceof BaseError) {
+    const revertError = err.walk(
+      (err) => err instanceof ContractFunctionRevertedError,
+    );
+    if (
+      revertError instanceof ContractFunctionRevertedError &&
+      revertError.data?.errorName
+    ) {
+      return revertError.data.errorName;
+    }
+  }
 }

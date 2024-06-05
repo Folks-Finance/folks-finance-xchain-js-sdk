@@ -1,6 +1,7 @@
 import { multicall } from "viem/actions";
 
 import { getFolksChainIdsByNetwork } from "../../../../common/utils/chain.js";
+import { extractRevertErrorName } from "../../common/utils/contract.js";
 import { getHubChain } from "../utils/chain.js";
 import { getAccountManagerContract } from "../utils/contract.js";
 
@@ -117,16 +118,22 @@ export async function getAccountIdByAddressOnChain(
   network: NetworkType,
   address: GenericAddress,
   folksChainId: FolksChainId,
-): Promise<AccountId> {
+): Promise<AccountId | null> {
   const hubChain = getHubChain(network);
   const accountManager = getAccountManagerContract(
     provider,
     hubChain.accountManagerAddress,
   );
 
-  const accountId = await accountManager.read.getAccountIdOfAddressOnChain([
-    address,
-    folksChainId,
-  ]);
-  return accountId as AccountId;
+  try {
+    const accountId = await accountManager.read.getAccountIdOfAddressOnChain([
+      address,
+      folksChainId,
+    ]);
+    return accountId as AccountId;
+  } catch (err: unknown) {
+    const errorName = extractRevertErrorName(err);
+    if (errorName === "NoAccountRegisteredTo") return null;
+    throw err;
+  }
 }
