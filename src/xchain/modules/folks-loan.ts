@@ -329,7 +329,7 @@ export const prepare = {
     const data: WithdrawMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
-      receiverFolksChainId: receiverFolksChainId,
+      receiverFolksChainId,
       amount,
       isFAmount,
     };
@@ -439,7 +439,7 @@ export const prepare = {
     const data: BorrowMessageData = {
       loanId,
       poolId: hubTokenData.poolId,
-      receiverFolksChainId: receiverFolksChainId,
+      receiverFolksChainId,
       amount,
       maxStableRate,
     };
