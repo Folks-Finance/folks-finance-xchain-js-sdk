@@ -30,7 +30,6 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { PrepareBorrowCall } from "../../chains/evm/common/types/module.js";
 import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
 import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
@@ -50,6 +49,7 @@ import type {
 } from "../../common/types/message.js";
 import type {
   LoanType,
+  PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareWithdrawCall,
