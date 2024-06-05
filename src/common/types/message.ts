@@ -107,6 +107,14 @@ export type WithdrawMessageData = {
   isFAmount: boolean;
 };
 
+export type BorrowMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  receiverFolksChainId: FolksChainId;
+  amount: bigint;
+  maxStableRate: bigint;
+};
+
 // Extra args
 export type DefaultExtraArgs = "0x";
 
@@ -126,7 +134,6 @@ export type DefaultMessageDataParams = {
     | Action.RemoveDelegate
     | Action.DepositFToken
     | Action.WithdrawFToken
-    | Action.Borrow
     | Action.Repay
     | Action.RepayWithCollateral
     | Action.Liquidate
@@ -180,6 +187,12 @@ export type DepositMessageDataParams = {
   extraArgs: DepositExtraArgs;
 };
 
+export type BorrowMessageDataParams = {
+  action: Action.Borrow;
+  data: BorrowMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
 export type MessageDataParams =
   | DefaultMessageDataParams
   | CreateAccountMessageDataParams
@@ -188,7 +201,8 @@ export type MessageDataParams =
   | CreateLoanMessageDataParams
   | DeleteLoanMessageDataParams
   | DepositMessageDataParams
-  | WithdrawMessageDataParams;
+  | WithdrawMessageDataParams
+  | BorrowMessageDataParams;
 
 export type MessageBuilderParams = {
   userAddress: GenericAddress;
