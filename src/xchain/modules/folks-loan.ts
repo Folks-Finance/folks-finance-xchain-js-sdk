@@ -548,7 +548,7 @@ export const read = {
       (tokenData) => tokenData.supportedLoanTypes.has(loanTypeId),
     );
 
-    return FolksHubLoan.getLoanTypeInfo(
+    return await FolksHubLoan.getLoanTypeInfo(
       FolksCore.getHubProvider(),
       network,
       loanTypeId,
@@ -561,6 +561,7 @@ export const read = {
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
+    loanTypeIdFilter?: LoanType,
   ) {
     const network = FolksCore.getSelectedNetwork();
 
@@ -569,6 +570,7 @@ export const read = {
       FolksCore.getHubProvider(),
       network,
       accountId,
+      loanTypeIdFilter,
     );
 
     // get info of each user loan

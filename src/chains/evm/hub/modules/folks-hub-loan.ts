@@ -36,6 +36,7 @@ import {
   getBridgeRouterHubContract,
   getLoanManagerContract,
 } from "../utils/contract.js";
+import { fetchUserLoanIds } from "../utils/events.js";
 
 import type {
   FolksChainId,
@@ -243,6 +244,7 @@ export async function getUserLoanIds(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
+  loanTypeIdFilter?: LoanType,
 ): Promise<Array<LoanId>> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(
@@ -250,33 +252,11 @@ export async function getUserLoanIds(
     hubChain.loanManagerAddress,
   );
 
-  // loan ids can be reused so must include if created more times than deleted
-  const loanIds = new Map<LoanId, number>();
-
-  // add created
-  const createLogs = await loanManager.getEvents.CreateUserLoan(
-    { accountId },
-    { strict: true },
-  );
-  for (const log of createLogs) {
-    const loanId = log.args.loanId as LoanId;
-    const num = loanIds.get(loanId) ?? 0;
-    loanIds.set(loanId, num + 1);
-  }
-
-  // remove deleted
-  const deletedLogs = await loanManager.getEvents.DeleteUserLoan(
-    { accountId },
-    { strict: true },
-  );
-  for (const log of deletedLogs) {
-    const loanId = log.args.loanId as LoanId;
-    const num = loanIds.get(loanId) ?? 1;
-    num === 1 ? loanIds.delete(loanId) : loanIds.set(loanId, num - 1);
-  }
-
-  // return remaining
-  return Array.from(loanIds.keys());
+  return fetchUserLoanIds({
+    loanManager,
+    accountId,
+    loanTypeId: loanTypeIdFilter,
+  });
 }
 
 export async function getUserLoansInfo(
