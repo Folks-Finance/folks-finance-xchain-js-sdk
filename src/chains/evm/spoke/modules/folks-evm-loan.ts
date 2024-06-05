@@ -31,6 +31,7 @@ import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
+  PrepareRepayWithCollateralCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { TokenRateLimit } from "../types/pool.js";
@@ -202,6 +203,48 @@ export const prepare = {
       spokeCommonAddress,
     };
   },
+
+  async repayWithCollateral(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    network: NetworkType,
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ): Promise<PrepareRepayWithCollateralCall> {
+    const hubTokenData = getHubTokenData(folksTokenId, network);
+
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
+
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fees
+    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.repayWithCollateral(
+      [messageToSend.params, accountId, loanId, hubTokenData.poolId, amount],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      spokeCommonAddress,
+    };
+  },
 };
 
 export const write = {
@@ -327,6 +370,35 @@ export const write = {
         amount,
         isFAmount,
       ],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
+  },
+
+  async repayWithCollateral(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    poolId: number,
+    amount: bigint,
+    prepareCall: PrepareRepayWithCollateralCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
+      prepareCall;
+
+    const spokeCommon = getSpokeCommonContract(
+      provider,
+      spokeCommonAddress,
+      signer,
+    );
+
+    return await spokeCommon.write.repayWithCollateral(
+      [messageParams, accountId, loanId, poolId, amount],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
