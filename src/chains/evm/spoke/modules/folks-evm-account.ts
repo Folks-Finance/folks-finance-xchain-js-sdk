@@ -45,7 +45,6 @@ export const prepare = {
     );
 
     // get adapter fees
-    const returnAdapterFee = BigInt(0);
     const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
@@ -56,15 +55,14 @@ export const prepare = {
         ...transactionOptions,
       },
     );
-    const returnReceiveGasLimit = BigInt(0);
 
     return {
       adapters,
       adapterFee,
-      returnAdapterFee,
+      returnAdapterFee: messageToSend.params.receiverValue,
       gasLimit,
       receiveGasLimit: messageToSend.params.gasLimit,
-      returnReceiveGasLimit,
+      returnReceiveGasLimit: messageToSend.params.returnGasLimit,
       spokeCommonAddress,
     };
   },
@@ -89,7 +87,6 @@ export const prepare = {
     );
 
     // get adapter fees
-    const returnAdapterFee = BigInt(0);
     const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
@@ -100,16 +97,14 @@ export const prepare = {
         ...transactionOptions,
       },
     );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
 
     return {
       adapters,
       adapterFee,
-      returnAdapterFee,
+      returnAdapterFee: messageToSend.params.receiverValue,
       gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
+      receiveGasLimit: messageToSend.params.gasLimit,
+      returnReceiveGasLimit: messageToSend.params.returnGasLimit,
       spokeCommonAddress,
     };
   },
@@ -132,7 +127,6 @@ export const prepare = {
     );
 
     // get adapter fees
-    const returnAdapterFee = BigInt(0);
     const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
@@ -143,16 +137,14 @@ export const prepare = {
         ...transactionOptions,
       },
     );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
 
     return {
       adapters,
       adapterFee,
-      returnAdapterFee,
+      returnAdapterFee: messageToSend.params.receiverValue,
       gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
+      receiveGasLimit: messageToSend.params.gasLimit,
+      returnReceiveGasLimit: messageToSend.params.returnGasLimit,
       spokeCommonAddress,
     };
   },
@@ -176,7 +168,6 @@ export const prepare = {
     );
 
     // get adapter fees
-    const returnAdapterFee = BigInt(0);
     const adapterFee = await bridgeRouter.read.getSendFee([messageToSend]);
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.unregisterAddress(
@@ -186,16 +177,14 @@ export const prepare = {
         ...transactionOptions,
       },
     );
-    const returnReceiveGasLimit = BigInt(0);
-    const receiveGasLimit = BigInt(300000); // TODO
 
     return {
       adapters,
       adapterFee,
-      returnAdapterFee,
+      returnAdapterFee: messageToSend.params.receiverValue,
       gasLimit,
-      receiveGasLimit,
-      returnReceiveGasLimit,
+      receiveGasLimit: messageToSend.params.gasLimit,
+      returnReceiveGasLimit: messageToSend.params.returnGasLimit,
       spokeCommonAddress,
     };
   },
@@ -269,7 +258,7 @@ export const write = {
       gasLimit: receiveGasLimit,
       returnGasLimit: returnReceiveGasLimit,
     };
-
+    console.log(params);
     return await spokeCommon.write.inviteAddress(
       [params, accountId, folksChainIdToInvite, addressToInvite],
       {
