@@ -117,7 +117,7 @@ export async function getSendTokenAdapterFees(
   return await hubBridgeRouter.read.getSendFee([returnMessage]);
 }
 
-export async function loanTypeInfo(
+export async function getLoanTypeInfo(
   provider: Client,
   network: NetworkType,
   loanTypeId: LoanType,
@@ -266,7 +266,7 @@ export async function getUserLoanIds(
   return Array.from(loanIds.keys());
 }
 
-export async function userLoansInfo(
+export async function getUserLoansInfo(
   provider: Client,
   network: NetworkType,
   loanIds: Array<LoanId>,

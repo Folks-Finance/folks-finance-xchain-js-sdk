@@ -548,7 +548,7 @@ export const read = {
       (tokenData) => tokenData.supportedLoanTypes.has(loanTypeId),
     );
 
-    return FolksHubLoan.loanTypeInfo(
+    return FolksHubLoan.getLoanTypeInfo(
       FolksCore.getHubProvider(),
       network,
       loanTypeId,
@@ -572,7 +572,7 @@ export const read = {
     );
 
     // get info of each user loan
-    return await FolksHubLoan.userLoansInfo(
+    return await FolksHubLoan.getUserLoansInfo(
       FolksCore.getHubProvider(),
       network,
       loanIds,
