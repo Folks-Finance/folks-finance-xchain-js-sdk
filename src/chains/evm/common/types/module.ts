@@ -1,14 +1,11 @@
 import type { GenericAddress } from "../../../../common/types/address.js";
-import type { MessageAdapters } from "../../../../common/types/message.js";
+import type { MessageParams } from "../../../../common/types/message.js";
 import type { SpokeTokenData } from "../../../../common/types/token.js";
 
 export type PrepareCall = {
-  adapters: MessageAdapters;
-  adapterFee: bigint;
-  returnAdapterFee: bigint;
+  msgValue: bigint;
   gasLimit: bigint;
-  receiveGasLimit: bigint;
-  returnReceiveGasLimit: bigint;
+  messageParams: MessageParams;
 };
 
 export type PrepareCreateAccountCall = {

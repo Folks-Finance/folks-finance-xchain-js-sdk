@@ -88,7 +88,6 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
-          adapters,
           spokeChain,
         );
       default:
@@ -160,7 +159,6 @@ export const prepare = {
           accountId,
           folksChainIdToInvite,
           addressToInvite,
-          adapters,
           spokeChain,
         );
       default:
@@ -221,7 +219,6 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
-          adapters,
           spokeChain,
         );
       default:
@@ -291,7 +288,6 @@ export const prepare = {
           messageToSend,
           accountId,
           folksChainIdToUnregister,
-          adapters,
           spokeChain,
         );
       default:
