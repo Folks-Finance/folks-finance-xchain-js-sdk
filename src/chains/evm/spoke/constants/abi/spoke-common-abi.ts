@@ -63,6 +63,7 @@ export const SpokeCommonAbi = [
     name: "InvalidBridgeRouter",
     type: "error",
   },
+  { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
   {
     inputs: [
       { internalType: "uint8", name: "bits", type: "uint8" },
@@ -307,6 +308,7 @@ export const SpokeCommonAbi = [
         type: "tuple",
       },
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      { internalType: "bytes32", name: "refAccountId", type: "bytes32" },
     ],
     name: "createAccount",
     outputs: [],
@@ -451,6 +453,7 @@ export const SpokeCommonAbi = [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "uint16", name: "chainId", type: "uint16" },
       { internalType: "bytes32", name: "addr", type: "bytes32" },
+      { internalType: "bytes32", name: "refAccountId", type: "bytes32" },
     ],
     name: "inviteAddress",
     outputs: [],

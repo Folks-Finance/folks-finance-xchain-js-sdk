@@ -32,6 +32,7 @@ export const prepare = {
     sender: EvmAddress,
     messageToSend: MessageToSend,
     accountId: AccountId,
+    refAccountId: AccountId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -50,7 +51,7 @@ export const prepare = {
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.createAccount(
-      [messageToSend.params, accountId],
+      [messageToSend.params, accountId, refAccountId],
       {
         value: adapterFee,
         ...transactionOptions,
@@ -76,6 +77,7 @@ export const prepare = {
     accountId: AccountId,
     folksChainIdToInvite: number,
     addressToInvite: GenericAddress,
+    refAccountId: AccountId,
     adapters: MessageAdapters,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -94,7 +96,13 @@ export const prepare = {
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.inviteAddress(
-      [messageToSend.params, accountId, folksChainIdToInvite, addressToInvite],
+      [
+        messageToSend.params,
+        accountId,
+        folksChainIdToInvite,
+        addressToInvite,
+        refAccountId,
+      ],
       {
         value: adapterFee,
         ...transactionOptions,
@@ -206,6 +214,7 @@ export const write = {
     provider: Client,
     signer: WalletClient,
     accountId: AccountId,
+    refAccountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
   ) {
     const {
@@ -231,12 +240,15 @@ export const write = {
       returnGasLimit: returnReceiveGasLimit,
     };
 
-    return await spokeCommon.write.createAccount([params, accountId], {
-      account: getEvmSignerAccount(signer),
-      chain: signer.chain,
-      gas: gasLimit,
-      value: adapterFee,
-    });
+    return await spokeCommon.write.createAccount(
+      [params, accountId, refAccountId],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gas: gasLimit,
+        value: adapterFee,
+      },
+    );
   },
 
   async inviteAddress(
@@ -245,6 +257,7 @@ export const write = {
     accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
+    refAccountId: AccountId,
     prepareCall: PrepareInviteAddressCall,
   ) {
     const {
@@ -271,7 +284,7 @@ export const write = {
     };
 
     return await spokeCommon.write.inviteAddress(
-      [params, accountId, folksChainIdToInvite, addressToInvite],
+      [params, accountId, folksChainIdToInvite, addressToInvite, refAccountId],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
