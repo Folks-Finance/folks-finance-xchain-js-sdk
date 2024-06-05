@@ -68,9 +68,14 @@ export type MessageToSend = {
 export type DefaultMessageData = "0x";
 
 // Data: account
+export type CreateAccountMessageData = {
+  refAccountId: AccountId;
+};
+
 export type InviteAddressMessageData = {
   folksChainIdToInvite: FolksChainId;
   addressToInvite: GenericAddress;
+  refAccountId: AccountId;
 };
 
 export type UnregisterAddressMessageData = {
@@ -116,7 +121,6 @@ export type DepositExtraArgs = {
 // Params
 export type DefaultMessageDataParams = {
   action:
-    | Action.CreateAccount
     | Action.AcceptInviteAddress
     | Action.AddDelegate
     | Action.RemoveDelegate
@@ -133,6 +137,12 @@ export type DefaultMessageDataParams = {
 };
 
 // Params: account
+export type CreateAccountMessageDataParams = {
+  action: Action.CreateAccount;
+  data: CreateAccountMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
 export type InviteAddressMessageDataParams = {
   action: Action.InviteAddress;
   data: InviteAddressMessageData;
@@ -172,6 +182,7 @@ export type DepositMessageDataParams = {
 
 export type MessageDataParams =
   | DefaultMessageDataParams
+  | CreateAccountMessageDataParams
   | InviteAddressMessageDataParams
   | UnregisterAddressMessageDataParams
   | CreateLoanMessageDataParams

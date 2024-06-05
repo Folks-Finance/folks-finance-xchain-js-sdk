@@ -17,10 +17,15 @@ import {
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type {
+  AccountIdByAddress,
+  AccountInfo,
+} from "../../chains/evm/hub/types/account.js";
 import type { GenericAddress } from "../../common/types/address.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId } from "../../common/types/lending.js";
 import type {
+  CreateAccountMessageData,
   InviteAddressMessageData,
   MessageAdapters,
   MessageBuilderParams,
@@ -35,7 +40,11 @@ import type {
 } from "../../common/types/module.js";
 
 export const prepare = {
-  async createAccount(accountId: AccountId, adapters: MessageAdapters) {
+  async createAccount(
+    accountId: AccountId,
+    refAccountId: AccountId,
+    adapters: MessageAdapters,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
@@ -54,6 +63,7 @@ export const prepare = {
       chainType: folksChain.chainType,
     });
 
+    const data: CreateAccountMessageData = { refAccountId };
     const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
@@ -62,7 +72,7 @@ export const prepare = {
       sender: spokeChain.spokeCommonAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
-      data: "0x",
+      data,
       extraArgs: "0x",
     };
     const feeParams: OptionalFeeParams = {};
@@ -88,6 +98,7 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
+          refAccountId,
           adapters,
           spokeChain,
         );
@@ -100,6 +111,7 @@ export const prepare = {
     accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
+    refAccountId: AccountId,
     adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -123,6 +135,7 @@ export const prepare = {
     const data: InviteAddressMessageData = {
       folksChainIdToInvite,
       addressToInvite,
+      refAccountId,
     };
     const messageBuilderParams: MessageBuilderParams = {
       userAddress,
@@ -160,6 +173,7 @@ export const prepare = {
           accountId,
           folksChainIdToInvite,
           addressToInvite,
+          refAccountId,
           adapters,
           spokeChain,
         );
@@ -303,6 +317,7 @@ export const prepare = {
 export const write = {
   async createAccount(
     accountId: AccountId,
+    refAccountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -315,6 +330,7 @@ export const write = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
+          refAccountId,
           prepareCall,
         );
       default:
@@ -326,6 +342,7 @@ export const write = {
     accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
+    refAccountId: AccountId,
     prepareCall: PrepareInviteAddressCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
@@ -340,6 +357,7 @@ export const write = {
           accountId,
           folksChainIdToInvite,
           addressToInvite,
+          refAccountId,
           prepareCall,
         );
       default:
@@ -393,12 +411,37 @@ export const write = {
 };
 
 export const read = {
-  async accountInfo(accountId: AccountId, folksChainIds?: Array<FolksChainId>) {
+  async accountInfo(
+    accountId: AccountId,
+    folksChainIds?: Array<FolksChainId>,
+  ): Promise<AccountInfo> {
     return FolksHubAccount.getAccountInfo(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       accountId,
       folksChainIds,
+    );
+  },
+
+  async accountIdByAddress(
+    address: GenericAddress,
+  ): Promise<AccountIdByAddress> {
+    return FolksHubAccount.getAccountIdByAddress(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+    );
+  },
+
+  async accountIdByAddressOnChain(
+    address: GenericAddress,
+    folksChainId: FolksChainId,
+  ): Promise<AccountId> {
+    return FolksHubAccount.getAccountIdByAddressOnChain(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+      folksChainId,
     );
   },
 };

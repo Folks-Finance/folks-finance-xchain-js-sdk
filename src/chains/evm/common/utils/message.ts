@@ -122,12 +122,13 @@ export function buildEvmMessageData(
   const { action, data } = messageToSendBuilderParams;
   switch (action) {
     case Action.CreateAccount: {
-      return data;
+      return data.refAccountId;
     }
     case Action.InviteAddress: {
       return concat([
         convertNumberToBytes(data.folksChainIdToInvite, UINT16_LENGTH),
         data.addressToInvite,
+        data.refAccountId,
       ]);
     }
     case Action.AcceptInviteAddress: {
