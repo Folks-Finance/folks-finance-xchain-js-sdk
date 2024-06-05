@@ -258,7 +258,7 @@ export const write = {
       gasLimit: receiveGasLimit,
       returnGasLimit: returnReceiveGasLimit,
     };
-    console.log(params);
+
     return await spokeCommon.write.inviteAddress(
       [params, accountId, folksChainIdToInvite, addressToInvite],
       {
