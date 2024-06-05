@@ -35,49 +35,49 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
     hubAddress: convertToGenericAddress(
-      "0xaFcA3bE824b6210918D3BeB63762D6211f1e91C3" as EvmAddress,
+      "0xae62c5cd744DE875D1800225c30baAeee1C0bBc8" as EvmAddress,
       ChainType.EVM,
     ),
     bridgeRouterAddress: convertToGenericAddress(
-      "0x46Db2e9cD0787bF791Df2c9AE9963E296847FF1D" as EvmAddress,
+      "0x00b4576b6D82D65064B027Ee3A9aFFeAF7c96d0F" as EvmAddress,
       ChainType.EVM,
     ),
     adapters: {
       [AdapterType.HUB]: convertToGenericAddress(
-        "0xB01296Ea267463FDe2fcE5Fad5067B4d875A44Ba" as EvmAddress,
+        "0x7eF21BaBB8e0b30B89e3159955c7136549B2813B" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-        "0x7A6099E5cE3b66B042c9d11c3D472882bd42e23C" as EvmAddress,
+        "0xD61f17F56a1574FA4353Ea36bc5Bb86A34830335" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
-        "0xf7EB478F95470caF349d999047e1D4A713aD7a7f" as EvmAddress,
+        "0x85de833FD7145c1AFA73DCDda33EFc09245C7C48" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.CCIP_DATA]: convertToGenericAddress(
-        "0x498d72950d7cf912Be48BA5C8894e98A81E204fc" as EvmAddress,
+        "0xCD3C8208df22122a1A869D6Abf42De03f2123fdA" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
-        "0x715Cd24a347552ae07e7d11Df2a59FFcEb2A9b66" as EvmAddress,
+        "0x74A92518CD4eaCcbFbA8743fEd01125d1D555493" as EvmAddress,
         ChainType.EVM,
       ),
     },
     oracleManagerAddress: convertToGenericAddress(
-      "0xc9cb1F8FcfBB804669d44349d44fB14BE4c665F0" as EvmAddress,
+      "0x26a276Cfd62540C0481d98EEdD98d7E1488cfCf4" as EvmAddress,
       ChainType.EVM,
     ),
     spokeManagerAddress: convertToGenericAddress(
-      "0xf27720C8B9C28d8E23bAA0A64347323FBB151CeD" as EvmAddress,
+      "0x91dE1B6B422121A91d351575020629e06dE5E371" as EvmAddress,
       ChainType.EVM,
     ),
     accountManagerAddress: convertToGenericAddress(
-      "0x5Ff19CF35875C973F63a60e78445F449292c5575" as EvmAddress,
+      "0x01DAE50946D9B5Ca9c7D7f9a9Ce44E8F15B40aF2" as EvmAddress,
       ChainType.EVM,
     ),
     loanManagerAddress: convertToGenericAddress(
-      "0x24f0a8f4D41E8CBe18676F75e0d11b105d1cc0A6" as EvmAddress,
+      "0xe9C1EA3Ec647B89ccA0DF84e356F7652be92Ac01" as EvmAddress,
       ChainType.EVM,
     ),
     tokens: {
