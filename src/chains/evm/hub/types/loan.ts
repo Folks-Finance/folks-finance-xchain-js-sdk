@@ -3,48 +3,6 @@ import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Dnum } from "dnum";
 
-// added because ts(2589)
-export type AbiLoanPool = {
-  collateralUsed: bigint;
-  borrowUsed: bigint;
-  collateralCap: bigint;
-  borrowCap: bigint;
-  collateralFactor: number;
-  borrowFactor: number;
-  liquidationBonus: number;
-  liquidationFee: number;
-  isAdded: boolean;
-  isDeprecated: boolean;
-  reward: {
-    lastUpdateTimestamp: bigint;
-    minimumAmount: bigint;
-    collateralSpeed: bigint;
-    borrowSpeed: bigint;
-    collateralRewardIndex: bigint;
-    borrowRewardIndex: bigint;
-  };
-};
-
-// added because ts(2589)
-export type AbiUserLoan = readonly [
-  `0x${string}`,
-  number,
-  ReadonlyArray<number>,
-  ReadonlyArray<number>,
-  ReadonlyArray<{
-    balance: bigint;
-    rewardIndex: bigint;
-  }>,
-  ReadonlyArray<{
-    amount: bigint;
-    balance: bigint;
-    lastInterestIndex: bigint;
-    stableInterestRate: bigint;
-    lastStableUpdateTimestamp: bigint;
-    rewardIndex: bigint;
-  }>,
-];
-
 export type LoanPoolInfo = {
   folksTokenId: FolksTokenId;
   poolId: number;

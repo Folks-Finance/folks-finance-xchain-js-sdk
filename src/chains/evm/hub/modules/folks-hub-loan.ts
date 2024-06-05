@@ -50,9 +50,8 @@ import type {
 } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
+import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type {
-  AbiLoanPool,
-  AbiUserLoan,
   LoanPoolInfo,
   LoanTypeInfo,
   UserLoanInfo,
@@ -63,7 +62,11 @@ import type { OraclePrices } from "../types/oracle.js";
 import type { PoolInfo } from "../types/pool.js";
 import type { HubTokenData } from "../types/token.js";
 import type { Dnum } from "dnum";
-import type { Client, ContractFunctionParameters } from "viem";
+import type {
+  Client,
+  ContractFunctionParameters,
+  ReadContractReturnType,
+} from "viem";
 
 export async function getSendTokenAdapterFees(
   provider: Client,
@@ -138,7 +141,7 @@ export async function getLoanTypeInfo(
     }),
   );
 
-  const [deprecated, loanTargetHealth, ...loanPools] = await multicall(
+  const [deprecated, loanTargetHealth, ...loanPools] = (await multicall(
     provider,
     {
       contracts: [
@@ -158,12 +161,19 @@ export async function getLoanTypeInfo(
       ],
       allowFailure: false,
     },
-  );
+  )) as [
+    ReadContractReturnType<typeof LoanManagerAbi, "isLoanTypeDeprecated">,
+    ReadContractReturnType<
+      typeof LoanManagerAbi,
+      "getLoanTypeLoanTargetHealth"
+    >,
+    ReadContractReturnType<typeof LoanManagerAbi, "getLoanPool">,
+  ];
 
   const pools: Partial<Record<FolksTokenId, LoanPoolInfo>> = {};
-  for (let i = 0; i < loanPools.length; i++) {
-    const token = tokens[i];
-    const {
+  for (const [
+    i,
+    {
       collateralUsed,
       borrowUsed,
       collateralCap,
@@ -174,7 +184,10 @@ export async function getLoanTypeInfo(
       liquidationFee,
       isDeprecated,
       reward,
-    } = (loanPools as Array<AbiLoanPool>)[i];
+    },
+  ] of loanPools.entries()) {
+    const token = tokens[i];
+
     const {
       lastUpdateTimestamp,
       minimumAmount,
@@ -220,8 +233,8 @@ export async function getLoanTypeInfo(
 
   return {
     loanTypeId,
-    deprecated: deprecated as boolean,
-    loanTargetHealth: [BigInt(loanTargetHealth as number), 4],
+    deprecated,
+    loanTargetHealth: [BigInt(loanTargetHealth), 4],
     pools,
   };
 }
@@ -298,7 +311,7 @@ export async function getUserLoansInfo(
   const userLoans = (await multicall(provider, {
     contracts: getUserLoans,
     allowFailure: false,
-  })) as Array<AbiUserLoan>;
+  })) as Array<ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">>;
 
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
   for (let i = 0; i < userLoans.length; i++) {

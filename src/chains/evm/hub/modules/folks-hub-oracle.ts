@@ -4,9 +4,14 @@ import { getHubChain } from "../utils/chain.js";
 import { getOracleManagerContract } from "../utils/contract.js";
 
 import type { NetworkType } from "../../../../common/types/chain.js";
-import type { AbiPriceFeed, OraclePrices } from "../types/oracle.js";
+import type { OracleManagerAbi } from "../constants/abi/oracle-manager-abi.js";
+import type { OraclePrices } from "../types/oracle.js";
 import type { HubTokenData } from "../types/token.js";
-import type { Client, ContractFunctionParameters } from "viem";
+import type {
+  Client,
+  ContractFunctionParameters,
+  ReadContractReturnType,
+} from "viem";
 
 export async function getOraclePrices(
   provider: Client,
@@ -31,7 +36,9 @@ export async function getOraclePrices(
   const priceFeeds = (await multicall(provider, {
     contracts: processPriceFeeds,
     allowFailure: false,
-  })) as Array<AbiPriceFeed>;
+  })) as Array<
+    ReadContractReturnType<typeof OracleManagerAbi, "processPriceFeed">
+  >;
 
   const oraclePrices: OraclePrices = {};
   for (const [i, { price }] of priceFeeds.entries()) {
