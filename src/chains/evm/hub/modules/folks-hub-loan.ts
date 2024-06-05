@@ -168,7 +168,7 @@ export async function getLoanTypeInfo(
       typeof LoanManagerAbi,
       "getLoanTypeLoanTargetHealth"
     >,
-    ReadContractReturnType<typeof LoanManagerAbi, "getLoanPool">,
+    ...Array<ReadContractReturnType<typeof LoanManagerAbi, "getLoanPool">>,
   ];
 
   const pools: Partial<Record<FolksTokenId, LoanPoolInfo>> = {};
