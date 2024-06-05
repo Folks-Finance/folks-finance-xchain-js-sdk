@@ -31,6 +31,7 @@ import type {
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
+  PrepareRepayCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { TokenRateLimit } from "../types/pool.js";
@@ -202,6 +203,47 @@ export const prepare = {
       spokeCommonAddress,
     };
   },
+
+  async repay(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    spokeChain: SpokeChain,
+    spokeTokenData: SpokeTokenData,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ): Promise<PrepareRepayCall> {
+    const spokeToken = getSpokeTokenContract(
+      provider,
+      spokeTokenData.spokeAddress,
+    );
+    const bridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fees
+    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeToken.estimateGas.repay(
+      [messageToSend.params, accountId, loanId, amount, maxOverRepayment],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      token: spokeTokenData,
+    };
+  },
 };
 
 export const write = {
@@ -327,6 +369,44 @@ export const write = {
         amount,
         isFAmount,
       ],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
+  },
+
+  async repay(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    includeApprove = true,
+    prepareCall: PrepareRepayCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, token } = prepareCall;
+
+    const spokeToken = getSpokeTokenContract(
+      provider,
+      token.spokeAddress,
+      signer,
+    );
+
+    if (includeApprove && token.tokenType !== TokenType.NATIVE)
+      await sendERC20Approve(
+        provider,
+        token.spokeAddress,
+        signer,
+        spokeToken.address as EvmAddress,
+        amount,
+      );
+
+    return await spokeToken.write.repay(
+      [messageParams, accountId, loanId, amount, maxOverRepayment],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
