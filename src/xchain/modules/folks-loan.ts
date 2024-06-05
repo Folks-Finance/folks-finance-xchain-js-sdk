@@ -45,12 +45,15 @@ import type {
   MessageAdapters,
   MessageBuilderParams,
   OptionalFeeParams,
+  RepayExtraArgs,
+  RepayMessageData,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
   LoanType,
   PrepareCreateLoanCall,
   PrepareDepositCall,
+  PrepareRepayCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
@@ -399,6 +402,105 @@ export const prepare = {
         return exhaustiveCheck(folksChain.chainType);
     }
   },
+
+  async repay(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanType: LoanType,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    adapters: MessageAdapters,
+  ): Promise<PrepareRepayCall> {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupportFolksToken(
+      folksChain.folksChainId,
+      folksTokenId,
+      folksChain.network,
+    );
+    assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(
+      folksChain.folksChainId,
+      folksChain.network,
+    );
+    const hubChain = getHubChain(folksChain.network);
+
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+    else
+      assertAdapterSupportsDataMessage(
+        folksChain.folksChainId,
+        adapters.adapterId,
+      );
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: RepayMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      amount,
+      maxOverRepayment,
+    };
+    const extraArgs: RepayExtraArgs = {
+      tokenType: spokeTokenData.tokenType,
+      spokeTokenAddress: getSpokeTokenDataTokenAddress(spokeTokenData),
+      hubPoolAddress: hubTokenData.poolAddress,
+      amount,
+    };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.Repay,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs,
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.prepare.repay(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
+          messageToSend,
+          accountId,
+          loanId,
+          amount,
+          maxOverRepayment,
+          spokeChain,
+          spokeTokenData,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
 };
 
 export const write = {
@@ -501,6 +603,35 @@ export const write = {
           amount,
           isFAmount,
           receiverFolksChainId,
+          prepareCall,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async repay(
+    accountId: AccountId,
+    loanId: LoanId,
+    amount: bigint,
+    maxOverRepayment: bigint,
+    includeApproval: boolean,
+    prepareCall: PrepareRepayCall,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.write.repay(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          loanId,
+          amount,
+          maxOverRepayment,
+          includeApproval,
           prepareCall,
         );
       default:
