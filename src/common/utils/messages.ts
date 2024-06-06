@@ -1,6 +1,7 @@
 import {
   buildEvmMessageToSend,
   estimateEvmCcipDataGasLimit,
+  estimateEvmWormholeCCTPGasLimit,
   estimateEvmWormholeDataGasLimit,
 } from "../../chains/evm/common/utils/message.js";
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
@@ -10,7 +11,7 @@ import { AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
-import { getCcipData, getWormholeData } from "./gmp.js";
+import { getCcipData, getCctpData, getWormholeData } from "./gmp.js";
 
 import type { HubChain } from "../../chains/evm/hub/types/chain.js";
 import type { GenericAddress } from "../types/address.js";
@@ -49,6 +50,8 @@ async function estimateAdapterReceiveGasLimit(
   messageBuilderParams: MessageBuilderParams,
   receiverValue: bigint,
   returnGasLimit: bigint,
+  amount = BigInt(0),
+  recipientAddr: GenericAddress = "" as GenericAddress,
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
   switch (destFolksChain.chainType) {
@@ -75,8 +78,27 @@ async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.WORMHOLE_CCTP: {
-          throw new Error(
-            "Not implemented yet: AdapterType.WORMHOLE_CCTP case",
+          const sourceWormholeChainId =
+            getWormholeData(sourceFolksChainId).wormholeChainId;
+          const sourceCCTPData = getCctpData(sourceFolksChainId);
+          const wormholeRelayer = convertFromGenericAddress(
+            getWormholeData(destFolksChainId).wormholeRelayer,
+            ChainType.EVM,
+          );
+
+          return await estimateEvmWormholeCCTPGasLimit(
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            destFolksChainProvider as EVMProvider,
+            messageBuilderParams,
+            receiverValue,
+            returnGasLimit,
+            sourceWormholeChainId,
+            wormholeRelayer,
+            destAdapterAddress,
+            sourceAdapterAddress,
+            sourceCCTPData.cctpSourceDomain,
+            amount,
+            recipientAddr,
           );
         }
         case AdapterType.HUB: {

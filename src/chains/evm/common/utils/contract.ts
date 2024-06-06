@@ -4,6 +4,7 @@ import { ChainType } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import { CCIPDataAdapterAbi } from "../constants/abi/ccip-data-adapter-abi.js";
 import { ERC20Abi } from "../constants/abi/erc-20-abi.js";
+import { WormholeCCTPAdapterAbi } from "../constants/abi/wormhole-cctp-adapter-abi.js";
 import { WormholeDataAdapterAbi } from "../constants/abi/wormhole-data-adapter-abi.js";
 
 import { getEvmSignerAccount, getEvmSignerAddress } from "./chain.js";
@@ -54,6 +55,17 @@ export function getWormholeDataAdapterContract(
 ): GetReadContractReturnType<typeof WormholeDataAdapterAbi> {
   return getContract({
     abi: WormholeDataAdapterAbi,
+    address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
+    client: { public: provider },
+  });
+}
+
+export function getWormholeCCTPAdapterContract(
+  provider: Client,
+  address: GenericAddress,
+): GetReadContractReturnType<typeof WormholeCCTPAdapterAbi> {
+  return getContract({
+    abi: WormholeCCTPAdapterAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
     client: { public: provider },
   });

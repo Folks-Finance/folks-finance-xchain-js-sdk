@@ -5,7 +5,7 @@ import { FOLKS_CHAIN_ID } from "./chain.js";
 
 import type { EvmAddress } from "../types/address.js";
 import type { FolksChainId } from "../types/chain.js";
-import type { CCIPData, WormholeData } from "../types/gmp.js";
+import type { CCIPData, CCTPData, WormholeData } from "../types/gmp.js";
 
 export const WORMHOLE_DATA: Partial<Record<FolksChainId, WormholeData>> = {
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
@@ -50,6 +50,54 @@ export const CCIP_DATA: Partial<Record<FolksChainId, CCIPData>> = {
     ccipChainId: BigInt("10344971235874465080"),
     ccipRouter: convertToGenericAddress(
       "0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93" as EvmAddress,
+      ChainType.EVM,
+    ),
+  },
+};
+
+export const CCTP_DATA: Partial<Record<FolksChainId, CCTPData>> = {
+  [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
+    USDCAddress: convertToGenericAddress(
+      "0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress,
+      ChainType.EVM,
+    ),
+    cctpSourceDomain: 1,
+    circleTokenMessenger: convertToGenericAddress(
+      "0xeb08f243e5d3fcff26a9e38ae5520a669f4019d0" as EvmAddress,
+      ChainType.EVM,
+    ),
+    circleMessageTransmitter: convertToGenericAddress(
+      "0xa9fb1b3009dcb79e2fe346c16a604b8fa8ae0a79" as EvmAddress,
+      ChainType.EVM,
+    ),
+  },
+  [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
+    USDCAddress: convertToGenericAddress(
+      "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress,
+      ChainType.EVM,
+    ),
+    cctpSourceDomain: 0,
+    circleTokenMessenger: convertToGenericAddress(
+      "0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5" as EvmAddress,
+      ChainType.EVM,
+    ),
+    circleMessageTransmitter: convertToGenericAddress(
+      "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD" as EvmAddress,
+      ChainType.EVM,
+    ),
+  },
+  [FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
+    USDCAddress: convertToGenericAddress(
+      "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress,
+      ChainType.EVM,
+    ),
+    cctpSourceDomain: 6,
+    circleTokenMessenger: convertToGenericAddress(
+      "0x9f3B8679c73C2Fef8b59B4f3444d4e156fb70AA5" as EvmAddress,
+      ChainType.EVM,
+    ),
+    circleMessageTransmitter: convertToGenericAddress(
+      "0x7865fAfC2db2093669d92c0F33AeEF291086BEFD" as EvmAddress,
       ChainType.EVM,
     ),
   },
