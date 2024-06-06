@@ -1,6 +1,6 @@
 import { createWalletClient, http } from "viem";
 
-import { getEmptyBytes, getRandomBytes } from "../src/common/utils/bytes.js";
+import { getRandomBytes } from "../src/common/utils/bytes.js";
 import {
   NetworkType,
   FolksCore,
@@ -23,7 +23,6 @@ async function main() {
   FolksCore.setNetwork(NetworkType.TESTNET);
 
   const accountId: AccountId = getRandomBytes(BYTES32_LENGTH) as AccountId;
-  const refAccountId: AccountId = getEmptyBytes(BYTES32_LENGTH) as AccountId;
 
   // read
   const accountInfo = await FolksAccount.read.accountInfo(accountId);
@@ -46,12 +45,10 @@ async function main() {
 
   const prepareCreateAccountCall = await FolksAccount.prepare.createAccount(
     accountId,
-    refAccountId,
     adapters,
   );
   const createAccountCallRes = await FolksAccount.write.createAccount(
     accountId,
-    refAccountId,
     prepareCreateAccountCall,
   );
 
