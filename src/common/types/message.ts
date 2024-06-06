@@ -128,6 +128,12 @@ export type RepayWithCollateralMessageData = {
   amount: bigint;
 };
 
+export type SwitchBorrowTypeMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  maxStableRate: bigint;
+};
+
 export type LiquidateMessageData = {
   violatorLoanId: LoanId;
   liquidatorLoanId: LoanId;
@@ -163,7 +169,6 @@ export type DefaultMessageDataParams = {
     | Action.RemoveDelegate
     | Action.DepositFToken
     | Action.WithdrawFToken
-    | Action.SwitchBorrowType
     | Action.SendToken;
   data: DefaultMessageData;
   extraArgs: DefaultExtraArgs;
@@ -231,6 +236,12 @@ export type RepayWithCollateralMessageDataParams = {
   extraArgs: DefaultExtraArgs;
 };
 
+export type SwitchBorrowTypeDataParams = {
+  action: Action.SwitchBorrowType;
+  data: SwitchBorrowTypeMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
 export type LiquidateMessageDataParams = {
   action: Action.Liquidate;
   data: LiquidateMessageData;
@@ -249,6 +260,7 @@ export type MessageDataParams =
   | BorrowMessageDataParams
   | RepayMessageDataParams
   | RepayWithCollateralMessageDataParams
+  | SwitchBorrowTypeDataParams
   | LiquidateMessageDataParams;
 
 export type MessageBuilderParams = {
