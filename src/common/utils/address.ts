@@ -18,7 +18,7 @@ import type { AccountId } from "../types/lending.js";
 export function getRandomGenericAddress(): GenericAddress {
   return pad(privateKeyToAccount(generatePrivateKey()).address, {
     size: BYTES32_LENGTH,
-  }) as GenericAddress;
+  }).toLowerCase() as GenericAddress;
 }
 
 export function isGenericAddress(address: GenericAddress): boolean {
@@ -37,7 +37,7 @@ export function convertToGenericAddress<T extends ChainType>(
     case ChainType.EVM:
       return pad(address as EvmAddress, {
         size: BYTES32_LENGTH,
-      }) as GenericAddress;
+      }).toLowerCase() as GenericAddress;
     default:
       return exhaustiveCheck(fromChainType);
   }
