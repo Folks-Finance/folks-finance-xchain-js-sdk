@@ -201,7 +201,11 @@ export function buildEvmMessageData(
       throw new Error("Not implemented yet: Action.Liquidate case");
     }
     case Action.SwitchBorrowType: {
-      throw new Error("Not implemented yet: Action.SwitchBorrowType case");
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.maxStableRate, UINT256_LENGTH),
+      ]);
     }
     case Action.SendToken: {
       throw new Error("Not implemented yet: Action.SendToken case");
@@ -441,7 +445,21 @@ export function buildEvmMessageToSend(
       throw new Error("Not implemented yet: Action.Liquidate case");
     }
     case Action.SwitchBorrowType: {
-      throw new Error("Not implemented yet: Action.SwitchBorrowType case");
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.SwitchBorrowType,
+          accountId,
+          userAddress,
+          data,
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.SendToken: {
       throw new Error("Not implemented yet: Action.SendToken case");
