@@ -48,6 +48,7 @@ import type {
   OptionalFeeParams,
   RepayExtraArgs,
   RepayMessageData,
+  SwitchBorrowTypeMessageData,
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
@@ -56,6 +57,7 @@ import type {
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareRepayCall,
+  PrepareSwitchBorrowTypeCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
@@ -613,6 +615,81 @@ export const prepare = {
         return exhaustiveCheck(folksChain.chainType);
     }
   },
+
+  async switchBorrowType(
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    maxStableRate: bigint,
+    adapters: MessageAdapters,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+    const network = folksChain.network;
+
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
+
+    const hubChain = getHubChain(network);
+    const hubTokenData = getHubTokenData(folksTokenId, network);
+
+    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: SwitchBorrowTypeMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      maxStableRate,
+    };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.SwitchBorrowType,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs: "0x",
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateReceiveGasLimit(
+      FolksCore.getHubProvider(),
+      hubChain,
+      folksChain,
+      adapters,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(
+      folksChain.chainType,
+      messageBuilderParams,
+      feeParams,
+    );
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.prepare.switchBorrowType(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
+          messageToSend,
+          network,
+          accountId,
+          loanId,
+          folksTokenId,
+          maxStableRate,
+          spokeChain,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
 };
 
 export const write = {
@@ -775,6 +852,33 @@ export const write = {
           amount,
           maxOverRepayment,
           includeApproval,
+          prepareCall,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async switchBorrowType(
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    maxStableRate: bigint,
+    prepareCall: PrepareSwitchBorrowTypeCall,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    const { poolId } = getHubTokenData(folksTokenId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.write.switchBorrowType(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          loanId,
+          poolId,
+          maxStableRate,
           prepareCall,
         );
       default:

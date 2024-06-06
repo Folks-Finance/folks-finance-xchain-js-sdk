@@ -33,6 +33,7 @@ import type {
   PrepareDeleteLoanCall,
   PrepareDepositCall,
   PrepareRepayCall,
+  PrepareSwitchBorrowTypeCall,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { TokenRateLimit } from "../types/pool.js";
@@ -296,6 +297,54 @@ export const prepare = {
       token: spokeTokenData,
     };
   },
+
+  async switchBorrowType(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    network: NetworkType,
+    accountId: AccountId,
+    loanId: LoanId,
+    folksTokenId: FolksTokenId,
+    maxStableRate: bigint,
+    spokeChain: SpokeChain,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ): Promise<PrepareSwitchBorrowTypeCall> {
+    const hubTokenData = getHubTokenData(folksTokenId, network);
+
+    const spokeCommonAddress = spokeChain.spokeCommonAddress;
+
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(
+      provider,
+      spokeChain.bridgeRouterAddress,
+    );
+
+    // get adapter fees
+    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+
+    // get gas limits
+    const gasLimit = await spokeCommon.estimateGas.switchBorrowType(
+      [
+        messageToSend.params,
+        accountId,
+        loanId,
+        hubTokenData.poolId,
+        maxStableRate,
+      ],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      spokeCommonAddress,
+    };
+  },
 };
 
 export const write = {
@@ -498,6 +547,35 @@ export const write = {
 
     return await spokeToken.write.repay(
       [messageParams, accountId, loanId, amount, maxOverRepayment],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
+  },
+
+  async switchBorrowType(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    poolId: number,
+    maxStableRate: bigint,
+    prepareCall: PrepareSwitchBorrowTypeCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
+      prepareCall;
+
+    const spokeCommon = getSpokeCommonContract(
+      provider,
+      spokeCommonAddress,
+      signer,
+    );
+
+    return await spokeCommon.write.switchBorrowType(
+      [messageParams, accountId, loanId, poolId, maxStableRate],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
