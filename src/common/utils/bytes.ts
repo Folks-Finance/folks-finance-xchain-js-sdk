@@ -2,14 +2,17 @@ import { bytesToHex, pad, toHex } from "viem";
 
 import { BYTES32_LENGTH } from "../constants/bytes.js";
 
+import type { AccountId } from "../types/lending.js";
 import type { Hex } from "viem";
 
 export function getEmptyBytes(length: number): string {
   return pad("0x", { size: length });
 }
 
-export function getAccountIdBytes(accountId: string): Hex {
-  return pad(toHex(Buffer.from(accountId)), { size: BYTES32_LENGTH });
+export function getAccountIdBytes(accountId: string): AccountId {
+  return pad(toHex(Buffer.from(accountId)), {
+    size: BYTES32_LENGTH,
+  }) as AccountId;
 }
 
 export function convertNumberToBytes(
