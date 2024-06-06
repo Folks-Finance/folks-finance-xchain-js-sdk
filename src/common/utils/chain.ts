@@ -157,3 +157,13 @@ export function getSignerGenericAddress(
       return exhaustiveCheck(chainType);
   }
 }
+
+export function assertHubChainSelected(
+  folksChainId: FolksChainId,
+  network: NetworkType,
+) {
+  if (!isHubChain(folksChainId, network))
+    throw new Error(
+      `Wrong chain selected: ${folksChainId}. Expected Hub chain`,
+    );
+}

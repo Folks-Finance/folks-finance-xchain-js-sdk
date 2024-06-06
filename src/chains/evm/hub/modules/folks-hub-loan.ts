@@ -22,7 +22,9 @@ import {
   toUnderlyingAmount,
 } from "../../../../common/utils/formulae.js";
 import { compoundEverySecond } from "../../../../common/utils/math-lib.js";
+import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
+  buildEvmMessageData,
   buildMessageParams,
   buildMessagePayload,
   buildSendTokenExtraArgsWhenRemoving,
@@ -34,10 +36,12 @@ import {
 } from "../utils/chain.js";
 import {
   getBridgeRouterHubContract,
+  getHubContract,
   getLoanManagerContract,
 } from "../utils/contract.js";
 import { fetchUserLoanIds } from "../utils/events.js";
 
+import type { EvmAddress } from "../../../../common/types/address.js";
 import type {
   FolksChainId,
   NetworkType,
@@ -48,10 +52,14 @@ import type {
   MessageToSend,
   OptionalFeeParams,
   AdapterType,
+  LiquidateMessageData,
+  LiquidateMessageDataParams,
 } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
+import type { PrepareLiquidateCall } from "../../common/types/module.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
+import type { HubChain } from "../types/chain.js";
 import type {
   LoanPoolInfo,
   LoanTypeInfo,
@@ -66,8 +74,69 @@ import type { Dnum } from "dnum";
 import type {
   Client,
   ContractFunctionParameters,
+  EstimateGasParameters,
   ReadContractReturnType,
+  WalletClient,
 } from "viem";
+
+export const prepare = {
+  async liquidate(
+    provider: Client,
+    sender: EvmAddress,
+    data: LiquidateMessageData,
+    accountId: AccountId,
+    hubChain: HubChain,
+    transactionOptions: EstimateGasParameters = {
+      account: sender,
+    },
+  ): Promise<PrepareLiquidateCall> {
+    const hub = getHubContract(provider, hubChain.hubAddress);
+
+    const liquidateMessageDataParams: LiquidateMessageDataParams = {
+      action: Action.Liquidate,
+      data,
+      extraArgs: "0x",
+    };
+
+    const messageData = buildEvmMessageData(liquidateMessageDataParams);
+
+    const gasLimit = await hub.estimateGas.directOperation(
+      [Action.Liquidate, accountId, messageData],
+      {
+        ...transactionOptions,
+        value: undefined,
+      },
+    );
+
+    return {
+      gasLimit,
+      hubAddress: hubChain.hubAddress,
+      messageData,
+    };
+  },
+};
+
+export const write = {
+  async liquidate(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    prepareCall: PrepareLiquidateCall,
+  ) {
+    const { gasLimit, messageData, hubAddress } = prepareCall;
+
+    const hub = getHubContract(provider, hubAddress, signer);
+
+    return await hub.write.directOperation(
+      [Action.Liquidate, accountId, messageData],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+      },
+    );
+  },
+};
 
 export async function getSendTokenAdapterFees(
   provider: Client,
