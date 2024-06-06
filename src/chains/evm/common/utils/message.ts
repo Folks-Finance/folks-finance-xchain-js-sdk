@@ -191,7 +191,11 @@ export function buildEvmMessageData(
       ]);
     }
     case Action.RepayWithCollateral: {
-      throw new Error("Not implemented yet: Action.RepayWithCollateral case");
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.amount, UINT256_LENGTH),
+      ]);
     }
     case Action.Liquidate: {
       throw new Error("Not implemented yet: Action.Liquidate case");
@@ -417,7 +421,21 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.RepayWithCollateral: {
-      throw new Error("Not implemented yet: Action.RepayWithCollateral case");
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(
+          Action.RepayWithCollateral,
+          accountId,
+          userAddress,
+          data,
+        ),
+        finalityLevel: FINALITY.IMMEDIATE,
+        extraArgs,
+      };
+      return message;
     }
     case Action.Liquidate: {
       throw new Error("Not implemented yet: Action.Liquidate case");

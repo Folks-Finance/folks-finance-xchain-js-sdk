@@ -122,6 +122,12 @@ export type RepayMessageData = {
   maxOverRepayment: bigint;
 };
 
+export type RepayWithCollateralMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  amount: bigint;
+};
+
 // Extra args
 export type DefaultExtraArgs = "0x";
 
@@ -148,7 +154,6 @@ export type DefaultMessageDataParams = {
     | Action.RemoveDelegate
     | Action.DepositFToken
     | Action.WithdrawFToken
-    | Action.RepayWithCollateral
     | Action.Liquidate
     | Action.SwitchBorrowType
     | Action.SendToken;
@@ -212,6 +217,12 @@ export type RepayMessageDataParams = {
   extraArgs: RepayExtraArgs;
 };
 
+export type RepayWithCollateralMessageDataParams = {
+  action: Action.RepayWithCollateral;
+  data: RepayWithCollateralMessageData;
+  extraArgs: DefaultExtraArgs;
+};
+
 export type MessageDataParams =
   | DefaultMessageDataParams
   | CreateAccountMessageDataParams
@@ -222,7 +233,8 @@ export type MessageDataParams =
   | DepositMessageDataParams
   | WithdrawMessageDataParams
   | BorrowMessageDataParams
-  | RepayMessageDataParams;
+  | RepayMessageDataParams
+  | RepayWithCollateralMessageDataParams;
 
 export type MessageBuilderParams = {
   userAddress: GenericAddress;

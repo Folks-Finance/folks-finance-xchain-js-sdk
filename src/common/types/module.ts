@@ -10,6 +10,7 @@ import type {
   PrepareCall as PrepareEVMCall,
   PrepareBorrowCall as PrepareBorrowEVMCall,
   PrepareRepayCall as PrepareRepayEVMCall,
+  PrepareRepayWithCollateralCall as PrepareRepayWithCollateralEVMCall,
 } from "../../chains/evm/common/types/module.js";
 
 export enum LoanType {
@@ -30,3 +31,4 @@ export type PrepareDepositCall = PrepareDepositEVMCall;
 export type PrepareWithdrawCall = PrepareWithdrawEVMCall;
 export type PrepareBorrowCall = PrepareBorrowEVMCall;
 export type PrepareRepayCall = PrepareRepayEVMCall;
+export type PrepareRepayWithCollateralCall = PrepareRepayWithCollateralEVMCall;
