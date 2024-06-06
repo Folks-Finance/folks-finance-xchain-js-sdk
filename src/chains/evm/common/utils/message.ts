@@ -10,7 +10,6 @@ import { FINALITY } from "../../../../common/constants/message.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
 import {
-  getRandomGenericAddress,
   isAccountId,
   isGenericAddress,
 } from "../../../../common/utils/address.js";
@@ -217,6 +216,7 @@ export function buildEvmMessageToSend(
   feeParams: OptionalFeeParams,
 ): MessageToSend {
   const {
+    userAddress,
     accountId,
     adapters,
     sender,
@@ -237,7 +237,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.CreateAccount,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -254,7 +254,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.InviteAddress,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -271,7 +271,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.AcceptInviteAddress,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -288,7 +288,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.UnregisterAddress,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -311,7 +311,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.CreateLoan,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -328,7 +328,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.DeleteLoan,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -345,7 +345,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.Deposit,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.FINALISED,
@@ -370,7 +370,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.Withdraw,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -390,7 +390,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.Borrow,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
@@ -407,7 +407,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.Repay,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.FINALISED,
@@ -429,7 +429,7 @@ export function buildEvmMessageToSend(
         payload: buildMessagePayload(
           Action.RepayWithCollateral,
           accountId,
-          getRandomGenericAddress(),
+          userAddress,
           data,
         ),
         finalityLevel: FINALITY.IMMEDIATE,
