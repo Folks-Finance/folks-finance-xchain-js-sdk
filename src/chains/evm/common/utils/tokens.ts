@@ -5,9 +5,9 @@ import { CONTRACT_SLOT } from "../constants/tokens.js";
 
 import { getAllowanceSlotHash } from "./contract.js";
 
-import type { EvmAddress } from "../../../../common/types/address.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { EvmFolksChainId } from "../types/chain.js";
+import type { AllowanceStateOverride } from "../types/tokens.js";
 
 export function getContractSlot(folksChainId: EvmFolksChainId) {
   const contractSlot = CONTRACT_SLOT[folksChainId];
@@ -35,23 +35,19 @@ export function getFolksTokenContractSlot(
 }
 
 export function getAllowanceStateOverride(
-  owner: EvmAddress,
-  spender: EvmAddress,
-  folksChainId: EvmFolksChainId,
-  folksTokenId: FolksTokenId,
-  tokenType: TokenType,
-  amount: bigint,
+  allowanceStatesOverride: Array<AllowanceStateOverride>,
 ) {
-  return tokenType === TokenType.NATIVE
-    ? []
-    : [
-        {
-          slot: getAllowanceSlotHash(
-            owner,
-            spender,
-            getFolksTokenContractSlot(folksChainId, folksTokenId).allowance,
-          ),
-          value: encodeAbiParameters([{ type: "uint256" }], [amount]),
-        },
-      ];
+  return allowanceStatesOverride
+    .filter(
+      (aso) =>
+        aso.tokenType == TokenType.ERC20 || aso.tokenType == TokenType.CIRCLE,
+    )
+    .map((aso) => ({
+      slot: getAllowanceSlotHash(
+        aso.owner,
+        aso.spender,
+        getFolksTokenContractSlot(aso.folksChainId, aso.folksTokenId).allowance,
+      ),
+      value: encodeAbiParameters([{ type: "uint256" }], [aso.amount]),
+    }));
 }

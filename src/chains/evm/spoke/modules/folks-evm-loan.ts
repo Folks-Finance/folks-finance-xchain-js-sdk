@@ -144,14 +144,16 @@ export const prepare = {
       spokeTokenData.spokeAddress,
       ChainType.EVM,
     );
-    const stateDiff = getAllowanceStateOverride(
-      sender,
-      spender,
-      spokeChain.folksChainId,
-      spokeTokenData.folksTokenId,
-      spokeTokenData.tokenType,
-      amount,
-    );
+    const stateDiff = getAllowanceStateOverride([
+      {
+        owner: sender,
+        spender,
+        folksChainId: spokeChain.folksChainId,
+        folksTokenId: spokeTokenData.folksTokenId,
+        tokenType: spokeTokenData.tokenType,
+        amount,
+      },
+    ]);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
