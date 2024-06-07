@@ -25,7 +25,7 @@ export function getFolksTokenContractSlot(
 ) {
   const contractSlot = getContractSlot(folksChainId);
 
-  const folksTokenContractSlot = contractSlot.folksToken[folksTokenId];
+  const folksTokenContractSlot = contractSlot.erc20[folksTokenId];
   if (!folksTokenContractSlot) {
     throw new Error(
       `Contract slot not found for folksTokenId: ${folksTokenId}`,

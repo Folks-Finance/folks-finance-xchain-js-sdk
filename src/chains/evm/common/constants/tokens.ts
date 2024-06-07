@@ -8,11 +8,11 @@ import type { Erc20ContractSlot } from "../types/tokens.js";
 export const CONTRACT_SLOT: Partial<
   Record<
     EvmFolksChainId,
-    { folksToken: Partial<Record<FolksTokenId, Erc20ContractSlot>> }
+    { erc20: Partial<Record<FolksTokenId, Erc20ContractSlot>> }
   >
 > = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
-    folksToken: {
+    erc20: {
       [FolksTokenId.USDC]: {
         balanceOf: 0n,
         allowance: 0n,
@@ -20,7 +20,7 @@ export const CONTRACT_SLOT: Partial<
     },
   },
   [EVM_FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
-    folksToken: {
+    erc20: {
       [FolksTokenId.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
@@ -28,7 +28,7 @@ export const CONTRACT_SLOT: Partial<
     },
   },
   [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
-    folksToken: {
+    erc20: {
       [FolksTokenId.USDC]: {
         balanceOf: 0n,
         allowance: 0n,
