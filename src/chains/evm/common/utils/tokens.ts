@@ -27,7 +27,9 @@ export function getFolksTokenContractSlot(
 
   const folksTokenContractSlot = contractSlot.folksToken[folksTokenId];
   if (!folksTokenContractSlot) {
-    throw new Error(`Folks Token not found for folksTokenId: ${folksTokenId}`);
+    throw new Error(
+      `Contract slot not found for folksTokenId: ${folksTokenId}`,
+    );
   }
   return folksTokenContractSlot;
 }
