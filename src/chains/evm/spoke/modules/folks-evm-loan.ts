@@ -1,12 +1,16 @@
 import { multicall } from "viem/actions";
 
+import { ChainType } from "../../../../common/types/chain.js";
 import { TokenType } from "../../../../common/types/token.js";
+import { convertFromGenericAddress } from "../../../../common/utils/address.js";
+import { getSpokeTokenDataTokenAddress } from "../../../../common/utils/chain.js";
 import {
   calcNextPeriodReset,
   calcPeriodNumber,
 } from "../../../../common/utils/formulae.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
+import { getAllowanceStateOverride } from "../../common/utils/tokens.js";
 import { getHubTokenData } from "../../hub/utils/chain.js";
 import {
   getBridgeRouterSpokeContract,
@@ -136,6 +140,19 @@ export const prepare = {
       spokeChain.bridgeRouterAddress,
     );
 
+    const spender = convertFromGenericAddress(
+      spokeTokenData.spokeAddress,
+      ChainType.EVM,
+    );
+    const stateDiff = getAllowanceStateOverride(
+      sender,
+      spender,
+      spokeChain.folksChainId,
+      spokeTokenData.folksTokenId,
+      spokeTokenData.tokenType,
+      amount,
+    );
+
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
@@ -145,6 +162,15 @@ export const prepare = {
       {
         value: msgValue,
         ...transactionOptions,
+        stateOverride: [
+          {
+            address: convertFromGenericAddress(
+              getSpokeTokenDataTokenAddress(spokeTokenData),
+              ChainType.EVM,
+            ),
+            stateDiff,
+          },
+        ],
       },
     );
 
