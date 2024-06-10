@@ -1,7 +1,10 @@
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { GetReadContractReturnType } from "../../common/types/contract.js";
+import type {
+  GetEventParams,
+  GetReadContractReturnType,
+} from "../../common/types/contract.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { Dnum } from "dnum";
 
@@ -83,13 +86,13 @@ export type UserLoanInfo = {
   liquidationMargin: Dnum;
 };
 
-export type CreateUserLoanEventParams = {
+export type CreateUserLoanEventParams = GetEventParams & {
   loanManager: GetReadContractReturnType<typeof LoanManagerAbi>;
   accountId: AccountId;
   loanTypeId?: LoanType;
 };
 
-export type DeleteUserLoanEventParams = {
+export type DeleteUserLoanEventParams = GetEventParams & {
   loanManager: GetReadContractReturnType<typeof LoanManagerAbi>;
   accountId: AccountId;
 };

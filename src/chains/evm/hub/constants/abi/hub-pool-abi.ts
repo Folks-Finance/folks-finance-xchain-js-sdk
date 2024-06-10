@@ -93,6 +93,7 @@ export const HubPoolAbi = [
   { inputs: [], name: "OptimalUtilisationRatioTooLow", type: "error" },
   { inputs: [], name: "RebalanceUpDepositInterestRateTooHigh", type: "error" },
   { inputs: [], name: "RebalanceUpUtilisationRatioTooHigh", type: "error" },
+  { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
   { inputs: [], name: "RetentionRateTooHigh", type: "error" },
   {
     inputs: [

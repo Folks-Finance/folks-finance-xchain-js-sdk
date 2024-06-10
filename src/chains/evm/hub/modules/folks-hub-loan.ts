@@ -22,6 +22,7 @@ import {
   toUnderlyingAmount,
 } from "../../../../common/utils/formulae.js";
 import { compoundEverySecond } from "../../../../common/utils/math-lib.js";
+import { defaultEventParams } from "../../common/constants/contract.js";
 import {
   buildMessageParams,
   buildMessagePayload,
@@ -256,6 +257,7 @@ export async function getUserLoanIds(
     loanManager,
     accountId,
     loanTypeId: loanTypeIdFilter,
+    eventParams: defaultEventParams,
   });
 }
 

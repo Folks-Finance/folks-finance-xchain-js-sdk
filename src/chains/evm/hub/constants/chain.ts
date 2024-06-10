@@ -85,7 +85,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.USDC,
         poolId: TESTNET_POOLS[FolksTokenId.USDC],
         poolAddress: convertToGenericAddress(
-          "0xA9F3dfff0E8939514E7C4A0F8CeB0dBED93BbEA5" as EvmAddress,
+          "0x7E9D81cD17a6b4Cb6b09B213b1d3FD2DD263eb45" as EvmAddress,
           ChainType.EVM,
         ),
         tokenAddress: convertToGenericAddress(
@@ -100,7 +100,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.AVAX,
         poolId: TESTNET_POOLS[FolksTokenId.AVAX],
         poolAddress: convertToGenericAddress(
-          "0x0922880C7e18112aB479E85Fc190Ba666c3F1020" as EvmAddress,
+          "0x7982395b94d09997F9394b675386ec86E2F31B17" as EvmAddress,
           ChainType.EVM,
         ),
         tokenAddress: null,
@@ -112,7 +112,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.ETH_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
         poolAddress: convertToGenericAddress(
-          "0x58ad9F0e5Ced36401E36594C3265FA7475f24B3d" as EvmAddress,
+          "0x6f6E3E6F25de7Bb15066c759dA416772380E6dd7" as EvmAddress,
           ChainType.EVM,
         ),
         tokenAddress: null,
@@ -124,7 +124,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.ETH_base_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
         poolAddress: convertToGenericAddress(
-          "0x9c0D98AFAfB59F3e30F1d3B3221D59ac3A159e0b" as EvmAddress,
+          "0xF7716468B789898F4895a6A3212d18e0A8762d05" as EvmAddress,
           ChainType.EVM,
         ),
         tokenAddress: null,
@@ -136,7 +136,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.LINK_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
         poolAddress: convertToGenericAddress(
-          "0xc276f7e429F46346c668E1896e527baAD4D21414" as EvmAddress,
+          "0xBeC1BeE35642e48bF0ae97ED2461Cad5c160B924" as EvmAddress,
           ChainType.EVM,
         ),
         tokenAddress: null,

@@ -63,6 +63,7 @@ export const SpokeTokenAbi = [
   { inputs: [], name: "InvalidOffset", type: "error" },
   { inputs: [], name: "PeriodTooHigh", type: "error" },
   { inputs: [], name: "PeriodTooLow", type: "error" },
+  { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
   {
     inputs: [
       { internalType: "uint8", name: "bits", type: "uint8" },

@@ -153,7 +153,7 @@ export const WormholeDataAdapterAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "bytes32",
         name: "messageId",
         type: "bytes32",
