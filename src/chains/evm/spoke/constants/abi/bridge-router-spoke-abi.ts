@@ -145,6 +145,12 @@ export const BridgeRouterSpokeAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
+      {
         indexed: true,
         internalType: "bytes32",
         name: "messageId",
@@ -158,6 +164,12 @@ export const BridgeRouterSpokeAbi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
       {
         indexed: true,
         internalType: "bytes32",
@@ -173,6 +185,12 @@ export const BridgeRouterSpokeAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
+      {
         indexed: true,
         internalType: "bytes32",
         name: "messageId",
@@ -185,6 +203,12 @@ export const BridgeRouterSpokeAbi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
       {
         indexed: true,
         internalType: "bytes32",
@@ -200,6 +224,12 @@ export const BridgeRouterSpokeAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
+      {
         indexed: true,
         internalType: "bytes32",
         name: "messageId",
@@ -212,6 +242,12 @@ export const BridgeRouterSpokeAbi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "adapterId",
+        type: "uint16",
+      },
       {
         indexed: true,
         internalType: "bytes32",
