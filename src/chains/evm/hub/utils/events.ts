@@ -7,10 +7,10 @@ import type {
 export async function fetchCreateUserLoanEvents(
   params: CreateUserLoanEventParams,
 ) {
-  const { loanManager, accountId, loanTypeId } = params;
+  const { loanManager, accountId, loanTypeId, eventParams } = params;
   const logs = await loanManager.getEvents.CreateUserLoan(
     { accountId },
-    { strict: true },
+    eventParams,
   );
   return logs
     .filter(
@@ -27,10 +27,10 @@ export async function fetchCreateUserLoanEvents(
 export async function fetchDeleteUserLoanEvents(
   params: DeleteUserLoanEventParams,
 ) {
-  const { loanManager, accountId } = params;
+  const { loanManager, accountId, eventParams } = params;
   const logs = await loanManager.getEvents.DeleteUserLoan(
     { accountId },
-    { strict: true },
+    eventParams,
   );
   return logs.map((log) => ({
     blockNumber: log.blockNumber,
