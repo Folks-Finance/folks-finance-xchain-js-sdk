@@ -126,6 +126,7 @@ export const LoanManagerAbi = [
     name: "PoolUnknown",
     type: "error",
   },
+  { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
   {
     inputs: [
       { internalType: "uint8", name: "bits", type: "uint8" },
