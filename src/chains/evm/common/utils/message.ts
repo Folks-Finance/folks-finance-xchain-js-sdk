@@ -38,6 +38,7 @@ import type {
   MessageToSend,
   OptionalFeeParams,
 } from "../../../../common/types/message.js";
+import type { SpokeTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex } from "viem";
 
@@ -105,14 +106,13 @@ export function buildSendTokenExtraArgsWhenRemoving(
 }
 
 export function buildSendTokenExtraArgsWhenAdding(
-  tokenType: TokenType,
-  spokeTokenAddress: GenericAddress,
+  spokeTokenType: SpokeTokenType,
   hubPoolAddress: GenericAddress,
   amount: bigint,
 ): Hex {
-  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
-    return "0x";
-  return extraArgsToBytes(spokeTokenAddress, hubPoolAddress, amount);
+  const { type, address } = spokeTokenType;
+  if (type === TokenType.NATIVE || type === TokenType.ERC20) return "0x";
+  return extraArgsToBytes(address, hubPoolAddress, amount);
 }
 
 export function buildEvmMessageData(
@@ -354,8 +354,7 @@ export function buildEvmMessageToSend(
         ),
         finalityLevel: FINALITY.FINALISED,
         extraArgs: buildSendTokenExtraArgsWhenAdding(
-          extraArgs.tokenType,
-          extraArgs.spokeTokenAddress,
+          extraArgs.token,
           extraArgs.hubPoolAddress,
           extraArgs.amount,
         ),
@@ -416,8 +415,7 @@ export function buildEvmMessageToSend(
         ),
         finalityLevel: FINALITY.FINALISED,
         extraArgs: buildSendTokenExtraArgsWhenAdding(
-          extraArgs.tokenType,
-          extraArgs.spokeTokenAddress,
+          extraArgs.token,
           extraArgs.hubPoolAddress,
           extraArgs.amount,
         ),

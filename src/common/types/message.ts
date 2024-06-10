@@ -2,7 +2,7 @@ import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId } from "./lending.js";
 import type { LoanType } from "./module.js";
-import type { TokenType } from "./token.js";
+import type { SpokeTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -139,15 +139,13 @@ export type DefaultExtraArgs = "0x";
 
 // Extra args: loan
 export type DepositExtraArgs = {
-  tokenType: TokenType;
-  spokeTokenAddress: GenericAddress;
+  token: SpokeTokenType;
   hubPoolAddress: GenericAddress;
   amount: bigint;
 };
 
 export type RepayExtraArgs = {
-  tokenType: TokenType;
-  spokeTokenAddress: GenericAddress;
+  token: SpokeTokenType;
   hubPoolAddress: GenericAddress;
   amount: bigint;
 };

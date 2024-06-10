@@ -3,7 +3,6 @@ import { multicall } from "viem/actions";
 import { ChainType } from "../../../../common/types/chain.js";
 import { TokenType } from "../../../../common/types/token.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
-import { getSpokeTokenDataTokenAddress } from "../../../../common/utils/chain.js";
 import {
   calcNextPeriodReset,
   calcPeriodNumber,
@@ -144,19 +143,26 @@ export const prepare = {
       spokeTokenData.spokeAddress,
       ChainType.EVM,
     );
-    const stateDiff = getAllowanceStateOverride([
-      {
-        owner: sender,
-        spender,
-        folksChainId: spokeChain.folksChainId,
-        folksTokenId: spokeTokenData.folksTokenId,
-        tokenType: spokeTokenData.tokenType,
-        amount,
-      },
-    ]);
+
+    //get state override
+    const stateOverride = getAllowanceStateOverride(
+      spokeTokenData.token.address,
+      [
+        {
+          owner: sender,
+          spender,
+          folksChainId: spokeChain.folksChainId,
+          folksTokenId: spokeTokenData.folksTokenId,
+          tokenType: spokeTokenData.token.type,
+          amount,
+        },
+      ],
+    );
 
     // get adapter fees
-    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+    const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
+    const value = spokeTokenData.token.type === TokenType.NATIVE ? amount : 0n;
+    const msgValue = adapterFees + value;
 
     // get gas limits
     const gasLimit = await spokeToken.estimateGas.deposit(
@@ -164,15 +170,7 @@ export const prepare = {
       {
         value: msgValue,
         ...transactionOptions,
-        stateOverride: [
-          {
-            address: convertFromGenericAddress(
-              getSpokeTokenDataTokenAddress(spokeTokenData),
-              ChainType.EVM,
-            ),
-            stateDiff,
-          },
-        ],
+        stateOverride,
       },
     );
 
@@ -180,7 +178,7 @@ export const prepare = {
       msgValue,
       gasLimit,
       messageParams: messageToSend.params,
-      token: spokeTokenData,
+      spokeTokenData: spokeTokenData,
     };
   },
 
@@ -323,7 +321,7 @@ export const prepare = {
       msgValue,
       gasLimit,
       messageParams: messageToSend.params,
-      token: spokeTokenData,
+      spokeTokenData: spokeTokenData,
     };
   },
 
@@ -483,18 +481,18 @@ export const write = {
     includeApprove = true,
     prepareCall: PrepareDepositCall,
   ) {
-    const { msgValue, gasLimit, messageParams, token } = prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
 
     const spokeToken = getSpokeTokenContract(
       provider,
-      token.spokeAddress,
+      spokeTokenData.spokeAddress,
       signer,
     );
 
-    if (includeApprove && token.tokenType !== TokenType.NATIVE)
+    if (includeApprove && spokeTokenData.token.type !== TokenType.NATIVE)
       await sendERC20Approve(
         provider,
-        token.spokeAddress,
+        spokeTokenData.spokeAddress,
         signer,
         spokeToken.address as EvmAddress,
         amount,
@@ -599,18 +597,18 @@ export const write = {
     includeApprove = true,
     prepareCall: PrepareRepayCall,
   ) {
-    const { msgValue, gasLimit, messageParams, token } = prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
 
     const spokeToken = getSpokeTokenContract(
       provider,
-      token.spokeAddress,
+      spokeTokenData.spokeAddress,
       signer,
     );
 
-    if (includeApprove && token.tokenType !== TokenType.NATIVE)
+    if (includeApprove && spokeTokenData.token.type !== TokenType.NATIVE)
       await sendERC20Approve(
         provider,
-        token.spokeAddress,
+        spokeTokenData.spokeAddress,
         signer,
         spokeToken.address as EvmAddress,
         amount,

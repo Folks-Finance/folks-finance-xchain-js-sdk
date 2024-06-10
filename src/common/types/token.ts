@@ -18,10 +18,22 @@ export type ITokenData = {
   folksTokenId: FolksTokenId;
 };
 
+type Erc20SpokeTokenType = {
+  type: TokenType.ERC20 | TokenType.CIRCLE;
+  address: GenericAddress;
+  decimals: number;
+};
+
+type NativeSpokeTokenType = {
+  type: TokenType.NATIVE;
+  address: null;
+  decimals: number;
+};
+
+export type SpokeTokenType = Erc20SpokeTokenType | NativeSpokeTokenType;
+
 export type SpokeTokenData = {
-  tokenType: TokenType;
   poolId: number;
   spokeAddress: GenericAddress;
-  tokenAddress: GenericAddress | null;
-  tokenDecimals: number;
+  token: SpokeTokenType;
 } & ITokenData;

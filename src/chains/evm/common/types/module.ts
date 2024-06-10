@@ -41,7 +41,7 @@ export type PrepareDeleteLoanCall = {
 } & PrepareCall;
 
 export type PrepareDepositCall = {
-  token: SpokeTokenData;
+  spokeTokenData: SpokeTokenData;
 } & PrepareCall;
 
 export type PrepareWithdrawCall = {
@@ -53,7 +53,7 @@ export type PrepareBorrowCall = {
 } & PrepareCall;
 
 export type PrepareRepayCall = {
-  token: SpokeTokenData;
+  spokeTokenData: SpokeTokenData;
 } & PrepareCall;
 
 export type PrepareRepayWithCollateralCall = {
