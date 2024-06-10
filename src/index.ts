@@ -2,7 +2,12 @@
 export { FolksCore } from "./xchain/core/folks-core.js";
 
 // === MODULES ===
-export { FolksAccount, FolksLoan } from "./xchain/modules/index.js";
+export {
+  FolksAccount,
+  FolksLoan,
+  FolksPool,
+  FolksOracle,
+} from "./xchain/modules/index.js";
 
 // === COMMON ===
 export * from "./common/types/address.js";
