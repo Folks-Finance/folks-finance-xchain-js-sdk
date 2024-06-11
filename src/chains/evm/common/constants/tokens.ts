@@ -14,8 +14,8 @@ export const CONTRACT_SLOT: Partial<
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     erc20: {
       [FolksTokenId.USDC]: {
-        balanceOf: 0n,
-        allowance: 0n,
+        balanceOf: 9n,
+        allowance: 10n,
       },
     },
   },
@@ -30,8 +30,8 @@ export const CONTRACT_SLOT: Partial<
   [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
     erc20: {
       [FolksTokenId.USDC]: {
-        balanceOf: 0n,
-        allowance: 0n,
+        balanceOf: 9n,
+        allowance: 10n,
       },
     },
   },
