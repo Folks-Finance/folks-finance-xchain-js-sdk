@@ -11,10 +11,13 @@ export type Erc20ContractSlot = {
 };
 
 export type AllowanceStateOverride = {
-  owner: EvmAddress;
-  spender: EvmAddress;
-  folksChainId: EvmFolksChainId;
-  folksTokenId: FolksTokenId;
-  tokenType: TokenType;
-  amount: bigint;
+  erc20Address: EvmAddress;
+  stateDiff: Array<{
+    owner: EvmAddress;
+    spender: EvmAddress;
+    folksChainId: EvmFolksChainId;
+    folksTokenId: FolksTokenId;
+    tokenType: TokenType;
+    amount: bigint;
+  }>;
 };

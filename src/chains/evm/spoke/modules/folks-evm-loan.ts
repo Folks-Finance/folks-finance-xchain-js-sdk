@@ -145,23 +145,36 @@ export const prepare = {
     );
 
     //get state override
-    const stateOverride = getAllowanceStateOverride(
-      spokeTokenData.token.address,
-      [
+    let stateOverride;
+    if (
+      spokeTokenData.token.type === TokenType.ERC20 ||
+      spokeTokenData.token.type === TokenType.CIRCLE
+    ) {
+      const erc20Address = convertFromGenericAddress(
+        spokeTokenData.token.address,
+        ChainType.EVM,
+      );
+      stateOverride = getAllowanceStateOverride([
         {
-          owner: sender,
-          spender,
-          folksChainId: spokeChain.folksChainId,
-          folksTokenId: spokeTokenData.folksTokenId,
-          tokenType: spokeTokenData.token.type,
-          amount,
+          erc20Address,
+          stateDiff: [
+            {
+              owner: sender,
+              spender,
+              folksChainId: spokeChain.folksChainId,
+              folksTokenId: spokeTokenData.folksTokenId,
+              tokenType: spokeTokenData.token.type,
+              amount,
+            },
+          ],
         },
-      ],
-    );
+      ]);
+    }
 
     // get adapter fees
     const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
-    const value = spokeTokenData.token.type === TokenType.NATIVE ? amount : 0n;
+    const value =
+      spokeTokenData.token.type === TokenType.NATIVE ? amount : BigInt(0);
     const msgValue = adapterFees + value;
 
     // get gas limits
