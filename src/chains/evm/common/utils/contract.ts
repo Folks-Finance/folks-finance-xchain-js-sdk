@@ -20,7 +20,7 @@ import type {
   GenericAddress,
 } from "../../../../common/types/address.js";
 import type { GetReadContractReturnType } from "../types/contract.js";
-import type { Client, WalletClient } from "viem";
+import type { Client, Hex, WalletClient } from "viem";
 
 export function getERC20Contract(
   provider: Client,
@@ -40,7 +40,7 @@ export async function sendERC20Approve(
   signer: WalletClient,
   receiver: EvmAddress,
   amount: bigint,
-) {
+): Promise<Hex | null> {
   const erc20 = getERC20Contract(provider, address, signer);
   const allowance = await erc20.read.allowance([
     getEvmSignerAddress(signer),
@@ -53,6 +53,7 @@ export async function sendERC20Approve(
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
     });
+  return null;
 }
 
 export function getWormholeDataAdapterContract(
