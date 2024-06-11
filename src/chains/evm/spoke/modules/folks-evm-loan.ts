@@ -1,4 +1,4 @@
-import { multicall } from "viem/actions";
+import { multicall, waitForTransactionReceipt } from "viem/actions";
 
 import { ChainType } from "../../../../common/types/chain.js";
 import { TokenType } from "../../../../common/types/token.js";
@@ -495,6 +495,7 @@ export const write = {
     prepareCall: PrepareDepositCall,
   ) {
     const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
+    const { token } = spokeTokenData;
 
     const spokeToken = getSpokeTokenContract(
       provider,
@@ -502,14 +503,20 @@ export const write = {
       signer,
     );
 
-    if (includeApprove && spokeTokenData.token.type !== TokenType.NATIVE)
-      await sendERC20Approve(
+    if (
+      includeApprove &&
+      (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)
+    ) {
+      const approveTxId = await sendERC20Approve(
         provider,
-        spokeTokenData.spokeAddress,
+        token.address,
         signer,
-        spokeToken.address as EvmAddress,
+        convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM),
         amount,
       );
+      if (approveTxId !== null)
+        await waitForTransactionReceipt(provider, { hash: approveTxId });
+    }
 
     return await spokeToken.write.deposit(
       [messageParams, accountId, loanId, amount],
