@@ -6,15 +6,14 @@ import {
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { ChainType } from "../types/chain.js";
+import { MessageDirection } from "../types/gmp.js";
 import { AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
 import { getCcipData, getWormholeData } from "./gmp.js";
 
-import type { HubChain } from "../../chains/evm/hub/types/chain.js";
-import type { GenericAddress } from "../types/address.js";
-import type { FolksChain, FolksChainId, NetworkType } from "../types/chain.js";
+import type { FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type {
   MessageAdapters,
@@ -38,19 +37,65 @@ export function buildMessageToSend(
   }
 }
 
-async function estimateAdapterReceiveGasLimit(
+function getAdapterId(
+  messageDirection: MessageDirection,
+  adapters: MessageAdapters,
+): AdapterType {
+  if (messageDirection === MessageDirection.SpokeToHub)
+    return adapters.adapterId;
+  return adapters.returnAdapterId;
+}
+
+function getAdaptersAddresses(
+  messageDirection: MessageDirection,
+  sourceFolksChainId: FolksChainId,
+  destFolksChainId: FolksChainId,
+  network: NetworkType,
+  adapterId: AdapterType,
+) {
+  if (messageDirection === MessageDirection.SpokeToHub)
+    return {
+      sourceAdapterAddress: getSpokeChainAdapterAddress(
+        sourceFolksChainId,
+        network,
+        adapterId,
+      ),
+      destAdapterAddress: getHubChainAdapterAddress(network, adapterId),
+    };
+  return {
+    sourceAdapterAddress: getHubChainAdapterAddress(network, adapterId),
+    destAdapterAddress: getSpokeChainAdapterAddress(
+      destFolksChainId,
+      network,
+      adapterId,
+    ),
+  };
+}
+
+export async function estimateAdapterReceiveGasLimit(
   sourceFolksChainId: FolksChainId,
   destFolksChainId: FolksChainId,
   destFolksChainProvider: FolksProvider,
   network: NetworkType,
-  adapterId: AdapterType,
-  sourceAdapterAddress: GenericAddress,
-  destAdapterAddress: GenericAddress,
+  messageDirection: MessageDirection,
   messageBuilderParams: MessageBuilderParams,
-  receiverValue: bigint,
-  returnGasLimit: bigint,
+  receiverValue = BigInt(0),
+  returnGasLimit = BigInt(0),
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
+
+  const adapterId = getAdapterId(
+    messageDirection,
+    messageBuilderParams.adapters,
+  );
+  const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
+    messageDirection,
+    sourceFolksChainId,
+    destFolksChainId,
+    network,
+    adapterId,
+  );
+
   switch (destFolksChain.chainType) {
     case ChainType.EVM:
       switch (adapterId) {
@@ -109,68 +154,4 @@ async function estimateAdapterReceiveGasLimit(
     default:
       return exhaustiveCheck(destFolksChain.chainType);
   }
-}
-
-export async function estimateReceiveGasLimit(
-  hubProvider: FolksProvider,
-  hubChain: HubChain,
-  folksChain: FolksChain,
-  adapters: MessageAdapters,
-  messageBuilderParams: MessageBuilderParams,
-  receiverValue = BigInt(0),
-  returnGasLimit = BigInt(0),
-) {
-  const sourceAdapterAddress = getSpokeChainAdapterAddress(
-    folksChain.folksChainId,
-    folksChain.network,
-    adapters.adapterId,
-  );
-  const destAdapterAddress = getHubChainAdapterAddress(
-    folksChain.network,
-    adapters.adapterId,
-  );
-
-  return await estimateAdapterReceiveGasLimit(
-    folksChain.folksChainId,
-    hubChain.folksChainId,
-    hubProvider,
-    folksChain.network,
-    adapters.adapterId,
-    sourceAdapterAddress,
-    destAdapterAddress,
-    messageBuilderParams,
-    receiverValue,
-    returnGasLimit,
-  );
-}
-
-export async function estimateReturnReceiveGasLimit(
-  receiverFolksChainProvider: FolksProvider,
-  receiverFolksChain: FolksChain,
-  hubChain: HubChain,
-  adapters: MessageAdapters,
-  messageBuilderParams: MessageBuilderParams,
-) {
-  const sourceAdapterAddress = getHubChainAdapterAddress(
-    receiverFolksChain.network,
-    adapters.returnAdapterId,
-  );
-  const destAdapterAddress = getSpokeChainAdapterAddress(
-    receiverFolksChain.folksChainId,
-    receiverFolksChain.network,
-    adapters.returnAdapterId,
-  );
-
-  return await estimateAdapterReceiveGasLimit(
-    hubChain.folksChainId,
-    receiverFolksChain.folksChainId,
-    receiverFolksChainProvider,
-    receiverFolksChain.network,
-    adapters.returnAdapterId,
-    sourceAdapterAddress,
-    destAdapterAddress,
-    messageBuilderParams,
-    BigInt(0),
-    BigInt(0),
-  );
 }
