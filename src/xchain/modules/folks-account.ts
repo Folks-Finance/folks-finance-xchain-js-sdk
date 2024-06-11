@@ -1,6 +1,7 @@
 import { FolksHubAccount } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
+import { NULL_ACCOUNT_ID } from "../../common/constants/lending.js";
 import { ChainType } from "../../common/types/chain.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
@@ -42,8 +43,8 @@ import type {
 export const prepare = {
   async createAccount(
     accountId: AccountId,
-    refAccountId: AccountId,
     adapters: MessageAdapters,
+    refAccountId: AccountId = NULL_ACCOUNT_ID,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -110,8 +111,8 @@ export const prepare = {
     accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
-    refAccountId: AccountId,
     adapters: MessageAdapters,
+    refAccountId: AccountId = NULL_ACCOUNT_ID,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -313,8 +314,8 @@ export const prepare = {
 export const write = {
   async createAccount(
     accountId: AccountId,
-    refAccountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
+    refAccountId: AccountId = NULL_ACCOUNT_ID,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -338,8 +339,8 @@ export const write = {
     accountId: AccountId,
     folksChainIdToInvite: FolksChainId,
     addressToInvite: GenericAddress,
-    refAccountId: AccountId,
     prepareCall: PrepareInviteAddressCall,
+    refAccountId: AccountId = NULL_ACCOUNT_ID,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
