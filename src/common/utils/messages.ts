@@ -21,7 +21,6 @@ import type { GenericAddress } from "../types/address.js";
 import type { FolksChain, FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type {
-  MessageAdapters,
   MessageBuilderParams,
   MessageToSend,
   OptionalFeeParams,
@@ -119,22 +118,25 @@ export async function estimateReceiveGasLimit(
   hubProvider: FolksProvider,
   hubChain: HubChain,
   folksChain: FolksChain,
-  adapters: MessageAdapters,
   messageBuilderParams: MessageBuilderParams,
   receiverValue = BigInt(0),
   returnGasLimit = BigInt(0),
 ) {
-  const estimationAdapters = transformAdapterForEstimation(adapters);
-  const gasLimitIncrease = getGasLimitIncrease(adapters);
+  const gasLimitIncrease = getGasLimitIncrease(messageBuilderParams.adapters);
+
+  const estimationMessageBuilderParams = { ...messageBuilderParams };
+  estimationMessageBuilderParams.adapters = transformAdapterForEstimation(
+    messageBuilderParams.adapters,
+  );
 
   const sourceAdapterAddress = getSpokeChainAdapterAddress(
     folksChain.folksChainId,
     folksChain.network,
-    estimationAdapters.adapterId,
+    estimationMessageBuilderParams.adapters.adapterId,
   );
   const destAdapterAddress = getHubChainAdapterAddress(
     folksChain.network,
-    estimationAdapters.adapterId,
+    estimationMessageBuilderParams.adapters.adapterId,
   );
 
   const gasLimitEstimation = await estimateAdapterReceiveGasLimit(
@@ -142,10 +144,10 @@ export async function estimateReceiveGasLimit(
     hubChain.folksChainId,
     hubProvider,
     folksChain.network,
-    estimationAdapters.adapterId,
+    estimationMessageBuilderParams.adapters.adapterId,
     sourceAdapterAddress,
     destAdapterAddress,
-    messageBuilderParams,
+    estimationMessageBuilderParams,
     receiverValue,
     returnGasLimit,
   );
@@ -156,20 +158,23 @@ export async function estimateReturnReceiveGasLimit(
   receiverFolksChainProvider: FolksProvider,
   receiverFolksChain: FolksChain,
   hubChain: HubChain,
-  adapters: MessageAdapters,
   messageBuilderParams: MessageBuilderParams,
 ) {
-  const estimationAdapters = transformAdapterForEstimation(adapters);
-  const gasLimitIncrease = getGasLimitIncrease(adapters);
+  const gasLimitIncrease = getGasLimitIncrease(messageBuilderParams.adapters);
+
+  const estimationMessageBuilderParams = { ...messageBuilderParams };
+  estimationMessageBuilderParams.adapters = transformAdapterForEstimation(
+    messageBuilderParams.adapters,
+  );
 
   const sourceAdapterAddress = getHubChainAdapterAddress(
     receiverFolksChain.network,
-    estimationAdapters.returnAdapterId,
+    estimationMessageBuilderParams.adapters.returnAdapterId,
   );
   const destAdapterAddress = getSpokeChainAdapterAddress(
     receiverFolksChain.folksChainId,
     receiverFolksChain.network,
-    estimationAdapters.returnAdapterId,
+    estimationMessageBuilderParams.adapters.returnAdapterId,
   );
 
   const gasLimitEstimation = await estimateAdapterReceiveGasLimit(
@@ -177,10 +182,10 @@ export async function estimateReturnReceiveGasLimit(
     receiverFolksChain.folksChainId,
     receiverFolksChainProvider,
     receiverFolksChain.network,
-    estimationAdapters.returnAdapterId,
+    estimationMessageBuilderParams.adapters.returnAdapterId,
     sourceAdapterAddress,
     destAdapterAddress,
-    messageBuilderParams,
+    estimationMessageBuilderParams,
     BigInt(0),
     BigInt(0),
   );

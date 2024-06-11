@@ -82,7 +82,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -154,7 +153,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -217,7 +215,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -285,7 +282,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 

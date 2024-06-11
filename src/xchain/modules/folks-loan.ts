@@ -109,7 +109,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -178,7 +177,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -272,7 +270,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -360,7 +357,6 @@ export const prepare = {
       FolksCore.getProvider(receiverFolksChainId),
       receiverFolksChain,
       hubChain,
-      adapters,
       messageBuilderParams,
     );
     feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
@@ -377,7 +373,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
       feeParams.receiverValue,
       feeParams.returnGasLimit,
@@ -470,7 +465,6 @@ export const prepare = {
       FolksCore.getProvider(receiverFolksChainId),
       receiverFolksChain,
       hubChain,
-      adapters,
       messageBuilderParams,
     );
     feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
@@ -487,7 +481,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
       feeParams.receiverValue,
       feeParams.returnGasLimit,
@@ -590,7 +583,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -665,7 +657,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
@@ -740,7 +731,6 @@ export const prepare = {
       FolksCore.getHubProvider(),
       hubChain,
       folksChain,
-      adapters,
       messageBuilderParams,
     );
 
