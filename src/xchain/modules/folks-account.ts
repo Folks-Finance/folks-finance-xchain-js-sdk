@@ -3,6 +3,7 @@ import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmAccount } from "../../chains/evm/spoke/modules/index.js";
 import { NULL_ACCOUNT_ID } from "../../common/constants/lending.js";
 import { ChainType } from "../../common/types/chain.js";
+import { MessageDirection } from "../../common/types/gmp.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
@@ -13,7 +14,7 @@ import {
 } from "../../common/utils/chain.js";
 import {
   buildMessageToSend,
-  estimateReceiveGasLimit,
+  estimateAdapterReceiveGasLimit,
 } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
@@ -78,11 +79,12 @@ export const prepare = {
     };
     const feeParams: OptionalFeeParams = {};
 
-    feeParams.gasLimit = await estimateReceiveGasLimit(
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
       FolksCore.getHubProvider(),
-      hubChain,
-      folksChain,
-      adapters,
+      folksChain.network,
+      MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
 
@@ -150,11 +152,12 @@ export const prepare = {
     };
     const feeParams: OptionalFeeParams = {};
 
-    feeParams.gasLimit = await estimateReceiveGasLimit(
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
       FolksCore.getHubProvider(),
-      hubChain,
-      folksChain,
-      adapters,
+      folksChain.network,
+      MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
 
@@ -213,11 +216,12 @@ export const prepare = {
     };
     const feeParams: OptionalFeeParams = {};
 
-    feeParams.gasLimit = await estimateReceiveGasLimit(
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
       FolksCore.getHubProvider(),
-      hubChain,
-      folksChain,
-      adapters,
+      folksChain.network,
+      MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
 
@@ -281,11 +285,12 @@ export const prepare = {
     };
     const feeParams: OptionalFeeParams = {};
 
-    feeParams.gasLimit = await estimateReceiveGasLimit(
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
       FolksCore.getHubProvider(),
-      hubChain,
-      folksChain,
-      adapters,
+      folksChain.network,
+      MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
 
