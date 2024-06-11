@@ -19,7 +19,13 @@ export type ITokenData = {
 };
 
 type Erc20SpokeTokenType = {
-  type: TokenType.ERC20 | TokenType.CIRCLE;
+  type: TokenType.ERC20;
+  address: GenericAddress;
+  decimals: number;
+};
+
+type CircleSpokeTokenType = {
+  type: TokenType.CIRCLE;
   address: GenericAddress;
   decimals: number;
 };
@@ -30,7 +36,10 @@ type NativeSpokeTokenType = {
   decimals: number;
 };
 
-export type SpokeTokenType = Erc20SpokeTokenType | NativeSpokeTokenType;
+export type SpokeTokenType =
+  | Erc20SpokeTokenType
+  | CircleSpokeTokenType
+  | NativeSpokeTokenType;
 
 export type SpokeTokenData = {
   poolId: number;
