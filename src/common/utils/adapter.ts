@@ -54,19 +54,12 @@ export function assertAdapterSupportsTokenMessage(
 export function transformAdapterForEstimation(
   adapters: MessageAdapters,
 ): MessageAdapters {
-  if (adapters.adapterId === AdapterType.WORMHOLE_CCTP) {
-    return {
-      adapterId: AdapterType.WORMHOLE_DATA,
-      returnAdapterId: adapters.returnAdapterId,
-    };
-  }
-  if (adapters.returnAdapterId === AdapterType.WORMHOLE_CCTP) {
-    return {
-      adapterId: adapters.adapterId,
-      returnAdapterId: AdapterType.WORMHOLE_DATA,
-    };
-  }
-  return adapters;
+  const transformedAdapters = { ...adapters };
+  if (adapters.adapterId === AdapterType.WORMHOLE_CCTP)
+    transformedAdapters.adapterId = AdapterType.WORMHOLE_DATA;
+  if (adapters.returnAdapterId === AdapterType.WORMHOLE_CCTP)
+    transformedAdapters.returnAdapterId = AdapterType.WORMHOLE_DATA;
+  return transformedAdapters;
 }
 
 export function getGasLimitIncrease(adapters: MessageAdapters) {
