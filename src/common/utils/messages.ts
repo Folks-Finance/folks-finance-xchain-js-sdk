@@ -125,7 +125,7 @@ export async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.HUB: {
-          throw new Error("Not implemented yet: AdapterType.HUB case");
+          return 0n;
         }
         case AdapterType.CCIP_DATA: {
           const sourceCcipChainId = getCcipData(sourceFolksChainId).ccipChainId;
