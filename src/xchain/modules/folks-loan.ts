@@ -15,6 +15,7 @@ import {
 } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
+  assertHubChainSelected,
   assertSpokeChainSupportFolksToken,
   assertSpokeChainSupported,
   getFolksChain,
@@ -43,6 +44,7 @@ import type {
   DeleteLoanMessageData,
   DepositExtraArgs,
   DepositMessageData,
+  LiquidateMessageData,
   MessageAdapters,
   MessageBuilderParams,
   OptionalFeeParams,
@@ -57,6 +59,7 @@ import type {
   PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
+  PrepareLiquidateCall,
   PrepareRepayCall,
   PrepareRepayWithCollateralCall,
   PrepareSwitchBorrowTypeCall,
@@ -767,6 +770,52 @@ export const prepare = {
         return exhaustiveCheck(folksChain.chainType);
     }
   },
+
+  async liquidate(
+    accountId: AccountId,
+    loanId: LoanId,
+    violatorLoanId: LoanId,
+    folksTokenIdToLiq: FolksTokenId,
+    folksTokenIdToSeize: FolksTokenId,
+    repayingAmount: bigint,
+    minSeizedAmount: bigint,
+    adapters: MessageAdapters,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+    const network = folksChain.network;
+
+    assertAdapterSupportsDataMessage(
+      folksChain.folksChainId,
+      adapters.adapterId,
+    );
+
+    const hubChain = getHubChain(network);
+
+    const hubTokenToLiquidateData = getHubTokenData(folksTokenIdToLiq, network);
+    const hubTokenToSeizeData = getHubTokenData(folksTokenIdToSeize, network);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: LiquidateMessageData = {
+      liquidatorLoanId: loanId,
+      violatorLoanId,
+      colPoolId: hubTokenToSeizeData.poolId,
+      borPoolId: hubTokenToLiquidateData.poolId,
+      repayingAmount,
+      minSeizedAmount,
+    };
+
+    return await FolksHubLoan.prepare.liquidate(
+      FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+      convertFromGenericAddress(userAddress, folksChain.chainType),
+      data,
+      accountId,
+      hubChain,
+    );
+  },
 };
 
 export const write = {
@@ -988,6 +1037,19 @@ export const write = {
       default:
         return exhaustiveCheck(folksChain.chainType);
     }
+  },
+
+  async liquidate(accountId: AccountId, prepareCall: PrepareLiquidateCall) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+
+    return await FolksHubLoan.write.liquidate(
+      FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+      FolksCore.getSigner<ChainType.EVM>(),
+      accountId,
+      prepareCall,
+    );
   },
 };
 

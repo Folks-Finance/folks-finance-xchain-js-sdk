@@ -34,6 +34,7 @@ import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
   MessageBuilderParams,
+  MessageDataParams,
   MessageParams,
   MessageToSend,
   OptionalFeeParams,
@@ -115,10 +116,8 @@ export function buildSendTokenExtraArgsWhenAdding(
   return extraArgsToBytes(spokeTokenAddress, hubPoolAddress, amount);
 }
 
-export function buildEvmMessageData(
-  messageToSendBuilderParams: MessageBuilderParams,
-): Hex {
-  const { action, data } = messageToSendBuilderParams;
+export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
+  const { action, data } = messageDataParams;
   switch (action) {
     case Action.CreateAccount: {
       return data.refAccountId;
@@ -198,7 +197,14 @@ export function buildEvmMessageData(
       ]);
     }
     case Action.Liquidate: {
-      throw new Error("Not implemented yet: Action.Liquidate case");
+      return concat([
+        data.violatorLoanId,
+        data.liquidatorLoanId,
+        convertNumberToBytes(data.colPoolId, UINT8_LENGTH),
+        convertNumberToBytes(data.borPoolId, UINT8_LENGTH),
+        convertNumberToBytes(data.repayingAmount, UINT256_LENGTH),
+        convertNumberToBytes(data.minSeizedAmount, UINT256_LENGTH),
+      ]);
     }
     case Action.SwitchBorrowType: {
       return concat([
@@ -442,7 +448,7 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.Liquidate: {
-      throw new Error("Not implemented yet: Action.Liquidate case");
+      throw new Error("No message to send for Action.Liquidate case");
     }
     case Action.SwitchBorrowType: {
       const message: MessageToSend = {

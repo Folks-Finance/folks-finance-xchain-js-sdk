@@ -1,6 +1,7 @@
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type { MessageParams } from "../../../../common/types/message.js";
 import type { SpokeTokenData } from "../../../../common/types/token.js";
+import type { Hex } from "viem";
 
 export type PrepareCall = {
   msgValue: bigint;
@@ -63,3 +64,8 @@ export type PrepareRepayWithCollateralCall = {
 export type PrepareSwitchBorrowTypeCall = {
   spokeCommonAddress: GenericAddress;
 } & PrepareCall;
+
+export type PrepareLiquidateCall = {
+  messageData: Hex;
+  hubAddress: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;
