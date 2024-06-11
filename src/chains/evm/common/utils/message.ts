@@ -4,7 +4,6 @@ import {
   BYTES32_LENGTH,
   UINT16_LENGTH,
   UINT256_LENGTH,
-  UINT64_LENGTH,
   UINT8_LENGTH,
 } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
@@ -17,20 +16,15 @@ import {
 import {
   convertBooleanToByte,
   convertNumberToBytes,
-  convertStringToBytes,
   getRandomBytes,
 } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
 import {
   getCCIPDataAdapterContract as getCcipDataAdapterContract,
-  getWormholeCCTPAdapterContract,
   getWormholeDataAdapterContract,
 } from "./contract.js";
-import {
-  encodeEvmPayloadWithMetadata,
-  encodePayloadWithCCTPMetadata,
-} from "./gmp.js";
+import { encodeEvmPayloadWithMetadata } from "./gmp.js";
 
 import type {
   EvmAddress,
@@ -506,65 +500,6 @@ export async function estimateEvmWormholeDataGasLimit(
       ),
       [],
       sourceWormholeDataAdapterAddress,
-      sourceWormholeChainId,
-      messageId,
-    ],
-    {
-      value: receiverValue,
-      account: wormholeRelayer,
-      stateOverride: [{ address: wormholeRelayer, balance: receiverValue }],
-    },
-  );
-}
-
-export async function estimateEvmWormholeCCTPGasLimit(
-  provider: Client,
-  messageBuilderParams: MessageBuilderParams,
-  receiverValue: bigint,
-  returnGasLimit: bigint,
-  sourceWormholeChainId: number,
-  wormholeRelayer: EvmAddress,
-  wormholeCCTPAdapterAddress: GenericAddress,
-  sourceWormholeCCTPAdapterAddress: GenericAddress,
-  sourceDomainId: number,
-  amount: bigint,
-  recipientAddr: GenericAddress,
-) {
-  const messageId = getRandomBytes(BYTES32_LENGTH);
-  const nonce = BigInt(99999999999);
-  const additionalMessage = convertStringToBytes(
-    concat([
-      getRandomBytes(12),
-      convertNumberToBytes(nonce, UINT64_LENGTH),
-      getRandomBytes(100),
-    ]),
-  );
-  const additionalMessageSignature = getRandomBytes(BYTES32_LENGTH);
-
-  const wormholeCCTPAdapter = getWormholeCCTPAdapterContract(
-    provider,
-    wormholeCCTPAdapterAddress,
-  );
-  return await wormholeCCTPAdapter.estimateGas.receiveWormholeMessages(
-    [
-      encodePayloadWithCCTPMetadata(
-        messageBuilderParams.adapters.returnAdapterId,
-        returnGasLimit,
-        messageBuilderParams.sender,
-        messageBuilderParams.handler,
-        buildMessagePayload(
-          messageBuilderParams.action,
-          messageBuilderParams.accountId,
-          messageBuilderParams.userAddress,
-          buildEvmMessageData(messageBuilderParams),
-        ),
-        sourceDomainId,
-        amount,
-        nonce,
-        recipientAddr,
-      ),
-      [additionalMessage, additionalMessageSignature],
-      sourceWormholeCCTPAdapterAddress,
       sourceWormholeChainId,
       messageId,
     ],
