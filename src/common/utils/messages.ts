@@ -37,37 +37,38 @@ export function buildMessageToSend(
   }
 }
 
-function getAdaptersData(
+function getAdapterId(
+  messageDirection: MessageDirection,
+  adapters: MessageAdapters,
+): AdapterType {
+  if (messageDirection === MessageDirection.SpokeToHub)
+    return adapters.adapterId;
+  return adapters.returnAdapterId;
+}
+
+function getAdaptersAddresses(
   messageDirection: MessageDirection,
   sourceFolksChainId: FolksChainId,
   destFolksChainId: FolksChainId,
   network: NetworkType,
-  adapters: MessageAdapters,
+  adapterId: AdapterType,
 ) {
   if (messageDirection === MessageDirection.SpokeToHub)
     return {
       sourceAdapterAddress: getSpokeChainAdapterAddress(
         sourceFolksChainId,
         network,
-        adapters.adapterId,
+        adapterId,
       ),
-      destAdapterAddress: getHubChainAdapterAddress(
-        network,
-        adapters.adapterId,
-      ),
-      adapterId: adapters.adapterId,
+      destAdapterAddress: getHubChainAdapterAddress(network, adapterId),
     };
   return {
-    sourceAdapterAddress: getHubChainAdapterAddress(
-      network,
-      adapters.returnAdapterId,
-    ),
+    sourceAdapterAddress: getHubChainAdapterAddress(network, adapterId),
     destAdapterAddress: getSpokeChainAdapterAddress(
       destFolksChainId,
       network,
-      adapters.returnAdapterId,
+      adapterId,
     ),
-    adapterId: adapters.returnAdapterId,
   };
 }
 
@@ -82,14 +83,18 @@ export async function estimateAdapterReceiveGasLimit(
   returnGasLimit = BigInt(0),
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
-  const { sourceAdapterAddress, destAdapterAddress, adapterId } =
-    getAdaptersData(
-      messageDirection,
-      sourceFolksChainId,
-      destFolksChainId,
-      network,
-      messageBuilderParams.adapters,
-    );
+
+  const adapterId = getAdapterId(
+    messageDirection,
+    messageBuilderParams.adapters,
+  );
+  const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
+    messageDirection,
+    sourceFolksChainId,
+    destFolksChainId,
+    network,
+    adapterId,
+  );
 
   switch (destFolksChain.chainType) {
     case ChainType.EVM:
