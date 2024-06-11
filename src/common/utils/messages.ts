@@ -1,7 +1,6 @@
 import {
   buildEvmMessageToSend,
   estimateEvmCcipDataGasLimit,
-  estimateEvmWormholeCCTPGasLimit,
   estimateEvmWormholeDataGasLimit,
 } from "../../chains/evm/common/utils/message.js";
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
@@ -9,9 +8,13 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 
+import {
+  getGasLimitIncrease,
+  transformAdapterForEstimation,
+} from "./adapter.js";
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
-import { getCcipData, getCctpData, getWormholeData } from "./gmp.js";
+import { getCcipData, getWormholeData } from "./gmp.js";
 
 import type { HubChain } from "../../chains/evm/hub/types/chain.js";
 import type { GenericAddress } from "../types/address.js";
@@ -50,8 +53,6 @@ async function estimateAdapterReceiveGasLimit(
   messageBuilderParams: MessageBuilderParams,
   receiverValue: bigint,
   returnGasLimit: bigint,
-  amount = BigInt(0),
-  recipientAddr: GenericAddress = "" as GenericAddress,
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
   switch (destFolksChain.chainType) {
@@ -78,27 +79,8 @@ async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.WORMHOLE_CCTP: {
-          const sourceWormholeChainId =
-            getWormholeData(sourceFolksChainId).wormholeChainId;
-          const sourceCCTPData = getCctpData(sourceFolksChainId);
-          const wormholeRelayer = convertFromGenericAddress(
-            getWormholeData(destFolksChainId).wormholeRelayer,
-            ChainType.EVM,
-          );
-
-          return await estimateEvmWormholeCCTPGasLimit(
-            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-            destFolksChainProvider as EVMProvider,
-            messageBuilderParams,
-            receiverValue,
-            returnGasLimit,
-            sourceWormholeChainId,
-            wormholeRelayer,
-            destAdapterAddress,
-            sourceAdapterAddress,
-            sourceCCTPData.cctpSourceDomain,
-            amount,
-            recipientAddr,
+          throw new Error(
+            "Not implemented: use WORMHOLE_DATA for estimate instead",
           );
         }
         case AdapterType.HUB: {
@@ -142,28 +124,32 @@ export async function estimateReceiveGasLimit(
   receiverValue = BigInt(0),
   returnGasLimit = BigInt(0),
 ) {
+  const estimationAdapters = transformAdapterForEstimation(adapters);
+  const gasLimitIncrease = getGasLimitIncrease(adapters);
+
   const sourceAdapterAddress = getSpokeChainAdapterAddress(
     folksChain.folksChainId,
     folksChain.network,
-    adapters.adapterId,
+    estimationAdapters.adapterId,
   );
   const destAdapterAddress = getHubChainAdapterAddress(
     folksChain.network,
-    adapters.adapterId,
+    estimationAdapters.adapterId,
   );
 
-  return await estimateAdapterReceiveGasLimit(
+  const gasLimitEstimation = await estimateAdapterReceiveGasLimit(
     folksChain.folksChainId,
     hubChain.folksChainId,
     hubProvider,
     folksChain.network,
-    adapters.adapterId,
+    estimationAdapters.adapterId,
     sourceAdapterAddress,
     destAdapterAddress,
     messageBuilderParams,
     receiverValue,
     returnGasLimit,
   );
+  return gasLimitEstimation + gasLimitIncrease;
 }
 
 export async function estimateReturnReceiveGasLimit(
@@ -173,26 +159,30 @@ export async function estimateReturnReceiveGasLimit(
   adapters: MessageAdapters,
   messageBuilderParams: MessageBuilderParams,
 ) {
+  const estimationAdapters = transformAdapterForEstimation(adapters);
+  const gasLimitIncrease = getGasLimitIncrease(adapters);
+
   const sourceAdapterAddress = getHubChainAdapterAddress(
     receiverFolksChain.network,
-    adapters.returnAdapterId,
+    estimationAdapters.returnAdapterId,
   );
   const destAdapterAddress = getSpokeChainAdapterAddress(
     receiverFolksChain.folksChainId,
     receiverFolksChain.network,
-    adapters.returnAdapterId,
+    estimationAdapters.returnAdapterId,
   );
 
-  return await estimateAdapterReceiveGasLimit(
+  const gasLimitEstimation = await estimateAdapterReceiveGasLimit(
     hubChain.folksChainId,
     receiverFolksChain.folksChainId,
     receiverFolksChainProvider,
     receiverFolksChain.network,
-    adapters.returnAdapterId,
+    estimationAdapters.returnAdapterId,
     sourceAdapterAddress,
     destAdapterAddress,
     messageBuilderParams,
     BigInt(0),
     BigInt(0),
   );
+  return gasLimitEstimation + gasLimitIncrease;
 }
