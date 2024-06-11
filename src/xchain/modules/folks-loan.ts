@@ -22,7 +22,6 @@ import {
   getSignerGenericAddress,
   getSpokeChain,
   getSpokeTokenData,
-  getSpokeTokenDataTokenAddress,
 } from "../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -231,7 +230,7 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
-    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+    if (spokeTokenData.token.type === TokenType.CIRCLE)
       assertAdapterSupportsTokenMessage(
         folksChain.folksChainId,
         adapters.adapterId,
@@ -253,8 +252,7 @@ export const prepare = {
       amount,
     };
     const extraArgs: DepositExtraArgs = {
-      tokenType: spokeTokenData.tokenType,
-      spokeTokenAddress: getSpokeTokenDataTokenAddress(spokeTokenData),
+      token: spokeTokenData.token,
       hubPoolAddress: hubTokenData.poolAddress,
       amount,
     };
@@ -548,7 +546,7 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
-    if (spokeTokenData.tokenType === TokenType.CIRCLE)
+    if (spokeTokenData.token.type === TokenType.CIRCLE)
       assertAdapterSupportsTokenMessage(
         folksChain.folksChainId,
         adapters.adapterId,
@@ -571,8 +569,7 @@ export const prepare = {
       maxOverRepayment,
     };
     const extraArgs: RepayExtraArgs = {
-      tokenType: spokeTokenData.tokenType,
-      spokeTokenAddress: getSpokeTokenDataTokenAddress(spokeTokenData),
+      token: spokeTokenData.token,
       hubPoolAddress: hubTokenData.poolAddress,
       amount,
     };

@@ -1,6 +1,5 @@
 import { encodeAbiParameters } from "viem";
 
-import { TokenType } from "../../../../common/types/token.js";
 import { CONTRACT_SLOT } from "../constants/tokens.js";
 
 import { getAllowanceSlotHash } from "./contract.js";
@@ -8,6 +7,7 @@ import { getAllowanceSlotHash } from "./contract.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { EvmFolksChainId } from "../types/chain.js";
 import type { AllowanceStateOverride } from "../types/tokens.js";
+import type { StateOverride } from "viem";
 
 export function getContractSlot(folksChainId: EvmFolksChainId) {
   const contractSlot = CONTRACT_SLOT[folksChainId];
@@ -36,18 +36,16 @@ export function getFolksTokenContractSlot(
 
 export function getAllowanceStateOverride(
   allowanceStatesOverride: Array<AllowanceStateOverride>,
-) {
-  return allowanceStatesOverride
-    .filter(
-      (aso) =>
-        aso.tokenType == TokenType.ERC20 || aso.tokenType == TokenType.CIRCLE,
-    )
-    .map((aso) => ({
+): StateOverride {
+  return allowanceStatesOverride.map((aso) => ({
+    address: aso.erc20Address,
+    stateDiff: aso.stateDiff.map((sd) => ({
       slot: getAllowanceSlotHash(
-        aso.owner,
-        aso.spender,
-        getFolksTokenContractSlot(aso.folksChainId, aso.folksTokenId).allowance,
+        sd.owner,
+        sd.spender,
+        getFolksTokenContractSlot(sd.folksChainId, sd.folksTokenId).allowance,
       ),
-      value: encodeAbiParameters([{ type: "uint256" }], [aso.amount]),
-    }));
+      value: encodeAbiParameters([{ type: "uint256" }], [sd.amount]),
+    })),
+  }));
 }

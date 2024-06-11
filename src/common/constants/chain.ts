@@ -86,29 +86,33 @@ export const SPOKE_CHAIN: Record<
       },
       tokens: {
         [FolksTokenId.USDC]: {
-          tokenType: TokenType.CIRCLE,
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress(
+              "0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress,
+              ChainType.EVM,
+            ),
+            decimals: 6,
+          },
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0x19A9abA9cD1BFd887aafA2ebA6895ea3CAF775F1" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: convertToGenericAddress(
-            "0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress,
-            ChainType.EVM,
-          ),
-          tokenDecimals: 6,
         },
         [FolksTokenId.AVAX]: {
-          tokenType: TokenType.NATIVE,
+          token: {
+            type: TokenType.NATIVE,
+            address: null,
+            decimals: 18,
+          },
           folksTokenId: FolksTokenId.AVAX,
           poolId: TESTNET_POOLS[FolksTokenId.AVAX],
           spokeAddress: convertToGenericAddress(
             "0x315b2aFb0E4366Cc3fF1C2688bdB31B836AB023D" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: null,
-          tokenDecimals: 18,
         },
       },
     },
@@ -142,43 +146,49 @@ export const SPOKE_CHAIN: Record<
       },
       tokens: {
         [FolksTokenId.USDC]: {
-          tokenType: TokenType.CIRCLE,
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress(
+              "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress,
+              ChainType.EVM,
+            ),
+            decimals: 6,
+          },
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0x438fe3a25B9f6784EfB63718D3874d5bC75168c2" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: convertToGenericAddress(
-            "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress,
-            ChainType.EVM,
-          ),
-          tokenDecimals: 6,
         },
         [FolksTokenId.ETH_eth_sep]: {
-          tokenType: TokenType.NATIVE,
+          token: {
+            type: TokenType.NATIVE,
+            address: null,
+            decimals: 18,
+          },
           folksTokenId: FolksTokenId.ETH_eth_sep,
           poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
           spokeAddress: convertToGenericAddress(
             "0xDFff3d232Ad71e613777B1E021eDE5fFCA03379a" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: null,
-          tokenDecimals: 18,
         },
         [FolksTokenId.LINK_eth_sep]: {
-          tokenType: TokenType.ERC20,
+          token: {
+            type: TokenType.ERC20,
+            address: convertToGenericAddress(
+              "0x514910771af9ca656af840dff83e8264ecf986ca" as EvmAddress,
+              ChainType.EVM,
+            ),
+            decimals: 18,
+          },
           folksTokenId: FolksTokenId.LINK_eth_sep,
           poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
           spokeAddress: convertToGenericAddress(
             "0x4511d33188438B9d3B78783c4cB7D6AFCC47810f" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: convertToGenericAddress(
-            "0x514910771af9ca656af840dff83e8264ecf986ca" as EvmAddress,
-            ChainType.EVM,
-          ),
-          tokenDecimals: 18,
         },
       },
     },
@@ -212,29 +222,33 @@ export const SPOKE_CHAIN: Record<
       },
       tokens: {
         [FolksTokenId.USDC]: {
-          tokenType: TokenType.CIRCLE,
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress(
+              "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress,
+              ChainType.EVM,
+            ),
+            decimals: 6,
+          },
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
             "0x438fe3a25B9f6784EfB63718D3874d5bC75168c2" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: convertToGenericAddress(
-            "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress,
-            ChainType.EVM,
-          ),
-          tokenDecimals: 6,
         },
         [FolksTokenId.ETH_base_sep]: {
-          tokenType: TokenType.NATIVE,
+          token: {
+            type: TokenType.NATIVE,
+            address: null,
+            decimals: 18,
+          },
           folksTokenId: FolksTokenId.ETH_base_sep,
           poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
           spokeAddress: convertToGenericAddress(
             "0xDFff3d232Ad71e613777B1E021eDE5fFCA03379a" as EvmAddress,
             ChainType.EVM,
           ),
-          tokenAddress: null,
-          tokenDecimals: 18,
         },
       },
     },

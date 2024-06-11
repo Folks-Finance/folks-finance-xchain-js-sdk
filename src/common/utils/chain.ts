@@ -111,15 +111,6 @@ export function assertSpokeChainSupportFolksToken(
     );
 }
 
-export function getSpokeTokenDataTokenAddress(
-  spokeTokenData: SpokeTokenData,
-): GenericAddress {
-  if (spokeTokenData.tokenAddress) return spokeTokenData.tokenAddress;
-  throw new Error(
-    `Token address not found for spokeTokenData for folks token: ${spokeTokenData.folksTokenId} in spoke: ${spokeTokenData.spokeAddress}`,
-  );
-}
-
 export function getSpokeChainAdapterAddress(
   folksChainId: FolksChainId,
   network: NetworkType,
