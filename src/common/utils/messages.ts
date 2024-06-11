@@ -120,9 +120,35 @@ export async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.WORMHOLE_CCTP: {
-          throw new Error(
-            "Not implemented yet: AdapterType.WORMHOLE_CCTP case",
+          const { sourceAdapterAddress, destAdapterAddress } =
+            getAdaptersAddresses(
+              messageDirection,
+              sourceFolksChainId,
+              destFolksChainId,
+              network,
+              AdapterType.WORMHOLE_DATA,
+            );
+          const sourceWormholeChainId =
+            getWormholeData(sourceFolksChainId).wormholeChainId;
+          const wormholeRelayer = convertFromGenericAddress(
+            getWormholeData(destFolksChainId).wormholeRelayer,
+            ChainType.EVM,
           );
+
+          // Due to ERC20 transfer and additional checks in the Wormhole CCTP Adapter
+          const increaseGasLimit = BigInt(100000);
+          const gasLimitEstimation = await estimateEvmWormholeDataGasLimit(
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            destFolksChainProvider as EVMProvider,
+            messageBuilderParams,
+            receiverValue,
+            returnGasLimit,
+            sourceWormholeChainId,
+            wormholeRelayer,
+            destAdapterAddress,
+            sourceAdapterAddress,
+          );
+          return gasLimitEstimation + increaseGasLimit;
         }
         case AdapterType.HUB: {
           throw new Error("Not implemented yet: AdapterType.HUB case");
