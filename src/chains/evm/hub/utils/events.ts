@@ -1,4 +1,9 @@
-import type { LoanId } from "../../../../common/types/lending.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
+import type { AccountId, LoanId } from "../../../../common/types/lending.js";
+import type {
+  AcceptInviteAddressEventParams,
+  InviteAddressEventParams,
+} from "../types/account.js";
 import type {
   CreateUserLoanEventParams,
   DeleteUserLoanEventParams,
@@ -57,4 +62,66 @@ export async function fetchUserLoanIds(params: CreateUserLoanEventParams) {
   }
 
   return Array.from(loanIds.keys());
+}
+
+async function fetchReceivedInvitationEventByAddress(
+  params: InviteAddressEventParams,
+) {
+  const { eventParams, accountManager, address, folksChainId } = params;
+
+  const logs = await accountManager.getEvents.InviteAddress(
+    { inviteeAddr: address, inviteeChainId: folksChainId },
+    eventParams,
+  );
+  return logs.map((log) => ({
+    blockNumber: log.blockNumber,
+    accountId: log.args.accountId,
+    folksChainId: log.args.inviteeChainId,
+  }));
+}
+
+async function fetchAcceptedInvitationEventByAddress(
+  params: AcceptInviteAddressEventParams,
+) {
+  const { eventParams, accountManager, address, folksChainId } = params;
+
+  const logs = await accountManager.getEvents.AcceptInviteAddress(eventParams);
+  return logs
+    .filter(
+      (log) =>
+        log.args.addr === address &&
+        (folksChainId ? log.args.chainId === folksChainId : true),
+    )
+    .map((log) => ({
+      blockNumber: log.blockNumber,
+      accountId: log.args.accountId,
+      folksChainId: log.args.chainId,
+    }));
+}
+
+export async function fetchInvitationByAddress(
+  params: InviteAddressEventParams,
+) {
+  const receivedInvitations =
+    await fetchReceivedInvitationEventByAddress(params);
+  const acceptedInvitations =
+    await fetchAcceptedInvitationEventByAddress(params);
+
+  const allEvents = [...receivedInvitations, ...acceptedInvitations];
+  allEvents.sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber));
+
+  const accountStatus = new Map();
+
+  for (const event of allEvents)
+    if (receivedInvitations.includes(event))
+      accountStatus.set(event.accountId, true);
+    else if (acceptedInvitations.includes(event))
+      accountStatus.set(event.accountId, false);
+
+  return allEvents
+    .filter((log) => accountStatus.get(log.accountId))
+    .map((log) => ({
+      accountId: log.accountId as AccountId,
+      folksChainId: log.folksChainId as FolksChainId,
+    }));
 }

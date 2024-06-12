@@ -1,9 +1,11 @@
 import { multicall } from "viem/actions";
 
 import { getFolksChainIdsByNetwork } from "../../../../common/utils/chain.js";
+import { defaultEventParams } from "../../common/constants/contract.js";
 import { extractRevertErrorName } from "../../common/utils/contract.js";
 import { getHubChain } from "../utils/chain.js";
 import { getAccountManagerContract } from "../utils/contract.js";
+import { fetchInvitationByAddress } from "../utils/events.js";
 
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type {
@@ -136,4 +138,24 @@ export async function getAccountIdByAddressOnChain(
     if (errorName === "NoAccountRegisteredTo") return null;
     throw err;
   }
+}
+
+export async function getInvitationByAddress(
+  provider: Client,
+  network: NetworkType,
+  address: GenericAddress,
+  folksChainId?: FolksChainId,
+) {
+  const hubChain = getHubChain(network);
+  const accountManager = getAccountManagerContract(
+    provider,
+    hubChain.accountManagerAddress,
+  );
+
+  return fetchInvitationByAddress({
+    accountManager,
+    address,
+    folksChainId,
+    eventParams: defaultEventParams,
+  });
 }
