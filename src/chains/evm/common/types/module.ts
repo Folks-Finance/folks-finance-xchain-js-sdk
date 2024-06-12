@@ -73,3 +73,7 @@ export type PrepareLiquidateCall = {
 export type PrepareRetryMessageCall = {
   bridgeRouterAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams" | "msgValue">;
+
+export type PrepareReverseMessageCall = {
+  bridgeRouterAddress: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;
