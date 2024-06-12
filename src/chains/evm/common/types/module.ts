@@ -69,3 +69,7 @@ export type PrepareLiquidateCall = {
   messageData: Hex;
   hubAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams" | "msgValue">;
+
+export type PrepareRetryMessageCall = {
+  bridgeRouterAddress: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;
