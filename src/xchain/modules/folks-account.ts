@@ -447,7 +447,7 @@ export const read = {
     );
   },
 
-  async getInvitationByAddress(
+  async invitationByAddress(
     address: GenericAddress,
     folksChainId?: FolksChainId,
   ) {
