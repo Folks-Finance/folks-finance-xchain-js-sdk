@@ -79,8 +79,8 @@ export const write = {
   async retryMessage(
     provider: Client,
     signer: WalletClient,
-    messageId: MessageId,
     adapterId: AdapterType,
+    messageId: MessageId,
     prepareCall: PrepareRetryMessageCall,
   ) {
     const { gasLimit, bridgeRouterAddress } = prepareCall;
