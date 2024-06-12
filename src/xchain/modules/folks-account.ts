@@ -446,4 +446,16 @@ export const read = {
       folksChainId,
     );
   },
+
+  async getInvitationByAddress(
+    address: GenericAddress,
+    folksChainId?: FolksChainId,
+  ) {
+    return FolksHubAccount.getInvitationByAddress(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+      folksChainId,
+    );
+  },
 };
