@@ -77,6 +77,7 @@ async function fetchReceivedInvitationEventByAddress(
     blockNumber: log.blockNumber,
     accountId: log.args.accountId,
     folksChainId: log.args.inviteeChainId,
+    id: `${log.args.accountId ?? ""}${log.args.inviteeChainId ?? ""}`,
   }));
 }
 
@@ -96,6 +97,7 @@ async function fetchAcceptedInvitationEventByAddress(
       blockNumber: log.blockNumber,
       accountId: log.args.accountId,
       folksChainId: log.args.chainId,
+      id: `${log.args.accountId ?? ""}${log.args.chainId ?? ""}`,
     }));
 }
 
@@ -113,13 +115,12 @@ export async function fetchInvitationByAddress(
   const accountStatus = new Map();
 
   for (const event of allEvents)
-    if (receivedInvitations.includes(event))
-      accountStatus.set(event.accountId, true);
+    if (receivedInvitations.includes(event)) accountStatus.set(event.id, true);
     else if (acceptedInvitations.includes(event))
-      accountStatus.set(event.accountId, false);
+      accountStatus.set(event.id, false);
 
   return allEvents
-    .filter((log) => accountStatus.get(log.accountId))
+    .filter((log) => accountStatus.get(log.id))
     .map((log) => ({
       accountId: log.accountId as AccountId,
       folksChainId: log.folksChainId as FolksChainId,
