@@ -119,10 +119,13 @@ export async function fetchInvitationByAddress(
     else if (acceptedInvitations.includes(event))
       accountStatus.set(event.id, false);
 
-  return allEvents
-    .filter((log) => accountStatus.get(log.id))
-    .map((log) => ({
-      accountId: log.accountId as AccountId,
-      folksChainId: log.folksChainId as FolksChainId,
-    }));
+  return {
+    address: params.address,
+    invitations: allEvents
+      .filter((log) => accountStatus.get(log.id))
+      .map((log) => ({
+        accountId: log.accountId as AccountId,
+        folksChainId: log.folksChainId as FolksChainId,
+      })),
+  };
 }
