@@ -5,7 +5,10 @@ import { defaultEventParams } from "../../common/constants/contract.js";
 import { extractRevertErrorName } from "../../common/utils/contract.js";
 import { getHubChain } from "../utils/chain.js";
 import { getAccountManagerContract } from "../utils/contract.js";
-import { fetchInvitationByAddress } from "../utils/events.js";
+import {
+  fetchInvitationByAddress,
+  fetchInvitationByAddressOnChain,
+} from "../utils/events.js";
 
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type {
@@ -144,7 +147,6 @@ export async function getInvitationByAddress(
   provider: Client,
   network: NetworkType,
   address: GenericAddress,
-  folksChainId?: FolksChainId,
 ) {
   const hubChain = getHubChain(network);
   const accountManager = getAccountManagerContract(
@@ -153,6 +155,25 @@ export async function getInvitationByAddress(
   );
 
   return fetchInvitationByAddress({
+    accountManager,
+    address,
+    eventParams: defaultEventParams,
+  });
+}
+
+export async function getInvitationByAddressOnChain(
+  provider: Client,
+  network: NetworkType,
+  address: GenericAddress,
+  folksChainId: FolksChainId,
+) {
+  const hubChain = getHubChain(network);
+  const accountManager = getAccountManagerContract(
+    provider,
+    hubChain.accountManagerAddress,
+  );
+
+  return fetchInvitationByAddressOnChain({
     accountManager,
     address,
     folksChainId,

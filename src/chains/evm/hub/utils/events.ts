@@ -102,7 +102,7 @@ async function fetchAcceptedInvitationEventByAddress(
 }
 
 export async function fetchInvitationByAddress(
-  params: InviteAddressEventParams,
+  params: Omit<InviteAddressEventParams, "folksChainId">,
 ) {
   const receivedInvitations =
     await fetchReceivedInvitationEventByAddress(params);
@@ -119,13 +119,33 @@ export async function fetchInvitationByAddress(
     else if (acceptedInvitations.includes(event))
       accountStatus.set(event.id, false);
 
-  return {
-    address: params.address,
-    invitations: allEvents
-      .filter((log) => accountStatus.get(log.id))
-      .map((log) => ({
-        accountId: log.accountId as AccountId,
-        folksChainId: log.folksChainId as FolksChainId,
-      })),
-  };
+  return allEvents
+    .filter((log) => accountStatus.get(log.id))
+    .map((log) => ({
+      accountId: log.accountId as AccountId,
+      folksChainId: log.folksChainId as FolksChainId,
+    }));
+}
+
+export async function fetchInvitationByAddressOnChain(
+  params: Required<InviteAddressEventParams>,
+) {
+  const receivedInvitations =
+    await fetchReceivedInvitationEventByAddress(params);
+  const acceptedInvitations =
+    await fetchAcceptedInvitationEventByAddress(params);
+
+  const allEvents = [...receivedInvitations, ...acceptedInvitations];
+  allEvents.sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber));
+
+  const accountStatus = new Map();
+
+  for (const event of allEvents)
+    if (receivedInvitations.includes(event)) accountStatus.set(event.id, true);
+    else if (acceptedInvitations.includes(event))
+      accountStatus.set(event.id, false);
+
+  return allEvents
+    .filter((log) => accountStatus.get(log.id))
+    .map((log) => log.accountId as AccountId);
 }

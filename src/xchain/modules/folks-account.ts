@@ -447,11 +447,19 @@ export const read = {
     );
   },
 
-  async invitationByAddress(
-    address: GenericAddress,
-    folksChainId?: FolksChainId,
-  ) {
+  async invitationByAddress(address: GenericAddress) {
     return FolksHubAccount.getInvitationByAddress(
+      FolksCore.getHubProvider(),
+      FolksCore.getSelectedNetwork(),
+      address,
+    );
+  },
+
+  async invitationByAddressOnChain(
+    address: GenericAddress,
+    folksChainId: FolksChainId,
+  ) {
+    return FolksHubAccount.getInvitationByAddressOnChain(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       address,
