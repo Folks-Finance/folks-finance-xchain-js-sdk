@@ -1,10 +1,4 @@
-import {
-  BaseError,
-  ContractFunctionRevertedError,
-  encodeAbiParameters,
-  getContract,
-  keccak256,
-} from "viem";
+import { BaseError, ContractFunctionRevertedError, encodeAbiParameters, getContract, keccak256 } from "viem";
 
 import { ChainType } from "../../../../common/types/chain.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
@@ -14,18 +8,11 @@ import { WormholeDataAdapterAbi } from "../constants/abi/wormhole-data-adapter-a
 
 import { getEvmSignerAccount, getEvmSignerAddress } from "./chain.js";
 
-import type {
-  EvmAddress,
-  GenericAddress,
-} from "../../../../common/types/address.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { GetReadContractReturnType } from "../types/contract.js";
 import type { Client, Hex, WalletClient } from "viem";
 
-export function getERC20Contract(
-  provider: Client,
-  address: GenericAddress,
-  signer: WalletClient,
-) {
+export function getERC20Contract(provider: Client, address: GenericAddress, signer: WalletClient) {
   return getContract({
     abi: ERC20Abi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -41,10 +28,7 @@ export async function sendERC20Approve(
   amount: bigint,
 ): Promise<Hex | null> {
   const erc20 = getERC20Contract(provider, address, signer);
-  const allowance = await erc20.read.allowance([
-    getEvmSignerAddress(signer),
-    spender,
-  ]);
+  const allowance = await erc20.read.allowance([getEvmSignerAddress(signer), spender]);
 
   // approve if not enough
   if (allowance < amount)
@@ -79,44 +63,22 @@ export function getCCIPDataAdapterContract(
 
 export function extractRevertErrorName(err: unknown): string | undefined {
   if (err instanceof BaseError) {
-    const revertError = err.walk(
-      (err) => err instanceof ContractFunctionRevertedError,
-    );
-    if (
-      revertError instanceof ContractFunctionRevertedError &&
-      revertError.data?.errorName
-    ) {
+    const revertError = err.walk((err) => err instanceof ContractFunctionRevertedError);
+    if (revertError instanceof ContractFunctionRevertedError && revertError.data?.errorName) {
       return revertError.data.errorName;
     }
   }
 }
 
 export function getBalanceOfSlotHash(address: EvmAddress, slot: bigint) {
-  return keccak256(
-    encodeAbiParameters(
-      [{ type: "address" }, { type: "uint256" }],
-      [address, slot],
-    ),
-  );
+  return keccak256(encodeAbiParameters([{ type: "address" }, { type: "uint256" }], [address, slot]));
 }
 
-export function getAllowanceSlotHash(
-  owner: EvmAddress,
-  spender: EvmAddress,
-  slot: bigint,
-) {
+export function getAllowanceSlotHash(owner: EvmAddress, spender: EvmAddress, slot: bigint) {
   return keccak256(
     encodeAbiParameters(
       [{ type: "address" }, { type: "bytes32" }],
-      [
-        spender,
-        keccak256(
-          encodeAbiParameters(
-            [{ type: "address" }, { type: "uint256" }],
-            [owner, slot],
-          ),
-        ),
-      ],
+      [spender, keccak256(encodeAbiParameters([{ type: "address" }, { type: "uint256" }], [owner, slot]))],
     ),
   );
 }

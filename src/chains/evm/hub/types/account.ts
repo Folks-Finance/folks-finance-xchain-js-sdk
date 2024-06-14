@@ -1,10 +1,7 @@
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { AccountId } from "../../../../common/types/lending.js";
-import type {
-  GetEventParams,
-  GetReadContractReturnType,
-} from "../../common/types/contract.js";
+import type { GetEventParams, GetReadContractReturnType } from "../../common/types/contract.js";
 import type { AccountManagerAbi } from "../constants/abi/account-manager-abi.js";
 
 export type AccountInfo = {

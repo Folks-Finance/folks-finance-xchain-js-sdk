@@ -1,23 +1,11 @@
 import { concat, isHex } from "viem";
 
-import {
-  BYTES32_LENGTH,
-  UINT16_LENGTH,
-  UINT256_LENGTH,
-  UINT8_LENGTH,
-} from "../../../../common/constants/bytes.js";
+import { BYTES32_LENGTH, UINT16_LENGTH, UINT256_LENGTH, UINT8_LENGTH } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
-import {
-  isAccountId,
-  isGenericAddress,
-} from "../../../../common/utils/address.js";
-import {
-  convertBooleanToByte,
-  convertNumberToBytes,
-  getRandomBytes,
-} from "../../../../common/utils/bytes.js";
+import { isAccountId, isGenericAddress } from "../../../../common/utils/address.js";
+import { convertBooleanToByte, convertNumberToBytes, getRandomBytes } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
 import {
@@ -26,10 +14,7 @@ import {
 } from "./contract.js";
 import { encodeEvmPayloadWithMetadata } from "./gmp.js";
 
-import type {
-  EvmAddress,
-  GenericAddress,
-} from "../../../../common/types/address.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
@@ -60,39 +45,19 @@ export const buildMessageParams = ({
   returnGasLimit,
 });
 
-export function buildMessagePayload(
-  action: Action,
-  accountId: AccountId,
-  userAddr: GenericAddress,
-  data: Hex,
-): Hex {
+export function buildMessagePayload(action: Action, accountId: AccountId, userAddr: GenericAddress, data: Hex): Hex {
   if (!isAccountId(accountId)) throw Error("Unknown account id format");
   if (!isGenericAddress(userAddr)) throw Error("Unknown user address format");
   if (!isHex(data)) throw Error("Unknown data format");
 
-  return concat([
-    convertNumberToBytes(action, UINT16_LENGTH),
-    accountId,
-    userAddr,
-    data,
-  ]);
+  return concat([convertNumberToBytes(action, UINT16_LENGTH), accountId, userAddr, data]);
 }
 
-export function extraArgsToBytes(
-  tokenAddr: GenericAddress,
-  recipientAddr: GenericAddress,
-  amount: bigint,
-): Hex {
+export function extraArgsToBytes(tokenAddr: GenericAddress, recipientAddr: GenericAddress, amount: bigint): Hex {
   if (!isGenericAddress(tokenAddr)) throw Error("Unknown token address format");
-  if (!isGenericAddress(recipientAddr))
-    throw Error("Unknown recipient address format");
+  if (!isGenericAddress(recipientAddr)) throw Error("Unknown recipient address format");
 
-  return concat([
-    "0x1b366e79",
-    tokenAddr,
-    recipientAddr,
-    convertNumberToBytes(amount, UINT256_LENGTH),
-  ]);
+  return concat(["0x1b366e79", tokenAddr, recipientAddr, convertNumberToBytes(amount, UINT256_LENGTH)]);
 }
 
 export function buildSendTokenExtraArgsWhenRemoving(
@@ -101,8 +66,7 @@ export function buildSendTokenExtraArgsWhenRemoving(
   hubTokenAddress: GenericAddress,
   amount: bigint,
 ): Hex {
-  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20)
-    return "0x";
+  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20) return "0x";
   return extraArgsToBytes(hubTokenAddress, spokeAddress, BigInt(amount));
 }
 
@@ -142,10 +106,7 @@ export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      return concat([
-        data.loanId,
-        convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
-      ]);
+      return concat([data.loanId, convertNumberToBytes(data.loanTypeId, UINT16_LENGTH)]);
     }
     case Action.DeleteLoan: {
       return data.loanId;
@@ -225,16 +186,8 @@ export function buildEvmMessageToSend(
   messageToSendBuilderParams: MessageBuilderParams,
   feeParams: OptionalFeeParams,
 ): MessageToSend {
-  const {
-    userAddress,
-    accountId,
-    adapters,
-    sender,
-    destinationChainId,
-    handler,
-    action,
-    extraArgs,
-  } = messageToSendBuilderParams;
+  const { userAddress, accountId, adapters, sender, destinationChainId, handler, action, extraArgs } =
+    messageToSendBuilderParams;
   const data = buildEvmMessageData(messageToSendBuilderParams);
   const params = buildMessageParams({ adapters, ...feeParams });
   switch (action) {
@@ -244,12 +197,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.CreateAccount,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.CreateAccount, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -261,12 +209,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.InviteAddress,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.InviteAddress, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs: "0x",
       };
@@ -278,12 +221,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.AcceptInviteAddress,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.AcceptInviteAddress, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -295,12 +233,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.UnregisterAddress,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.UnregisterAddress, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -318,12 +251,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.CreateLoan,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.CreateLoan, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -335,12 +263,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.DeleteLoan,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.DeleteLoan, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -352,18 +275,9 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.Deposit,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.Deposit, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(
-          extraArgs.token,
-          extraArgs.hubPoolAddress,
-          extraArgs.amount,
-        ),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.token, extraArgs.hubPoolAddress, extraArgs.amount),
       };
       return message;
     }
@@ -376,12 +290,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.Withdraw,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.Withdraw, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -396,12 +305,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.Borrow,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.Borrow, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -413,18 +317,9 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.Repay,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.Repay, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(
-          extraArgs.token,
-          extraArgs.hubPoolAddress,
-          extraArgs.amount,
-        ),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.token, extraArgs.hubPoolAddress, extraArgs.amount),
       };
       return message;
     }
@@ -434,12 +329,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.RepayWithCollateral,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.RepayWithCollateral, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -454,12 +344,7 @@ export function buildEvmMessageToSend(
         sender,
         destinationChainId,
         handler,
-        payload: buildMessagePayload(
-          Action.SwitchBorrowType,
-          accountId,
-          userAddress,
-          data,
-        ),
+        payload: buildMessagePayload(Action.SwitchBorrowType, accountId, userAddress, data),
         finalityLevel: FINALITY.IMMEDIATE,
         extraArgs,
       };
@@ -484,10 +369,7 @@ export async function estimateEvmWormholeDataGasLimit(
   sourceWormholeDataAdapterAddress: GenericAddress,
 ) {
   const messageId = getRandomBytes(BYTES32_LENGTH);
-  const wormholeDataAdapter = getWormholeDataAdapterContract(
-    provider,
-    wormholeDataAdapterAddress,
-  );
+  const wormholeDataAdapter = getWormholeDataAdapterContract(provider, wormholeDataAdapterAddress);
   return await wormholeDataAdapter.estimateGas.receiveWormholeMessages(
     [
       encodeEvmPayloadWithMetadata(
@@ -545,10 +427,7 @@ export async function estimateEvmCcipDataGasLimit(
     destTokenAmounts: [],
   };
 
-  const ccipDataAdapter = getCcipDataAdapterContract(
-    provider,
-    ccipDataAdapterAddress,
-  );
+  const ccipDataAdapter = getCcipDataAdapterContract(provider, ccipDataAdapterAddress);
   return await ccipDataAdapter.estimateGas.ccipReceive([ccipMessage], {
     account: ccipRouter,
   });

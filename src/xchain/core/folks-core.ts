@@ -4,11 +4,7 @@ import { ChainType } from "../../common/types/chain.js";
 import { getFolksChain } from "../../common/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 
-import type {
-  FolksChainId,
-  FolksChain,
-  NetworkType,
-} from "../../common/types/chain.js";
+import type { FolksChainId, FolksChain, NetworkType } from "../../common/types/chain.js";
 import type {
   FolksCoreProvider,
   FolksSigner,
@@ -47,9 +43,7 @@ export class FolksCore {
     throw new Error("FolksCore is not initialized");
   }
 
-  static getProvider<T extends ChainType>(
-    folksChainId: FolksChainId,
-  ): FolksProviderType<T> {
+  static getProvider<T extends ChainType>(folksChainId: FolksChainId): FolksProviderType<T> {
     const folksChain = getFolksChain(folksChainId, this.getSelectedNetwork());
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -61,8 +55,7 @@ export class FolksCore {
 
   static getFolksSigner() {
     const instance = this.getInstance();
-    if (!instance.folksSigner)
-      throw new Error("FolksSigner is not initialized");
+    if (!instance.folksSigner) throw new Error("FolksSigner is not initialized");
 
     return instance.folksSigner;
   }
@@ -114,10 +107,7 @@ export class FolksCore {
 
   static setFolksSigner(folksSigner: FolksSigner) {
     const instance = this.getInstance();
-    const folksChain = getFolksChain(
-      folksSigner.folksChainId,
-      this.getSelectedNetwork(),
-    );
+    const folksChain = getFolksChain(folksSigner.folksChainId, this.getSelectedNetwork());
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -131,10 +121,7 @@ export class FolksCore {
   static getEVMProvider(folksChainId: FolksChainId): EVMProvider {
     const instance = this.getInstance();
     const evmProvider = instance.folksCoreProvider.evm[folksChainId];
-    if (!evmProvider)
-      throw new Error(
-        `EVM Provider not found for folksChainId: ${folksChainId}`,
-      );
+    if (!evmProvider) throw new Error(`EVM Provider not found for folksChainId: ${folksChainId}`);
 
     return evmProvider;
   }

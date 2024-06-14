@@ -10,10 +10,6 @@ export const read = {
 
     const tokensData = Object.values(getHubTokensData(network));
 
-    return FolksHubOracle.getOraclePrices(
-      FolksCore.getHubProvider(),
-      network,
-      tokensData,
-    );
+    return FolksHubOracle.getOraclePrices(FolksCore.getHubProvider(), network, tokensData);
   },
 };

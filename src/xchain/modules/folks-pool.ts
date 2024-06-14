@@ -6,10 +6,6 @@ import type { FolksTokenId } from "../../common/types/token.js";
 
 export const read = {
   async poolInfo(folksTokenId: FolksTokenId): Promise<PoolInfo> {
-    return FolksHubPool.getPoolInfo(
-      FolksCore.getHubProvider(),
-      FolksCore.getSelectedNetwork(),
-      folksTokenId,
-    );
+    return FolksHubPool.getPoolInfo(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), folksTokenId);
   },
 };

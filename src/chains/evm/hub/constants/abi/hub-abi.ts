@@ -75,18 +75,14 @@ export const HubAbi = [
     type: "error",
   },
   {
-    inputs: [
-      { internalType: "enum Messages.Action", name: "action", type: "uint8" },
-    ],
+    inputs: [{ internalType: "enum Messages.Action", name: "action", type: "uint8" }],
     name: "UnsupportedDirectOperation",
     type: "error",
   },
   {
     inputs: [],
     name: "accountManager",
-    outputs: [
-      { internalType: "contract IAccountManager", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract IAccountManager", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -130,9 +126,7 @@ export const HubAbi = [
   {
     inputs: [],
     name: "loanManager",
-    outputs: [
-      { internalType: "contract ILoanManager", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract ILoanManager", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -184,9 +178,7 @@ export const HubAbi = [
   {
     inputs: [],
     name: "spokeManager",
-    outputs: [
-      { internalType: "contract ISpokeManager", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract ISpokeManager", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },

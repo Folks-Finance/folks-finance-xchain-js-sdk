@@ -1,10 +1,7 @@
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type {
-  GetEventParams,
-  GetReadContractReturnType,
-} from "../../common/types/contract.js";
+import type { GetEventParams, GetReadContractReturnType } from "../../common/types/contract.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { Dnum } from "dnum";
 

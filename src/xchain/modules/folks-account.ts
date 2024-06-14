@@ -7,22 +7,12 @@ import { MessageDirection } from "../../common/types/gmp.js";
 import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
-import {
-  assertSpokeChainSupported,
-  getSignerGenericAddress,
-  getSpokeChain,
-} from "../../common/utils/chain.js";
-import {
-  buildMessageToSend,
-  estimateAdapterReceiveGasLimit,
-} from "../../common/utils/messages.js";
+import { assertSpokeChainSupported, getSignerGenericAddress, getSpokeChain } from "../../common/utils/chain.js";
+import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type {
-  AccountIdByAddress,
-  AccountInfo,
-} from "../../chains/evm/hub/types/account.js";
+import type { AccountIdByAddress, AccountInfo } from "../../chains/evm/hub/types/account.js";
 import type { GenericAddress } from "../../common/types/address.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId } from "../../common/types/lending.js";
@@ -42,22 +32,12 @@ import type {
 } from "../../common/types/module.js";
 
 export const prepare = {
-  async createAccount(
-    accountId: AccountId,
-    adapters: MessageAdapters,
-    refAccountId: AccountId = NULL_ACCOUNT_ID,
-  ) {
+  async createAccount(accountId: AccountId, adapters: MessageAdapters, refAccountId: AccountId = NULL_ACCOUNT_ID) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -88,11 +68,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -119,14 +95,8 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -161,11 +131,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -188,14 +154,8 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -225,11 +185,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -245,22 +201,12 @@ export const prepare = {
     }
   },
 
-  async unregisterAddress(
-    accountId: AccountId,
-    folksChainIdToUnregister: FolksChainId,
-    adapters: MessageAdapters,
-  ) {
+  async unregisterAddress(accountId: AccountId, folksChainIdToUnregister: FolksChainId, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -294,11 +240,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -367,10 +309,7 @@ export const write = {
     }
   },
 
-  async acceptInvite(
-    accountId: AccountId,
-    prepareCall: PrepareAcceptInviteAddressCall,
-  ) {
+  async acceptInvite(accountId: AccountId, prepareCall: PrepareAcceptInviteAddressCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -413,10 +352,7 @@ export const write = {
 };
 
 export const read = {
-  async accountInfo(
-    accountId: AccountId,
-    folksChainIds?: Array<FolksChainId>,
-  ): Promise<AccountInfo> {
+  async accountInfo(accountId: AccountId, folksChainIds?: Array<FolksChainId>): Promise<AccountInfo> {
     return FolksHubAccount.getAccountInfo(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
@@ -425,20 +361,11 @@ export const read = {
     );
   },
 
-  async accountIdByAddress(
-    address: GenericAddress,
-  ): Promise<AccountIdByAddress> {
-    return FolksHubAccount.getAccountIdByAddress(
-      FolksCore.getHubProvider(),
-      FolksCore.getSelectedNetwork(),
-      address,
-    );
+  async accountIdByAddress(address: GenericAddress): Promise<AccountIdByAddress> {
+    return FolksHubAccount.getAccountIdByAddress(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), address);
   },
 
-  async accountIdByAddressOnChain(
-    address: GenericAddress,
-    folksChainId: FolksChainId,
-  ): Promise<AccountId | null> {
+  async accountIdByAddressOnChain(address: GenericAddress, folksChainId: FolksChainId): Promise<AccountId | null> {
     return FolksHubAccount.getAccountIdByAddressOnChain(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
@@ -447,10 +374,7 @@ export const read = {
     );
   },
 
-  async invitationByAddress(
-    address: GenericAddress,
-    folksChainId?: FolksChainId,
-  ) {
+  async invitationByAddress(address: GenericAddress, folksChainId?: FolksChainId) {
     return FolksHubAccount.getInvitationByAddress(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),

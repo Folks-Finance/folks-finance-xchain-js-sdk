@@ -15,10 +15,7 @@ export function getAccountIdBytes(accountId: string): AccountId {
   }) as AccountId;
 }
 
-export function convertNumberToBytes(
-  num: number | bigint,
-  length: number,
-): Hex {
+export function convertNumberToBytes(num: number | bigint, length: number): Hex {
   // insert 0s at the beginning if data is smaller than length bytes
   const buf = Buffer.alloc(length, 0);
 

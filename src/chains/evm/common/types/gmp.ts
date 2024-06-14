@@ -1,7 +1,4 @@
-import type {
-  EvmAddress,
-  GenericAddress,
-} from "../../../../common/types/address.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { Hex } from "viem";
 
 type CCIPTokenAmount = {

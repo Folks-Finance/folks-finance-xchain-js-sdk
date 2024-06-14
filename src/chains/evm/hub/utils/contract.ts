@@ -69,10 +69,7 @@ export function getOracleManagerContract(
   });
 }
 
-export function getHubContract(
-  provider: Client,
-  address: GenericAddress,
-): GetReadContractReturnType<typeof HubAbi>;
+export function getHubContract(provider: Client, address: GenericAddress): GetReadContractReturnType<typeof HubAbi>;
 export function getHubContract(
   provider: Client,
   address: GenericAddress,
@@ -82,9 +79,7 @@ export function getHubContract(
   provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
-):
-  | GetReadContractReturnType<typeof HubAbi>
-  | GetContractReturnType<typeof HubAbi, Client> {
+): GetReadContractReturnType<typeof HubAbi> | GetContractReturnType<typeof HubAbi, Client> {
   return getContract({
     abi: HubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),

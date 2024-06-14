@@ -1,14 +1,7 @@
 import { createWalletClient, http } from "viem";
 
 import { getRandomBytes } from "../src/common/utils/bytes.js";
-import {
-  NetworkType,
-  FolksCore,
-  FolksAccount,
-  AdapterType,
-  FOLKS_CHAIN_ID,
-  BYTES32_LENGTH,
-} from "../src/index.js";
+import { NetworkType, FolksCore, FolksAccount, AdapterType, FOLKS_CHAIN_ID, BYTES32_LENGTH } from "../src/index.js";
 
 import type { AccountId } from "../src/common/types/lending.js";
 import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
@@ -43,14 +36,8 @@ async function main() {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
   });
 
-  const prepareCreateAccountCall = await FolksAccount.prepare.createAccount(
-    accountId,
-    adapters,
-  );
-  const createAccountCallRes = await FolksAccount.write.createAccount(
-    accountId,
-    prepareCreateAccountCall,
-  );
+  const prepareCreateAccountCall = await FolksAccount.prepare.createAccount(accountId, adapters);
+  const createAccountCallRes = await FolksAccount.write.createAccount(accountId, prepareCreateAccountCall);
 
   console.log(createAccountCallRes);
 }

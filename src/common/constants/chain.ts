@@ -1,9 +1,6 @@
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 
-import {
-  MAINNET_EVM_FOLKS_CHAIN_ID,
-  TESTNET_EVM_FOLKS_CHAIN_ID,
-} from "../../chains/evm/common/constants/chain.js";
+import { MAINNET_EVM_FOLKS_CHAIN_ID, TESTNET_EVM_FOLKS_CHAIN_ID } from "../../chains/evm/common/constants/chain.js";
 import { NetworkType, ChainType } from "../types/chain.js";
 import { AdapterType } from "../types/message.js";
 import { FolksTokenId, TokenType } from "../types/token.js";
@@ -12,12 +9,7 @@ import { convertToGenericAddress } from "../utils/address.js";
 import { TESTNET_POOLS } from "./pool.js";
 
 import type { EvmAddress } from "../types/address.js";
-import type {
-  FolksChainId,
-  FolksChain,
-  SpokeChain,
-  FolksChainName,
-} from "../types/chain.js";
+import type { FolksChainId, FolksChain, SpokeChain, FolksChainName } from "../types/chain.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   ...MAINNET_EVM_FOLKS_CHAIN_ID,
@@ -32,10 +24,7 @@ export const FOLKS_CHAIN_ID = {
   ...TESTNET_FOLKS_CHAIN_ID,
 } as const satisfies Record<FolksChainName, number>;
 
-export const FOLKS_CHAIN: Record<
-  NetworkType,
-  Partial<Record<FolksChainId, FolksChain>>
-> = {
+export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, FolksChain>>> = {
   [NetworkType.MAINNET]: {},
   [NetworkType.TESTNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
@@ -62,10 +51,7 @@ export const FOLKS_CHAIN: Record<
   },
 } as const;
 
-export const SPOKE_CHAIN: Record<
-  NetworkType,
-  Partial<Record<FolksChainId, SpokeChain>>
-> = {
+export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, SpokeChain>>> = {
   [NetworkType.MAINNET]: {},
   [NetworkType.TESTNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
@@ -88,10 +74,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           token: {
             type: TokenType.CIRCLE,
-            address: convertToGenericAddress(
-              "0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress,
-              ChainType.EVM,
-            ),
+            address: convertToGenericAddress("0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
           folksTokenId: FolksTokenId.USDC,
@@ -148,10 +131,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           token: {
             type: TokenType.CIRCLE,
-            address: convertToGenericAddress(
-              "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress,
-              ChainType.EVM,
-            ),
+            address: convertToGenericAddress("0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
           folksTokenId: FolksTokenId.USDC,
@@ -177,10 +157,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.LINK_eth_sep]: {
           token: {
             type: TokenType.ERC20,
-            address: convertToGenericAddress(
-              "0x514910771af9ca656af840dff83e8264ecf986ca" as EvmAddress,
-              ChainType.EVM,
-            ),
+            address: convertToGenericAddress("0x514910771af9ca656af840dff83e8264ecf986ca" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
           folksTokenId: FolksTokenId.LINK_eth_sep,
@@ -224,10 +201,7 @@ export const SPOKE_CHAIN: Record<
         [FolksTokenId.USDC]: {
           token: {
             type: TokenType.CIRCLE,
-            address: convertToGenericAddress(
-              "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress,
-              ChainType.EVM,
-            ),
+            address: convertToGenericAddress("0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
           folksTokenId: FolksTokenId.USDC,

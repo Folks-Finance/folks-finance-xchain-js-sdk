@@ -1,26 +1,13 @@
 import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
-import type {
-  AcceptInviteAddressEventParams,
-  InviteAddressEventParams,
-} from "../types/account.js";
-import type {
-  CreateUserLoanEventParams,
-  DeleteUserLoanEventParams,
-} from "../types/loan.js";
+import type { AcceptInviteAddressEventParams, InviteAddressEventParams } from "../types/account.js";
+import type { CreateUserLoanEventParams, DeleteUserLoanEventParams } from "../types/loan.js";
 
-export async function fetchCreateUserLoanEvents(
-  params: CreateUserLoanEventParams,
-) {
+export async function fetchCreateUserLoanEvents(params: CreateUserLoanEventParams) {
   const { loanManager, accountId, loanTypeId, eventParams } = params;
-  const logs = await loanManager.getEvents.CreateUserLoan(
-    { accountId },
-    eventParams,
-  );
+  const logs = await loanManager.getEvents.CreateUserLoan({ accountId }, eventParams);
   return logs
-    .filter(
-      (log) => loanTypeId === undefined || loanTypeId === log.args.loanTypeId,
-    )
+    .filter((log) => loanTypeId === undefined || loanTypeId === log.args.loanTypeId)
     .map((log) => ({
       blockNumber: log.blockNumber,
       loanId: log.args.loanId,
@@ -29,14 +16,9 @@ export async function fetchCreateUserLoanEvents(
     }));
 }
 
-export async function fetchDeleteUserLoanEvents(
-  params: DeleteUserLoanEventParams,
-) {
+export async function fetchDeleteUserLoanEvents(params: DeleteUserLoanEventParams) {
   const { loanManager, accountId, eventParams } = params;
-  const logs = await loanManager.getEvents.DeleteUserLoan(
-    { accountId },
-    eventParams,
-  );
+  const logs = await loanManager.getEvents.DeleteUserLoan({ accountId }, eventParams);
   return logs.map((log) => ({
     blockNumber: log.blockNumber,
     loanId: log.args.loanId,
@@ -64,9 +46,7 @@ export async function fetchUserLoanIds(params: CreateUserLoanEventParams) {
   return Array.from(loanIds.keys());
 }
 
-async function fetchReceivedInvitationEventByAddress(
-  params: InviteAddressEventParams,
-) {
+async function fetchReceivedInvitationEventByAddress(params: InviteAddressEventParams) {
   const { eventParams, accountManager, address, folksChainId } = params;
 
   const logs = await accountManager.getEvents.InviteAddress(
@@ -81,18 +61,12 @@ async function fetchReceivedInvitationEventByAddress(
   }));
 }
 
-async function fetchAcceptedInvitationEventByAddress(
-  params: AcceptInviteAddressEventParams,
-) {
+async function fetchAcceptedInvitationEventByAddress(params: AcceptInviteAddressEventParams) {
   const { eventParams, accountManager, address, folksChainId } = params;
 
   const logs = await accountManager.getEvents.AcceptInviteAddress(eventParams);
   return logs
-    .filter(
-      (log) =>
-        log.args.addr === address &&
-        (folksChainId ? log.args.chainId === folksChainId : true),
-    )
+    .filter((log) => log.args.addr === address && (folksChainId ? log.args.chainId === folksChainId : true))
     .map((log) => ({
       blockNumber: log.blockNumber,
       accountId: log.args.accountId,
@@ -101,13 +75,9 @@ async function fetchAcceptedInvitationEventByAddress(
     }));
 }
 
-export async function fetchInvitationByAddress(
-  params: InviteAddressEventParams,
-) {
-  const receivedInvitations =
-    await fetchReceivedInvitationEventByAddress(params);
-  const acceptedInvitations =
-    await fetchAcceptedInvitationEventByAddress(params);
+export async function fetchInvitationByAddress(params: InviteAddressEventParams) {
+  const receivedInvitations = await fetchReceivedInvitationEventByAddress(params);
+  const acceptedInvitations = await fetchAcceptedInvitationEventByAddress(params);
 
   const allEvents = [...receivedInvitations, ...acceptedInvitations];
   allEvents.sort((a, b) => Number(a.blockNumber) - Number(b.blockNumber));
@@ -116,8 +86,7 @@ export async function fetchInvitationByAddress(
 
   for (const event of allEvents)
     if (receivedInvitations.includes(event)) accountStatus.set(event.id, true);
-    else if (acceptedInvitations.includes(event))
-      accountStatus.set(event.id, false);
+    else if (acceptedInvitations.includes(event)) accountStatus.set(event.id, false);
 
   return {
     address: params.address,

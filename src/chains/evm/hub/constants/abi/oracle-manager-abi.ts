@@ -15,9 +15,7 @@ export const OracleManagerAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [
-      { internalType: "address", name: "defaultAdmin", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },

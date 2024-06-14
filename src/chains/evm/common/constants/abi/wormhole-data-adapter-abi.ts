@@ -25,9 +25,7 @@ export const WormholeDataAdapterAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [
-      { internalType: "address", name: "defaultAdmin", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },
@@ -61,9 +59,7 @@ export const WormholeDataAdapterAbi = [
     type: "error",
   },
   {
-    inputs: [
-      { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
-    ],
+    inputs: [{ internalType: "bytes32", name: "sourceAddress", type: "bytes32" }],
     name: "InvalidMessageSender",
     type: "error",
   },
@@ -313,9 +309,7 @@ export const WormholeDataAdapterAbi = [
   {
     inputs: [],
     name: "bridgeRouter",
-    outputs: [
-      { internalType: "contract IBridgeRouter", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract IBridgeRouter", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -578,9 +572,7 @@ export const WormholeDataAdapterAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "address", name: "_refundAddress", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "_refundAddress", type: "address" }],
     name: "setRefundAddress",
     outputs: [],
     stateMutability: "nonpayable",
@@ -596,9 +588,7 @@ export const WormholeDataAdapterAbi = [
   {
     inputs: [],
     name: "wormholeRelayer",
-    outputs: [
-      { internalType: "contract IWormholeRelayer", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract IWormholeRelayer", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },

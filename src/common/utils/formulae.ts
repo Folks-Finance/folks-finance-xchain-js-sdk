@@ -8,19 +8,11 @@ export function calcPeriodNumber(offset: bigint, length: bigint): bigint {
   return (BigInt(unixTime()) + offset) / length;
 }
 
-export function calcNextPeriodReset(
-  periodNumber: bigint,
-  offset: bigint,
-  length: bigint,
-): bigint {
+export function calcNextPeriodReset(periodNumber: bigint, offset: bigint, length: bigint): bigint {
   return (periodNumber + BigInt(1)) * length - offset;
 }
 
-export function calcDepositInterestIndex(
-  dirt1: Dnum,
-  diit1: Dnum,
-  latestUpdate: bigint,
-): Dnum {
+export function calcDepositInterestIndex(dirt1: Dnum, diit1: Dnum, latestUpdate: bigint): Dnum {
   const dt = BigInt(unixTime()) - latestUpdate;
   return dn.mul(
     diit1,
@@ -34,32 +26,16 @@ export function calcDepositInterestIndex(
   );
 }
 
-export function calcBorrowInterestIndex(
-  birt1: Dnum,
-  biit1: Dnum,
-  latestUpdate: bigint,
-): Dnum {
+export function calcBorrowInterestIndex(birt1: Dnum, biit1: Dnum, latestUpdate: bigint): Dnum {
   const dt = BigInt(unixTime()) - latestUpdate;
   return dn.mul(
     biit1,
-    expBySquaring(
-      dn.add(
-        dn.from(1, 18),
-        dn.div(birt1, SECONDS_IN_YEAR, { rounding: "ROUND_DOWN" }),
-      ),
-      dt,
-    ),
+    expBySquaring(dn.add(dn.from(1, 18), dn.div(birt1, SECONDS_IN_YEAR, { rounding: "ROUND_DOWN" })), dt),
     { rounding: "ROUND_DOWN" },
   );
 }
 
-export function calcRewardIndex(
-  used: bigint,
-  ma: bigint,
-  rit1: Dnum,
-  rs: Dnum,
-  latestUpdate: bigint,
-): Dnum {
+export function calcRewardIndex(used: bigint, ma: bigint, rit1: Dnum, rs: Dnum, latestUpdate: bigint): Dnum {
   if (used <= ma) return rit1;
   const dt = BigInt(unixTime()) - latestUpdate;
   return dn.add(
@@ -80,11 +56,7 @@ export function toUnderlyingAmount(fAmount: bigint, diit: Dnum): bigint {
   return underlyingAmount;
 }
 
-function calcAssetDollarValue(
-  amount: bigint,
-  tokenPrice: Dnum,
-  tokenDecimals: number,
-): Dnum {
+function calcAssetDollarValue(amount: bigint, tokenPrice: Dnum, tokenDecimals: number): Dnum {
   return dn.mul([amount, tokenDecimals], tokenPrice, {
     rounding: "ROUND_DOWN",
   });
@@ -96,11 +68,7 @@ export function calcCollateralAssetLoanValue(
   tokenDecimals: number,
   collateralFactor: Dnum,
 ): Dnum {
-  return dn.mul(
-    calcAssetDollarValue(amount, tokenPrice, tokenDecimals),
-    collateralFactor,
-    { rounding: "ROUND_DOWN" },
-  );
+  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), collateralFactor, { rounding: "ROUND_DOWN" });
 }
 
 export function calcBorrowAssetLoanValue(
@@ -109,30 +77,15 @@ export function calcBorrowAssetLoanValue(
   tokenDecimals: number,
   borrowFactor: Dnum,
 ): Dnum {
-  return dn.mul(
-    calcAssetDollarValue(amount, tokenPrice, tokenDecimals),
-    borrowFactor,
-    { rounding: "ROUND_UP" },
-  );
+  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), borrowFactor, { rounding: "ROUND_UP" });
 }
 
-export function calcBorrowBalance(
-  bbtn1: bigint,
-  biit: Dnum,
-  biitn1: Dnum,
-): bigint {
-  const [borrowBalance] = dn.mul(
-    bbtn1,
-    dn.div(biit, biitn1, { rounding: "ROUND_UP" }),
-    { rounding: "ROUND_UP" },
-  );
+export function calcBorrowBalance(bbtn1: bigint, biit: Dnum, biitn1: Dnum): bigint {
+  const [borrowBalance] = dn.mul(bbtn1, dn.div(biit, biitn1, { rounding: "ROUND_UP" }), { rounding: "ROUND_UP" });
   return borrowBalance;
 }
 
-export function calcLtvRatio(
-  totalBorrowBalanceValue: Dnum,
-  totalCollateralBalanceValue: Dnum,
-): Dnum {
+export function calcLtvRatio(totalBorrowBalanceValue: Dnum, totalCollateralBalanceValue: Dnum): Dnum {
   const [, decimals] = totalBorrowBalanceValue;
   if (dn.equal(totalCollateralBalanceValue, 0)) return dn.from(0, decimals);
   return dn.div(totalBorrowBalanceValue, totalCollateralBalanceValue, {
@@ -145,13 +98,8 @@ export function calcBorrowUtilisationRatio(
   totalEffectiveCollateralBalanceValue: Dnum,
 ): Dnum {
   const [, decimals] = totalEffectiveBorrowBalanceValue;
-  if (dn.equal(totalEffectiveCollateralBalanceValue, 0))
-    return dn.from(0, decimals);
-  return dn.div(
-    totalEffectiveBorrowBalanceValue,
-    totalEffectiveCollateralBalanceValue,
-    { rounding: "ROUND_UP" },
-  );
+  if (dn.equal(totalEffectiveCollateralBalanceValue, 0)) return dn.from(0, decimals);
+  return dn.div(totalEffectiveBorrowBalanceValue, totalEffectiveCollateralBalanceValue, { rounding: "ROUND_UP" });
 }
 
 export function calcLiquidationMargin(
@@ -159,13 +107,9 @@ export function calcLiquidationMargin(
   totalEffectiveCollateralBalanceValue: Dnum,
 ): Dnum {
   const [, decimals] = totalEffectiveBorrowBalanceValue;
-  if (dn.equal(totalEffectiveCollateralBalanceValue, 0))
-    return dn.from(0, decimals);
+  if (dn.equal(totalEffectiveCollateralBalanceValue, 0)) return dn.from(0, decimals);
   return dn.div(
-    dn.sub(
-      totalEffectiveCollateralBalanceValue,
-      totalEffectiveBorrowBalanceValue,
-    ),
+    dn.sub(totalEffectiveCollateralBalanceValue, totalEffectiveBorrowBalanceValue),
     totalEffectiveCollateralBalanceValue,
     { rounding: "ROUND_DOWN" },
   );

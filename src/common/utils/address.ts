@@ -2,17 +2,10 @@ import { getAddress, pad, sliceHex } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
-import {
-  BYTES32_LENGTH,
-  EVM_ADDRESS_BYTES_LENGTH,
-} from "../constants/bytes.js";
+import { BYTES32_LENGTH, EVM_ADDRESS_BYTES_LENGTH } from "../constants/bytes.js";
 import { ChainType } from "../types/chain.js";
 
-import type {
-  AddressType,
-  EvmAddress,
-  GenericAddress,
-} from "../types/address.js";
+import type { AddressType, EvmAddress, GenericAddress } from "../types/address.js";
 import type { AccountId } from "../types/lending.js";
 
 export function getRandomGenericAddress(): GenericAddress {
@@ -49,9 +42,7 @@ export function convertFromGenericAddress<T extends ChainType>(
 ): AddressType<T> {
   switch (toChainType) {
     case ChainType.EVM:
-      return getAddress(
-        sliceHex(address, BYTES32_LENGTH - EVM_ADDRESS_BYTES_LENGTH),
-      ) as EvmAddress;
+      return getAddress(sliceHex(address, BYTES32_LENGTH - EVM_ADDRESS_BYTES_LENGTH)) as EvmAddress;
     default:
       return exhaustiveCheck(toChainType);
   }

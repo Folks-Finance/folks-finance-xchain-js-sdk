@@ -1,13 +1,7 @@
 import { multicall } from "viem/actions";
 
-import {
-  calcBorrowInterestIndex,
-  calcDepositInterestIndex,
-} from "../../../../common/utils/formulae.js";
-import {
-  compoundEveryHour,
-  compoundEverySecond,
-} from "../../../../common/utils/math-lib.js";
+import { calcBorrowInterestIndex, calcDepositInterestIndex } from "../../../../common/utils/formulae.js";
+import { compoundEveryHour, compoundEverySecond } from "../../../../common/utils/math-lib.js";
 import { getHubTokenData } from "../utils/chain.js";
 import { getHubPoolContract } from "../utils/contract.js";
 
@@ -108,17 +102,8 @@ export async function getPoolInfo(
     interestRate: stableBorrowInterestRate,
     averageInterestRate: stableBorrowAverageInterestRate,
   } = stableBorrowData;
-  const {
-    deposit: depositCap,
-    borrow: borrowCap,
-    stableBorrowPercentage: stableBorrowPercentageCap,
-  } = capsData;
-  const {
-    deprecated,
-    stableBorrowSupported,
-    canMintFToken,
-    flashLoanSupported,
-  } = configData;
+  const { deposit: depositCap, borrow: borrowCap, stableBorrowPercentage: stableBorrowPercentageCap } = capsData;
+  const { deprecated, stableBorrowSupported, canMintFToken, flashLoanSupported } = configData;
 
   // build pool info
   return {
@@ -160,19 +145,13 @@ export async function getPoolInfo(
       sr3: [BigInt(sr3), 6],
       optimalStableToTotalDebtRatio: [BigInt(optimalStableToTotalDebtRatio), 4],
       rebalanceUpUtilisationRatio: [BigInt(rebalanceUpUtilisationRatio), 4],
-      rebalanceUpDepositInterestRate: [
-        BigInt(rebalanceUpDepositInterestRate),
-        4,
-      ],
+      rebalanceUpDepositInterestRate: [BigInt(rebalanceUpDepositInterestRate), 4],
       rebalanceDownDelta: [BigInt(rebalanceDownDelta), 4],
       totalAmount: stableBorrowTotalAmount,
       interestRate: [stableBorrowInterestRate, 18],
       interestYield: compoundEverySecond([stableBorrowInterestRate, 18]),
       averageInterestRate: [stableBorrowAverageInterestRate, 18],
-      averageInterestYield: compoundEverySecond([
-        stableBorrowAverageInterestRate,
-        18,
-      ]),
+      averageInterestYield: compoundEverySecond([stableBorrowAverageInterestRate, 18]),
     },
     capsData: {
       deposit: BigInt(depositCap),

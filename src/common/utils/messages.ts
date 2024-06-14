@@ -15,12 +15,7 @@ import { getCcipData, getWormholeData } from "./gmp.js";
 
 import type { FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
-import type {
-  MessageAdapters,
-  MessageBuilderParams,
-  MessageToSend,
-  OptionalFeeParams,
-} from "../types/message.js";
+import type { MessageAdapters, MessageBuilderParams, MessageToSend, OptionalFeeParams } from "../types/message.js";
 import type { Client as EVMProvider } from "viem";
 
 export function buildMessageToSend(
@@ -37,12 +32,8 @@ export function buildMessageToSend(
   }
 }
 
-function getAdapterId(
-  messageDirection: MessageDirection,
-  adapters: MessageAdapters,
-): AdapterType {
-  if (messageDirection === MessageDirection.SpokeToHub)
-    return adapters.adapterId;
+function getAdapterId(messageDirection: MessageDirection, adapters: MessageAdapters): AdapterType {
+  if (messageDirection === MessageDirection.SpokeToHub) return adapters.adapterId;
   return adapters.returnAdapterId;
 }
 
@@ -55,20 +46,12 @@ function getAdaptersAddresses(
 ) {
   if (messageDirection === MessageDirection.SpokeToHub)
     return {
-      sourceAdapterAddress: getSpokeChainAdapterAddress(
-        sourceFolksChainId,
-        network,
-        adapterId,
-      ),
+      sourceAdapterAddress: getSpokeChainAdapterAddress(sourceFolksChainId, network, adapterId),
       destAdapterAddress: getHubChainAdapterAddress(network, adapterId),
     };
   return {
     sourceAdapterAddress: getHubChainAdapterAddress(network, adapterId),
-    destAdapterAddress: getSpokeChainAdapterAddress(
-      destFolksChainId,
-      network,
-      adapterId,
-    ),
+    destAdapterAddress: getSpokeChainAdapterAddress(destFolksChainId, network, adapterId),
   };
 }
 
@@ -84,10 +67,7 @@ export async function estimateAdapterReceiveGasLimit(
 ) {
   const destFolksChain = getFolksChain(destFolksChainId, network);
 
-  const adapterId = getAdapterId(
-    messageDirection,
-    messageBuilderParams.adapters,
-  );
+  const adapterId = getAdapterId(messageDirection, messageBuilderParams.adapters);
   const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
     messageDirection,
     sourceFolksChainId,
@@ -100,8 +80,7 @@ export async function estimateAdapterReceiveGasLimit(
     case ChainType.EVM:
       switch (adapterId) {
         case AdapterType.WORMHOLE_DATA: {
-          const sourceWormholeChainId =
-            getWormholeData(sourceFolksChainId).wormholeChainId;
+          const sourceWormholeChainId = getWormholeData(sourceFolksChainId).wormholeChainId;
           const wormholeRelayer = convertFromGenericAddress(
             getWormholeData(destFolksChainId).wormholeRelayer,
             ChainType.EVM,
@@ -120,16 +99,14 @@ export async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.WORMHOLE_CCTP: {
-          const { sourceAdapterAddress, destAdapterAddress } =
-            getAdaptersAddresses(
-              messageDirection,
-              sourceFolksChainId,
-              destFolksChainId,
-              network,
-              AdapterType.WORMHOLE_DATA,
-            );
-          const sourceWormholeChainId =
-            getWormholeData(sourceFolksChainId).wormholeChainId;
+          const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
+            messageDirection,
+            sourceFolksChainId,
+            destFolksChainId,
+            network,
+            AdapterType.WORMHOLE_DATA,
+          );
+          const sourceWormholeChainId = getWormholeData(sourceFolksChainId).wormholeChainId;
           const wormholeRelayer = convertFromGenericAddress(
             getWormholeData(destFolksChainId).wormholeRelayer,
             ChainType.EVM,
@@ -155,10 +132,7 @@ export async function estimateAdapterReceiveGasLimit(
         }
         case AdapterType.CCIP_DATA: {
           const sourceCcipChainId = getCcipData(sourceFolksChainId).ccipChainId;
-          const ccipRouter = convertFromGenericAddress(
-            getCcipData(destFolksChainId).ccipRouter,
-            ChainType.EVM,
-          );
+          const ccipRouter = convertFromGenericAddress(getCcipData(destFolksChainId).ccipRouter, ChainType.EVM);
           return await estimateEvmCcipDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,

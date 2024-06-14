@@ -6,10 +6,7 @@ import { FINALITY } from "../../../../common/constants/message.js";
 import { Action } from "../../../../common/types/message.js";
 import { getRandomGenericAddress } from "../../../../common/utils/address.js";
 import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
-import {
-  getSpokeChain,
-  getSpokeTokenData,
-} from "../../../../common/utils/chain.js";
+import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   calcBorrowAssetLoanValue,
   calcBorrowBalance,
@@ -30,23 +27,12 @@ import {
   buildMessagePayload,
   buildSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
-import {
-  getHubChain,
-  getHubTokenAddress,
-  getHubTokenData,
-} from "../utils/chain.js";
-import {
-  getBridgeRouterHubContract,
-  getHubContract,
-  getLoanManagerContract,
-} from "../utils/contract.js";
+import { getHubChain, getHubTokenAddress, getHubTokenData } from "../utils/chain.js";
+import { getBridgeRouterHubContract, getHubContract, getLoanManagerContract } from "../utils/contract.js";
 import { fetchUserLoanIds } from "../utils/events.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
-import type {
-  FolksChainId,
-  NetworkType,
-} from "../../../../common/types/chain.js";
+import type { FolksChainId, NetworkType } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
@@ -101,13 +87,10 @@ export const prepare = {
 
     const messageData = buildEvmMessageData(liquidateMessageDataParams);
 
-    const gasLimit = await hub.estimateGas.directOperation(
-      [Action.Liquidate, accountId, messageData],
-      {
-        ...transactionOptions,
-        value: undefined,
-      },
-    );
+    const gasLimit = await hub.estimateGas.directOperation([Action.Liquidate, accountId, messageData], {
+      ...transactionOptions,
+      value: undefined,
+    });
 
     return {
       gasLimit,
@@ -118,24 +101,16 @@ export const prepare = {
 };
 
 export const write = {
-  async liquidate(
-    provider: Client,
-    signer: WalletClient,
-    accountId: AccountId,
-    prepareCall: PrepareLiquidateCall,
-  ) {
+  async liquidate(provider: Client, signer: WalletClient, accountId: AccountId, prepareCall: PrepareLiquidateCall) {
     const { gasLimit, messageData, hubAddress } = prepareCall;
 
     const hub = getHubContract(provider, hubAddress, signer);
 
-    return await hub.write.directOperation(
-      [Action.Liquidate, accountId, messageData],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-      },
-    );
+    return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+    });
   },
 };
 
@@ -151,10 +126,7 @@ export async function getSendTokenAdapterFees(
 ): Promise<bigint> {
   const hubChain = getHubChain(network);
   const hubTokenData = getHubTokenData(folksTokenId, network);
-  const hubBridgeRouter = getBridgeRouterHubContract(
-    provider,
-    hubChain.bridgeRouterAddress,
-  );
+  const hubBridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
 
   const spokeChain = getSpokeChain(receiverFolksChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
@@ -198,46 +170,35 @@ export async function getLoanTypeInfo(
   tokens: Array<HubTokenData>,
 ): Promise<LoanTypeInfo> {
   const hubChain = getHubChain(network);
-  const loanManager = getLoanManagerContract(
-    provider,
-    hubChain.loanManagerAddress,
-  );
+  const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
-  const getLoanPools: Array<ContractFunctionParameters> = tokens.map(
-    (token) => ({
-      address: loanManager.address,
-      abi: loanManager.abi,
-      functionName: "getLoanPool",
-      args: [loanTypeId, token.poolId],
-    }),
-  );
+  const getLoanPools: Array<ContractFunctionParameters> = tokens.map((token) => ({
+    address: loanManager.address,
+    abi: loanManager.abi,
+    functionName: "getLoanPool",
+    args: [loanTypeId, token.poolId],
+  }));
 
-  const [deprecated, loanTargetHealth, ...loanPools] = (await multicall(
-    provider,
-    {
-      contracts: [
-        {
-          address: loanManager.address,
-          abi: loanManager.abi,
-          functionName: "isLoanTypeDeprecated",
-          args: [loanTypeId],
-        },
-        {
-          address: loanManager.address,
-          abi: loanManager.abi,
-          functionName: "getLoanTypeLoanTargetHealth",
-          args: [loanTypeId],
-        },
-        ...getLoanPools,
-      ],
-      allowFailure: false,
-    },
-  )) as [
+  const [deprecated, loanTargetHealth, ...loanPools] = (await multicall(provider, {
+    contracts: [
+      {
+        address: loanManager.address,
+        abi: loanManager.abi,
+        functionName: "isLoanTypeDeprecated",
+        args: [loanTypeId],
+      },
+      {
+        address: loanManager.address,
+        abi: loanManager.abi,
+        functionName: "getLoanTypeLoanTargetHealth",
+        args: [loanTypeId],
+      },
+      ...getLoanPools,
+    ],
+    allowFailure: false,
+  })) as [
     ReadContractReturnType<typeof LoanManagerAbi, "isLoanTypeDeprecated">,
-    ReadContractReturnType<
-      typeof LoanManagerAbi,
-      "getLoanTypeLoanTargetHealth"
-    >,
+    ReadContractReturnType<typeof LoanManagerAbi, "getLoanTypeLoanTargetHealth">,
     ...Array<ReadContractReturnType<typeof LoanManagerAbi, "getLoanPool">>,
   ];
 
@@ -317,10 +278,7 @@ export async function getUserLoanIds(
   loanTypeIdFilter?: LoanType,
 ): Promise<Array<LoanId>> {
   const hubChain = getHubChain(network);
-  const loanManager = getLoanManagerContract(
-    provider,
-    hubChain.loanManagerAddress,
-  );
+  const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
   return fetchUserLoanIds({
     loanManager,
@@ -339,25 +297,17 @@ export async function getUserLoansInfo(
   oraclePrices: OraclePrices,
 ): Promise<Record<LoanId, UserLoanInfo>> {
   const hubChain = getHubChain(network);
-  const loanManager = getLoanManagerContract(
-    provider,
-    hubChain.loanManagerAddress,
-  );
+  const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
   const poolIdToFolksTokenId = new Map(
-    Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [
-      poolId,
-      folksTokenId,
-    ]),
+    Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [poolId, folksTokenId]),
   );
 
-  const getUserLoans: Array<ContractFunctionParameters> = loanIds.map(
-    (loanId) => ({
-      address: loanManager.address,
-      abi: loanManager.abi,
-      functionName: "getUserLoan",
-      args: [loanId],
-    }),
-  );
+  const getUserLoans: Array<ContractFunctionParameters> = loanIds.map((loanId) => ({
+    address: loanManager.address,
+    abi: loanManager.abi,
+    functionName: "getUserLoan",
+    args: [loanId],
+  }));
 
   const userLoans = (await multicall(provider, {
     contracts: getUserLoans,
@@ -367,8 +317,7 @@ export async function getUserLoansInfo(
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
   for (let i = 0; i < userLoans.length; i++) {
     const loanId = loanIds[i];
-    const [accountId, loanTypeId, colPools, borPools, cols, bors] =
-      userLoans[i];
+    const [accountId, loanTypeId, colPools, borPools, cols, bors] = userLoans[i];
 
     const loanTypeInfo = loanTypesInfo[loanTypeId as LoanType];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
@@ -378,8 +327,7 @@ export async function getUserLoansInfo(
     let netYield = dn.from(0, 18);
 
     // collaterals
-    const collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>> =
-      {};
+    const collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>> = {};
     let totalCollateralBalanceValue: Dnum = dn.from(0, 8);
     let totalEffectiveCollateralBalanceValue: Dnum = dn.from(0, 8);
     for (let j = 0; j < cols.length; i++) {
@@ -392,20 +340,14 @@ export async function getUserLoansInfo(
       const poolInfo = poolsInfo[folksTokenId];
       const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
       const tokenPrice = oraclePrices[folksTokenId];
-      if (!poolInfo || !loanPoolInfo || !tokenPrice)
-        throw new Error(`Unknown folks token id ${folksTokenId}`);
+      if (!poolInfo || !loanPoolInfo || !tokenPrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
 
       const { tokenDecimals, depositData } = poolInfo;
       const { interestRate, interestIndex, interestYield } = depositData;
       const { collateralFactor } = loanPoolInfo;
 
       const tokenBalance = toUnderlyingAmount(fTokenBalance, interestIndex);
-      const balanceValue = calcCollateralAssetLoanValue(
-        tokenBalance,
-        tokenPrice,
-        tokenDecimals,
-        dn.from(1, 4),
-      );
+      const balanceValue = calcCollateralAssetLoanValue(tokenBalance, tokenPrice, tokenDecimals, dn.from(1, 4));
       const effectiveBalanceValue = calcCollateralAssetLoanValue(
         tokenBalance,
         tokenPrice,
@@ -413,14 +355,8 @@ export async function getUserLoansInfo(
         collateralFactor,
       );
 
-      totalCollateralBalanceValue = dn.add(
-        totalCollateralBalanceValue,
-        balanceValue,
-      );
-      totalEffectiveCollateralBalanceValue = dn.add(
-        totalEffectiveCollateralBalanceValue,
-        effectiveBalanceValue,
-      );
+      totalCollateralBalanceValue = dn.add(totalCollateralBalanceValue, balanceValue);
+      totalEffectiveCollateralBalanceValue = dn.add(totalEffectiveCollateralBalanceValue, effectiveBalanceValue);
       netRate = dn.add(netRate, dn.mul(balanceValue, interestRate));
       netYield = dn.add(netYield, dn.mul(balanceValue, interestYield));
 
@@ -462,41 +398,20 @@ export async function getUserLoansInfo(
       const poolInfo = poolsInfo[folksTokenId];
       const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
       const tokenPrice = oraclePrices[folksTokenId];
-      if (!poolInfo || !loanPoolInfo || !tokenPrice)
-        throw new Error(`Unknown folks token id ${folksTokenId}`);
+      if (!poolInfo || !loanPoolInfo || !tokenPrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
 
       const { tokenDecimals, variableBorrowData } = poolInfo;
-      const {
-        interestRate: variableBorrowInterestRate,
-        interestIndex: variableBorrowInterestIndex,
-      } = variableBorrowData;
+      const { interestRate: variableBorrowInterestRate, interestIndex: variableBorrowInterestIndex } =
+        variableBorrowData;
       const { borrowFactor } = loanPoolInfo;
 
       const isStable = lastStableUpdateTimestamp > 0n;
       const bororwInterestIndex = isStable
-        ? calcBorrowInterestIndex(
-            stableBorrowInterestRate,
-            lastBorrowInterestIndex,
-            lastStableUpdateTimestamp,
-          )
+        ? calcBorrowInterestIndex(stableBorrowInterestRate, lastBorrowInterestIndex, lastStableUpdateTimestamp)
         : variableBorrowInterestIndex;
-      const borrowedAmountValue = calcBorrowAssetLoanValue(
-        borrowedAmount,
-        tokenPrice,
-        tokenDecimals,
-        dn.from(1, 4),
-      );
-      const borrowBalance = calcBorrowBalance(
-        oldBorrowBalance,
-        bororwInterestIndex,
-        lastBorrowInterestIndex,
-      );
-      const borrowBalanceValue = calcBorrowAssetLoanValue(
-        borrowBalance,
-        tokenPrice,
-        tokenDecimals,
-        dn.from(1, 4),
-      );
+      const borrowedAmountValue = calcBorrowAssetLoanValue(borrowedAmount, tokenPrice, tokenDecimals, dn.from(1, 4));
+      const borrowBalance = calcBorrowBalance(oldBorrowBalance, bororwInterestIndex, lastBorrowInterestIndex);
+      const borrowBalanceValue = calcBorrowAssetLoanValue(borrowBalance, tokenPrice, tokenDecimals, dn.from(1, 4));
       const effectiveBorrowBalanceValue = calcBorrowAssetLoanValue(
         borrowBalance,
         tokenPrice,
@@ -504,27 +419,13 @@ export async function getUserLoansInfo(
         borrowFactor,
       );
       const accruedInterest = borrowBalance - borrowedAmount;
-      const accruedInterestValue = dn.sub(
-        borrowBalanceValue,
-        borrowedAmountValue,
-      );
-      const interestRate = isStable
-        ? stableBorrowInterestRate
-        : variableBorrowInterestRate;
+      const accruedInterestValue = dn.sub(borrowBalanceValue, borrowedAmountValue);
+      const interestRate = isStable ? stableBorrowInterestRate : variableBorrowInterestRate;
       const interestYield = compoundEverySecond(interestRate);
 
-      totalBorrowedAmountValue = dn.add(
-        totalBorrowedAmountValue,
-        borrowedAmountValue,
-      );
-      totalBorrowBalanceValue = dn.add(
-        totalBorrowBalanceValue,
-        borrowBalanceValue,
-      );
-      totalEffectiveBorrowBalanceValue = dn.add(
-        totalEffectiveBorrowBalanceValue,
-        effectiveBorrowBalanceValue,
-      );
+      totalBorrowedAmountValue = dn.add(totalBorrowedAmountValue, borrowedAmountValue);
+      totalBorrowBalanceValue = dn.add(totalBorrowBalanceValue, borrowBalanceValue);
+      totalEffectiveBorrowBalanceValue = dn.add(totalEffectiveBorrowBalanceValue, effectiveBorrowBalanceValue);
       netRate = dn.sub(netRate, dn.mul(borrowBalanceValue, interestRate));
       netYield = dn.sub(netYield, dn.mul(borrowBalanceValue, interestYield));
 
@@ -552,10 +453,7 @@ export async function getUserLoansInfo(
       netYield = dn.div(netRate, totalCollateralBalanceValue);
     }
 
-    const loanToValueRatio = calcLtvRatio(
-      totalBorrowBalanceValue,
-      totalCollateralBalanceValue,
-    );
+    const loanToValueRatio = calcLtvRatio(totalBorrowBalanceValue, totalCollateralBalanceValue);
     const borrowUtilisationRatio = calcBorrowUtilisationRatio(
       totalEffectiveBorrowBalanceValue,
       totalEffectiveCollateralBalanceValue,

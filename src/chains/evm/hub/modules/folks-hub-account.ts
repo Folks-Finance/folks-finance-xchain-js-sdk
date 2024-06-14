@@ -8,10 +8,7 @@ import { getAccountManagerContract } from "../utils/contract.js";
 import { fetchInvitationByAddress } from "../utils/events.js";
 
 import type { GenericAddress } from "../../../../common/types/address.js";
-import type {
-  FolksChainId,
-  NetworkType,
-} from "../../../../common/types/chain.js";
+import type { FolksChainId, NetworkType } from "../../../../common/types/chain.js";
 import type { AccountId } from "../../../../common/types/lending.js";
 import type { AccountIdByAddress, AccountInfo } from "../types/account.js";
 import type { Client } from "viem";
@@ -23,15 +20,10 @@ export async function getAccountInfo(
   folksChainIds?: Array<FolksChainId>,
 ): Promise<AccountInfo> {
   const hubChain = getHubChain(network);
-  const accountManager = getAccountManagerContract(
-    provider,
-    hubChain.accountManagerAddress,
-  );
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
 
   // get chain ids to check
-  folksChainIds = folksChainIds
-    ? folksChainIds
-    : getFolksChainIdsByNetwork(network);
+  folksChainIds = folksChainIds ? folksChainIds : getFolksChainIdsByNetwork(network);
 
   // define return variable
   const accountInfo: AccountInfo = {
@@ -62,13 +54,11 @@ export async function getAccountInfo(
 
   for (const [index, result] of registeredAddresses.entries()) {
     const chainId = folksChainIds[index];
-    if (result.status === "success")
-      accountInfo.registered.set(chainId, result.result as GenericAddress);
+    if (result.status === "success") accountInfo.registered.set(chainId, result.result as GenericAddress);
   }
   for (const [index, result] of invitedAddresses.entries()) {
     const chainId = folksChainIds[index];
-    if (result.status === "success")
-      accountInfo.invited.set(chainId, result.result as GenericAddress);
+    if (result.status === "success") accountInfo.invited.set(chainId, result.result as GenericAddress);
   }
 
   return accountInfo;
@@ -81,15 +71,10 @@ export async function getAccountIdByAddress(
   folksChainIds?: Array<FolksChainId>,
 ): Promise<AccountIdByAddress> {
   const hubChain = getHubChain(network);
-  const accountManager = getAccountManagerContract(
-    provider,
-    hubChain.accountManagerAddress,
-  );
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
 
   // get chain ids to check
-  folksChainIds = folksChainIds
-    ? folksChainIds
-    : getFolksChainIdsByNetwork(network);
+  folksChainIds = folksChainIds ? folksChainIds : getFolksChainIdsByNetwork(network);
 
   const accountIds = await multicall(provider, {
     contracts: folksChainIds.map((folksChainId) => ({
@@ -122,16 +107,10 @@ export async function getAccountIdByAddressOnChain(
   folksChainId: FolksChainId,
 ): Promise<AccountId | null> {
   const hubChain = getHubChain(network);
-  const accountManager = getAccountManagerContract(
-    provider,
-    hubChain.accountManagerAddress,
-  );
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
 
   try {
-    const accountId = await accountManager.read.getAccountIdOfAddressOnChain([
-      address,
-      folksChainId,
-    ]);
+    const accountId = await accountManager.read.getAccountIdOfAddressOnChain([address, folksChainId]);
     return accountId as AccountId;
   } catch (err: unknown) {
     const errorName = extractRevertErrorName(err);
@@ -147,10 +126,7 @@ export async function getInvitationByAddress(
   folksChainId?: FolksChainId,
 ) {
   const hubChain = getHubChain(network);
-  const accountManager = getAccountManagerContract(
-    provider,
-    hubChain.accountManagerAddress,
-  );
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
 
   return fetchInvitationByAddress({
     accountManager,

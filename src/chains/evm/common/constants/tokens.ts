@@ -6,10 +6,7 @@ import type { EvmFolksChainId } from "../types/chain.js";
 import type { Erc20ContractSlot } from "../types/tokens.js";
 
 export const CONTRACT_SLOT: Partial<
-  Record<
-    EvmFolksChainId,
-    { erc20: Partial<Record<FolksTokenId, Erc20ContractSlot>> }
-  >
+  Record<EvmFolksChainId, { erc20: Partial<Record<FolksTokenId, Erc20ContractSlot>> }>
 > = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     erc20: {

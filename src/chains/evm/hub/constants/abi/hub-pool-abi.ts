@@ -7,9 +7,7 @@ export const HubPoolAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [
-      { internalType: "address", name: "defaultAdmin", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },
@@ -1251,9 +1249,7 @@ export const HubPoolAbi = [
     name: "updatePoolWithRepayWithCollateral",
     outputs: [
       {
-        components: [
-          { internalType: "uint256", name: "fAmount", type: "uint256" },
-        ],
+        components: [{ internalType: "uint256", name: "fAmount", type: "uint256" }],
         internalType: "struct DataTypes.RepayWithCollateralPoolParams",
         name: "",
         type: "tuple",

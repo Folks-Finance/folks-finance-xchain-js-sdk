@@ -1,9 +1,6 @@
 import { concat } from "viem";
 
-import {
-  UINT16_LENGTH,
-  UINT256_LENGTH,
-} from "../../../../common/constants/bytes.js";
+import { UINT16_LENGTH, UINT256_LENGTH } from "../../../../common/constants/bytes.js";
 import { convertNumberToBytes } from "../../../../common/utils/bytes.js";
 
 import type { GenericAddress } from "../../../../common/types/address.js";
