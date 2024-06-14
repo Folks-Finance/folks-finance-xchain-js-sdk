@@ -1,13 +1,13 @@
 // @ts-check
-import globals from "globals";
 import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
 import eslintConfigPrettier from "eslint-config-prettier";
-import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import eslintPluginImportX from "eslint-plugin-import-x";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist/", "eslint.config.js", "commitlint.config.js"] },
+  { ignores: ["dist/"] },
   {
     languageOptions: {
       parserOptions: {
@@ -37,29 +37,15 @@ export default tseslint.config(
       "import-x/order": [
         "error",
         {
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            "parent",
-            "sibling",
-            "index",
-            "type",
-          ],
+          groups: ["builtin", "external", "internal", "parent", "sibling", "index", "type"],
           "newlines-between": "always",
           alphabetize: { order: "asc" },
         },
       ],
       "@typescript-eslint/array-type": ["error", { default: "generic" }],
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
-      "@typescript-eslint/consistent-type-imports": [
-        "error",
-        { prefer: "type-imports" },
-      ],
-      "@typescript-eslint/restrict-template-expressions": [
-        "error",
-        { allowNumber: true },
-      ],
+      "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
+      "@typescript-eslint/restrict-template-expressions": ["error", { allowNumber: true }],
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "unicorn/better-regex": "error",
       "unicorn/consistent-function-scoping": "error",
@@ -68,6 +54,10 @@ export default tseslint.config(
       "unicorn/no-array-for-each": "error",
       "unicorn/no-for-loop": "error",
     },
+  },
+  {
+    files: ["**/*.js"],
+    ...tseslint.configs.disableTypeChecked,
   },
   {
     settings: {
