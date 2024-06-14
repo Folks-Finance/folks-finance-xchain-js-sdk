@@ -11,6 +11,6 @@
     "module": "NodeNext",
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "examples/**/*", "prettierrc.js"],
+  "include": ["src/**/*", "examples/**/*"],
   "exclude": ["node_modules"]
 }

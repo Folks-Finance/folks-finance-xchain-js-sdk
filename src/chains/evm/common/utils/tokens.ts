@@ -12,31 +12,22 @@ import type { StateOverride } from "viem";
 export function getContractSlot(folksChainId: EvmFolksChainId) {
   const contractSlot = CONTRACT_SLOT[folksChainId];
   if (!contractSlot) {
-    throw new Error(
-      `Contract slot not found for folksChainId: ${folksChainId}`,
-    );
+    throw new Error(`Contract slot not found for folksChainId: ${folksChainId}`);
   }
   return contractSlot;
 }
 
-export function getFolksTokenContractSlot(
-  folksChainId: EvmFolksChainId,
-  folksTokenId: FolksTokenId,
-) {
+export function getFolksTokenContractSlot(folksChainId: EvmFolksChainId, folksTokenId: FolksTokenId) {
   const contractSlot = getContractSlot(folksChainId);
 
   const folksTokenContractSlot = contractSlot.erc20[folksTokenId];
   if (!folksTokenContractSlot) {
-    throw new Error(
-      `Contract slot not found for folksTokenId: ${folksTokenId}`,
-    );
+    throw new Error(`Contract slot not found for folksTokenId: ${folksTokenId}`);
   }
   return folksTokenContractSlot;
 }
 
-export function getAllowanceStateOverride(
-  allowanceStatesOverride: Array<AllowanceStateOverride>,
-): StateOverride {
+export function getAllowanceStateOverride(allowanceStatesOverride: Array<AllowanceStateOverride>): StateOverride {
   return allowanceStatesOverride.map((aso) => ({
     address: aso.erc20Address,
     stateDiff: aso.stateDiff.map((sd) => ({

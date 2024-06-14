@@ -4,15 +4,8 @@ import type { EvmChainName, EvmFolksChainId } from "../types/chain.js";
 import type { Chain } from "viem";
 
 export const MAINNET_EVM_CHAIN_NAMES = [] as const;
-export const TESTNET_EVM_CHAIN_NAMES = [
-  "AVALANCHE_FUJI",
-  "ETHEREUM_SEPOLIA",
-  "BASE_SEPOLIA",
-] as const;
-export const EVM_CHAIN_NAMES = [
-  ...MAINNET_EVM_CHAIN_NAMES,
-  ...TESTNET_EVM_CHAIN_NAMES,
-] as const;
+export const TESTNET_EVM_CHAIN_NAMES = ["AVALANCHE_FUJI", "ETHEREUM_SEPOLIA", "BASE_SEPOLIA"] as const;
+export const EVM_CHAIN_NAMES = [...MAINNET_EVM_CHAIN_NAMES, ...TESTNET_EVM_CHAIN_NAMES] as const;
 
 export const MAINNET_EVM_CHAIN_ID = {} as const;
 

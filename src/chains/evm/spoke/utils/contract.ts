@@ -23,9 +23,7 @@ export function getSpokeCommonContract(
   provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
-):
-  | GetReadContractReturnType<typeof SpokeCommonAbi>
-  | GetContractReturnType<typeof SpokeCommonAbi, Client> {
+): GetReadContractReturnType<typeof SpokeCommonAbi> | GetContractReturnType<typeof SpokeCommonAbi, Client> {
   return getContract({
     abi: SpokeCommonAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
@@ -58,9 +56,7 @@ export function getSpokeTokenContract(
   provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
-):
-  | GetReadContractReturnType<typeof SpokeTokenAbi>
-  | GetContractReturnType<typeof SpokeTokenAbi, Client> {
+): GetReadContractReturnType<typeof SpokeTokenAbi> | GetContractReturnType<typeof SpokeTokenAbi, Client> {
   return getContract({
     abi: SpokeTokenAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),

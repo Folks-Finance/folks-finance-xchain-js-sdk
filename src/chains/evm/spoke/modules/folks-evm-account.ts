@@ -1,17 +1,8 @@
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
-import {
-  getBridgeRouterSpokeContract,
-  getSpokeCommonContract,
-} from "../utils/contract.js";
+import { getBridgeRouterSpokeContract, getSpokeCommonContract } from "../utils/contract.js";
 
-import type {
-  EvmAddress,
-  GenericAddress,
-} from "../../../../common/types/address.js";
-import type {
-  FolksChainId,
-  SpokeChain,
-} from "../../../../common/types/chain.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
+import type { FolksChainId, SpokeChain } from "../../../../common/types/chain.js";
 import type { AccountId } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
 import type {
@@ -35,22 +26,16 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createAccount(
-      [messageToSend.params, accountId, refAccountId],
-      {
-        value: msgValue,
-        ...transactionOptions,
-      },
-    );
+    const gasLimit = await spokeCommon.estimateGas.createAccount([messageToSend.params, accountId, refAccountId], {
+      value: msgValue,
+      ...transactionOptions,
+    });
 
     return {
       msgValue,
@@ -74,23 +59,14 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.inviteAddress(
-      [
-        messageToSend.params,
-        accountId,
-        folksChainIdToInvite,
-        addressToInvite,
-        refAccountId,
-      ],
+      [messageToSend.params, accountId, folksChainIdToInvite, addressToInvite, refAccountId],
       {
         value: msgValue,
         ...transactionOptions,
@@ -116,22 +92,16 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.acceptInviteAddress(
-      [messageToSend.params, accountId],
-      {
-        value: msgValue,
-        ...transactionOptions,
-      },
-    );
+    const gasLimit = await spokeCommon.estimateGas.acceptInviteAddress([messageToSend.params, accountId], {
+      value: msgValue,
+      ...transactionOptions,
+    });
 
     return {
       msgValue,
@@ -153,10 +123,7 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
@@ -186,24 +153,16 @@ export const write = {
     refAccountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.createAccount(
-      [messageParams, accountId, refAccountId],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gas: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.createAccount([messageParams, accountId, refAccountId], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gas: gasLimit,
+      value: msgValue,
+    });
   },
 
   async inviteAddress(
@@ -215,23 +174,12 @@ export const write = {
     refAccountId: AccountId,
     prepareCall: PrepareInviteAddressCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     return await spokeCommon.write.inviteAddress(
-      [
-        messageParams,
-        accountId,
-        folksChainIdToInvite,
-        addressToInvite,
-        refAccountId,
-      ],
+      [messageParams, accountId, folksChainIdToInvite, addressToInvite, refAccountId],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
@@ -247,24 +195,16 @@ export const write = {
     accountId: AccountId,
     prepareCall: PrepareAcceptInviteAddressCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.acceptInviteAddress(
-      [messageParams, accountId],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.acceptInviteAddress([messageParams, accountId], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async unregisterAddress(
@@ -274,23 +214,15 @@ export const write = {
     folksChainIdToUnregister: FolksChainId,
     prepareCall: PrepareUnregisterAddressCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.unregisterAddress(
-      [messageParams, accountId, folksChainIdToUnregister],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.unregisterAddress([messageParams, accountId, folksChainIdToUnregister], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 };

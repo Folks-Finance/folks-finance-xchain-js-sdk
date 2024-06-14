@@ -10,10 +10,7 @@ import { ChainType } from "../../common/types/chain.js";
 import { MessageDirection } from "../../common/types/gmp.js";
 import { Action } from "../../common/types/message.js";
 import { TokenType } from "../../common/types/token.js";
-import {
-  assertAdapterSupportsDataMessage,
-  assertAdapterSupportsTokenMessage,
-} from "../../common/utils/adapter.js";
+import { assertAdapterSupportsDataMessage, assertAdapterSupportsTokenMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertHubChainSelected,
@@ -24,10 +21,7 @@ import {
   getSpokeChain,
   getSpokeTokenData,
 } from "../../common/utils/chain.js";
-import {
-  buildMessageToSend,
-  estimateAdapterReceiveGasLimit,
-} from "../../common/utils/messages.js";
+import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
@@ -67,22 +61,11 @@ import type {
 import type { FolksTokenId } from "../../common/types/token.js";
 
 export const prepare = {
-  async createLoan(
-    accountId: AccountId,
-    loanId: LoanId,
-    loanTypeId: LoanType,
-    adapters: MessageAdapters,
-  ) {
+  async createLoan(accountId: AccountId, loanId: LoanId, loanTypeId: LoanType, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -116,11 +99,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -138,21 +117,11 @@ export const prepare = {
     }
   },
 
-  async deleteLoan(
-    accountId: AccountId,
-    loanId: LoanId,
-    adapters: MessageAdapters,
-  ) {
+  async deleteLoan(accountId: AccountId, loanId: LoanId, adapters: MessageAdapters) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const userAddress = getSignerGenericAddress({
@@ -186,11 +155,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -217,31 +182,17 @@ export const prepare = {
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertSpokeChainSupportFolksToken(
-      folksChain.folksChainId,
-      folksTokenId,
-      folksChain.network,
-    );
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
     assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
     if (spokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(
-        folksChain.folksChainId,
-        adapters.adapterId,
-      );
-    else
-      assertAdapterSupportsDataMessage(
-        folksChain.folksChainId,
-        adapters.adapterId,
-      );
+      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
@@ -280,11 +231,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -316,19 +263,9 @@ export const prepare = {
     const network = folksChain.network;
     const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    assertAdapterSupportsTokenMessage(
-      receiverFolksChainId,
-      adapters.returnAdapterId,
-    );
-    assertSpokeChainSupportFolksToken(
-      receiverFolksChainId,
-      folksTokenId,
-      network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -387,11 +324,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -426,19 +359,9 @@ export const prepare = {
     const network = folksChain.network;
     const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
-    assertAdapterSupportsTokenMessage(
-      receiverFolksChainId,
-      adapters.returnAdapterId,
-    );
-    assertSpokeChainSupportFolksToken(
-      receiverFolksChainId,
-      folksTokenId,
-      network,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -497,11 +420,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -534,31 +453,17 @@ export const prepare = {
   ): Promise<PrepareRepayCall> {
     const folksChain = FolksCore.getSelectedFolksChain();
 
-    assertSpokeChainSupportFolksToken(
-      folksChain.folksChainId,
-      folksTokenId,
-      folksChain.network,
-    );
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
     assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
     if (spokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(
-        folksChain.folksChainId,
-        adapters.adapterId,
-      );
-    else
-      assertAdapterSupportsDataMessage(
-        folksChain.folksChainId,
-        adapters.adapterId,
-      );
+      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
@@ -598,11 +503,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -632,10 +533,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
     const network = folksChain.network;
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -674,11 +572,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -708,10 +602,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
     const network = folksChain.network;
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
@@ -750,11 +641,7 @@ export const prepare = {
       messageBuilderParams,
     );
 
-    const messageToSend = buildMessageToSend(
-      folksChain.chainType,
-      messageBuilderParams,
-      feeParams,
-    );
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
@@ -787,10 +674,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
     const network = folksChain.network;
 
-    assertAdapterSupportsDataMessage(
-      folksChain.folksChainId,
-      adapters.adapterId,
-    );
+    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const hubChain = getHubChain(network);
 
@@ -822,12 +706,7 @@ export const prepare = {
 };
 
 export const write = {
-  async createLoan(
-    accountId: AccountId,
-    loanId: LoanId,
-    loanTypeId: LoanType,
-    prepareCall: PrepareCreateLoanCall,
-  ) {
+  async createLoan(accountId: AccountId, loanId: LoanId, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -847,11 +726,7 @@ export const write = {
     }
   },
 
-  async deleteLoan(
-    accountId: AccountId,
-    loanId: LoanId,
-    prepareCall: PrepareCreateLoanCall,
-  ) {
+  async deleteLoan(accountId: AccountId, loanId: LoanId, prepareCall: PrepareCreateLoanCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -1057,22 +932,12 @@ export const write = {
 };
 
 export const read = {
-  async rateLimit(
-    folksTokenId: FolksTokenId,
-    folksChainId: FolksChainId,
-  ): Promise<TokenRateLimit> {
+  async rateLimit(folksTokenId: FolksTokenId, folksChainId: FolksChainId): Promise<TokenRateLimit> {
     const network = FolksCore.getSelectedNetwork();
     const folksChain = getFolksChain(folksChainId, network);
 
-    assertSpokeChainSupportFolksToken(
-      folksChain.folksChainId,
-      folksTokenId,
-      folksChain.network,
-    );
-    const spokeChain = getSpokeChain(
-      folksChain.folksChainId,
-      folksChain.network,
-    );
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
 
     switch (folksChain.chainType) {
@@ -1090,16 +955,11 @@ export const read = {
     const network = FolksCore.getSelectedNetwork();
 
     // filter for all tokens supported in loan type
-    const tokensData = Object.values(getHubTokensData(network)).filter(
-      (tokenData) => tokenData.supportedLoanTypes.has(loanTypeId),
+    const tokensData = Object.values(getHubTokensData(network)).filter((tokenData) =>
+      tokenData.supportedLoanTypes.has(loanTypeId),
     );
 
-    return await FolksHubLoan.getLoanTypeInfo(
-      FolksCore.getHubProvider(),
-      network,
-      loanTypeId,
-      tokensData,
-    );
+    return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
   async userLoansInfo(
@@ -1112,12 +972,7 @@ export const read = {
     const network = FolksCore.getSelectedNetwork();
 
     // get active user loans
-    const loanIds = await FolksHubLoan.getUserLoanIds(
-      FolksCore.getHubProvider(),
-      network,
-      accountId,
-      loanTypeIdFilter,
-    );
+    const loanIds = await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
 
     // get info of each user loan
     return await FolksHubLoan.getUserLoansInfo(

@@ -3,33 +3,19 @@ import { multicall, waitForTransactionReceipt } from "viem/actions";
 import { ChainType } from "../../../../common/types/chain.js";
 import { TokenType } from "../../../../common/types/token.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
-import {
-  calcNextPeriodReset,
-  calcPeriodNumber,
-} from "../../../../common/utils/formulae.js";
+import { calcNextPeriodReset, calcPeriodNumber } from "../../../../common/utils/formulae.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getAllowanceStateOverride } from "../../common/utils/tokens.js";
 import { getHubTokenData } from "../../hub/utils/chain.js";
-import {
-  getBridgeRouterSpokeContract,
-  getSpokeCommonContract,
-  getSpokeTokenContract,
-} from "../utils/contract.js";
+import { getBridgeRouterSpokeContract, getSpokeCommonContract, getSpokeTokenContract } from "../utils/contract.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
-import type {
-  FolksChainId,
-  NetworkType,
-  SpokeChain,
-} from "../../../../common/types/chain.js";
+import type { FolksChainId, NetworkType, SpokeChain } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
-import type {
-  FolksTokenId,
-  SpokeTokenData,
-} from "../../../../common/types/token.js";
+import type { FolksTokenId, SpokeTokenData } from "../../../../common/types/token.js";
 import type {
   PrepareBorrowCall,
   PrepareCreateLoanCall,
@@ -57,22 +43,16 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createLoan(
-      [messageToSend.params, accountId, loanId, loanTypeId],
-      {
-        value: msgValue,
-        ...transactionOptions,
-      },
-    );
+    const gasLimit = await spokeCommon.estimateGas.createLoan([messageToSend.params, accountId, loanId, loanTypeId], {
+      value: msgValue,
+      ...transactionOptions,
+    });
 
     return {
       msgValue,
@@ -94,22 +74,16 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.deleteLoan(
-      [messageToSend.params, accountId, loanId],
-      {
-        value: msgValue,
-        ...transactionOptions,
-      },
-    );
+    const gasLimit = await spokeCommon.estimateGas.deleteLoan([messageToSend.params, accountId, loanId], {
+      value: msgValue,
+      ...transactionOptions,
+    });
 
     return {
       msgValue,
@@ -130,30 +104,15 @@ export const prepare = {
     spokeTokenData: SpokeTokenData,
     transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareDepositCall> {
-    const spokeToken = getSpokeTokenContract(
-      provider,
-      spokeTokenData.spokeAddress,
-    );
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
-    const spender = convertFromGenericAddress(
-      spokeTokenData.spokeAddress,
-      ChainType.EVM,
-    );
+    const spender = convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM);
 
     //get state override
     let stateOverride;
-    if (
-      spokeTokenData.token.type === TokenType.ERC20 ||
-      spokeTokenData.token.type === TokenType.CIRCLE
-    ) {
-      const erc20Address = convertFromGenericAddress(
-        spokeTokenData.token.address,
-        ChainType.EVM,
-      );
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+      const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
       stateOverride = getAllowanceStateOverride([
         {
           erc20Address,
@@ -173,19 +132,15 @@ export const prepare = {
 
     // get adapter fees
     const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
-    const value =
-      spokeTokenData.token.type === TokenType.NATIVE ? amount : BigInt(0);
+    const value = spokeTokenData.token.type === TokenType.NATIVE ? amount : BigInt(0);
     const msgValue = adapterFees + value;
 
     // get gas limits
-    const gasLimit = await spokeToken.estimateGas.deposit(
-      [messageToSend.params, accountId, loanId, amount],
-      {
-        value: msgValue,
-        ...transactionOptions,
-        stateOverride,
-      },
-    );
+    const gasLimit = await spokeToken.estimateGas.deposit([messageToSend.params, accountId, loanId, amount], {
+      value: msgValue,
+      ...transactionOptions,
+      stateOverride,
+    });
 
     return {
       msgValue,
@@ -213,25 +168,14 @@ export const prepare = {
 
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const spokeBridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const spokeBridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fee
     const msgValue = await spokeBridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.withdraw(
-      [
-        messageToSend.params,
-        accountId,
-        loanId,
-        hubTokenData.poolId,
-        receiverFolksChainId,
-        amount,
-        isFAmount,
-      ],
+      [messageToSend.params, accountId, loanId, hubTokenData.poolId, receiverFolksChainId, amount, isFAmount],
       {
         value: msgValue,
         ...transactionOptions,
@@ -264,25 +208,14 @@ export const prepare = {
 
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const spokeBridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const spokeBridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fee
     const msgValue = await spokeBridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.borrow(
-      [
-        messageToSend.params,
-        accountId,
-        loanId,
-        hubTokenData.poolId,
-        receiverFolksChainId,
-        amount,
-        maxStableRate,
-      ],
+      [messageToSend.params, accountId, loanId, hubTokenData.poolId, receiverFolksChainId, amount, maxStableRate],
       {
         value: msgValue,
         ...transactionOptions,
@@ -309,14 +242,8 @@ export const prepare = {
     spokeTokenData: SpokeTokenData,
     transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareRepayCall> {
-    const spokeToken = getSpokeTokenContract(
-      provider,
-      spokeTokenData.spokeAddress,
-    );
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
@@ -355,10 +282,7 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
@@ -397,23 +321,14 @@ export const prepare = {
     const spokeCommonAddress = spokeChain.spokeCommonAddress;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress);
-    const bridgeRouter = getBridgeRouterSpokeContract(
-      provider,
-      spokeChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.switchBorrowType(
-      [
-        messageToSend.params,
-        accountId,
-        loanId,
-        hubTokenData.poolId,
-        maxStableRate,
-      ],
+      [messageToSend.params, accountId, loanId, hubTokenData.poolId, maxStableRate],
       {
         value: msgValue,
         ...transactionOptions,
@@ -438,24 +353,16 @@ export const write = {
     loanTypeId: LoanType,
     prepareCall: PrepareCreateLoanCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.createLoan(
-      [messageParams, accountId, loanId, loanTypeId],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async deleteLoan(
@@ -465,24 +372,16 @@ export const write = {
     loanId: LoanId,
     prepareCall: PrepareDeleteLoanCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.deleteLoan(
-      [messageParams, accountId, loanId],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.deleteLoan([messageParams, accountId, loanId], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async deposit(
@@ -497,16 +396,9 @@ export const write = {
     const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
     const { token } = spokeTokenData;
 
-    const spokeToken = getSpokeTokenContract(
-      provider,
-      spokeTokenData.spokeAddress,
-      signer,
-    );
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
-    if (
-      includeApprove &&
-      (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)
-    ) {
+    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
       const approveTxId = await sendERC20Approve(
         provider,
         token.address,
@@ -514,19 +406,15 @@ export const write = {
         convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM),
         amount,
       );
-      if (approveTxId !== null)
-        await waitForTransactionReceipt(provider, { hash: approveTxId });
+      if (approveTxId !== null) await waitForTransactionReceipt(provider, { hash: approveTxId });
     }
 
-    return await spokeToken.write.deposit(
-      [messageParams, accountId, loanId, amount],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeToken.write.deposit([messageParams, accountId, loanId, amount], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async withdraw(
@@ -540,25 +428,12 @@ export const write = {
     receiverChainId: FolksChainId,
     prepareCall: PrepareWithdrawCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     return await spokeCommon.write.withdraw(
-      [
-        messageParams,
-        accountId,
-        loanId,
-        poolId,
-        receiverChainId,
-        amount,
-        isFAmount,
-      ],
+      [messageParams, accountId, loanId, poolId, receiverChainId, amount, isFAmount],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
@@ -579,25 +454,12 @@ export const write = {
     receiverChainId: FolksChainId,
     prepareCall: PrepareBorrowCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
     return await spokeCommon.write.borrow(
-      [
-        messageParams,
-        accountId,
-        loanId,
-        poolId,
-        receiverChainId,
-        amount,
-        maxStableRate,
-      ],
+      [messageParams, accountId, loanId, poolId, receiverChainId, amount, maxStableRate],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
@@ -619,30 +481,17 @@ export const write = {
   ) {
     const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
 
-    const spokeToken = getSpokeTokenContract(
-      provider,
-      spokeTokenData.spokeAddress,
-      signer,
-    );
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
     if (includeApprove && spokeTokenData.token.type !== TokenType.NATIVE)
-      await sendERC20Approve(
-        provider,
-        spokeTokenData.spokeAddress,
-        signer,
-        spokeToken.address as EvmAddress,
-        amount,
-      );
+      await sendERC20Approve(provider, spokeTokenData.spokeAddress, signer, spokeToken.address as EvmAddress, amount);
 
-    return await spokeToken.write.repay(
-      [messageParams, accountId, loanId, amount, maxOverRepayment],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeToken.write.repay([messageParams, accountId, loanId, amount, maxOverRepayment], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async repayWithCollateral(
@@ -654,24 +503,16 @@ export const write = {
     amount: bigint,
     prepareCall: PrepareRepayWithCollateralCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.repayWithCollateral(
-      [messageParams, accountId, loanId, poolId, amount],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.repayWithCollateral([messageParams, accountId, loanId, poolId, amount], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 
   async switchBorrowType(
@@ -683,72 +524,51 @@ export const write = {
     maxStableRate: bigint,
     prepareCall: PrepareSwitchBorrowTypeCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } =
-      prepareCall;
+    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
-    const spokeCommon = getSpokeCommonContract(
-      provider,
-      spokeCommonAddress,
-      signer,
-    );
+    const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.switchBorrowType(
-      [messageParams, accountId, loanId, poolId, maxStableRate],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit: gasLimit,
-        value: msgValue,
-      },
-    );
+    return await spokeCommon.write.switchBorrowType([messageParams, accountId, loanId, poolId, maxStableRate], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit: gasLimit,
+      value: msgValue,
+    });
   },
 };
 
 export const read = {
-  async rateLimitInfo(
-    provider: Client,
-    token: SpokeTokenData,
-  ): Promise<TokenRateLimit> {
+  async rateLimitInfo(provider: Client, token: SpokeTokenData): Promise<TokenRateLimit> {
     const spokeToken = getSpokeTokenContract(provider, token.spokeAddress);
 
     // get rate limit data
-    const [bucketConfig, oldPeriodNumber, oldCurrentCapacity] = await multicall(
-      provider,
-      {
-        contracts: [
-          {
-            address: spokeToken.address,
-            abi: spokeToken.abi,
-            functionName: "bucketConfig",
-          },
-          {
-            address: spokeToken.address,
-            abi: spokeToken.abi,
-            functionName: "currentPeriodNumber",
-          },
-          {
-            address: spokeToken.address,
-            abi: spokeToken.abi,
-            functionName: "currentCapacity",
-          },
-        ],
-        allowFailure: false,
-      },
-    );
+    const [bucketConfig, oldPeriodNumber, oldCurrentCapacity] = await multicall(provider, {
+      contracts: [
+        {
+          address: spokeToken.address,
+          abi: spokeToken.abi,
+          functionName: "bucketConfig",
+        },
+        {
+          address: spokeToken.address,
+          abi: spokeToken.abi,
+          functionName: "currentPeriodNumber",
+        },
+        {
+          address: spokeToken.address,
+          abi: spokeToken.abi,
+          functionName: "currentCapacity",
+        },
+      ],
+      allowFailure: false,
+    });
 
     // TODO consider min limit
     const [periodLength, periodOffset, periodLimit] = bucketConfig;
-    const newPeriodNumber = calcPeriodNumber(
-      BigInt(periodOffset),
-      BigInt(periodLength),
-    );
+    const newPeriodNumber = calcPeriodNumber(BigInt(periodOffset), BigInt(periodLength));
     const isNewPeriod = newPeriodNumber !== BigInt(oldPeriodNumber);
     const currentCapacity = isNewPeriod ? periodLimit : oldCurrentCapacity;
-    const nextPeriodReset = calcNextPeriodReset(
-      newPeriodNumber,
-      BigInt(periodOffset),
-      BigInt(periodLength),
-    );
+    const nextPeriodReset = calcNextPeriodReset(newPeriodNumber, BigInt(periodOffset), BigInt(periodLength));
 
     // build rate limit info
     return {

@@ -1,8 +1,6 @@
 import { FolksTokenId } from "../types/token.js";
 
-export const MAINNET_POOLS = {} as const satisfies Partial<
-  Record<FolksTokenId, number>
->;
+export const MAINNET_POOLS = {} as const satisfies Partial<Record<FolksTokenId, number>>;
 
 export const TESTNET_POOLS = {
   [FolksTokenId.USDC]: 128,

@@ -1,16 +1,20 @@
 {
   // Formatting using Prettier by default for all languages
-  "prettier.configPath": "prettierrc.js",
+  "prettier.configPath": "prettier.config.js",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
 
-  // Formatting using Prettier for JavaScript, overrides VSCode default.
+  // Formatting using Prettier for JavaScript and TypeScript, overrides VSCode default.
   "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   // Linting using ESLint.
   "eslint.validate": ["javascript", "typescript"],
+  "eslint.experimental.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },

@@ -19,9 +19,7 @@ export const LoanManagerAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [
-      { internalType: "address", name: "defaultAdmin", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },
@@ -371,9 +369,7 @@ export const LoanManagerAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "contract IHubPool", name: "pool", type: "address" },
-    ],
+    inputs: [{ internalType: "contract IHubPool", name: "pool", type: "address" }],
     name: "addPool",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1016,9 +1012,7 @@ export const LoanManagerAbi = [
       { internalType: "bool", name: "isFAmount", type: "bool" },
     ],
     name: "withdraw",
-    outputs: [
-      { internalType: "uint256", name: "underlingAmount", type: "uint256" },
-    ],
+    outputs: [{ internalType: "uint256", name: "underlingAmount", type: "uint256" }],
     stateMutability: "nonpayable",
     type: "function",
   },

@@ -36,10 +36,7 @@ type NativeSpokeTokenType = {
   decimals: number;
 };
 
-export type SpokeTokenType =
-  | Erc20SpokeTokenType
-  | CircleSpokeTokenType
-  | NativeSpokeTokenType;
+export type SpokeTokenType = Erc20SpokeTokenType | CircleSpokeTokenType | NativeSpokeTokenType;
 
 export type SpokeTokenData = {
   poolId: number;

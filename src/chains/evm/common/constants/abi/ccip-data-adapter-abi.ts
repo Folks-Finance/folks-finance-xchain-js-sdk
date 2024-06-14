@@ -24,9 +24,7 @@ export const CCIPDataAdapterAbi = [
   },
   { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
   {
-    inputs: [
-      { internalType: "address", name: "defaultAdmin", type: "address" },
-    ],
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
     name: "AccessControlInvalidDefaultAdmin",
     type: "error",
   },
@@ -60,9 +58,7 @@ export const CCIPDataAdapterAbi = [
     type: "error",
   },
   {
-    inputs: [
-      { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
-    ],
+    inputs: [{ internalType: "bytes32", name: "sourceAddress", type: "bytes32" }],
     name: "InvalidMessageSender",
     type: "error",
   },
@@ -313,9 +309,7 @@ export const CCIPDataAdapterAbi = [
   {
     inputs: [],
     name: "bridgeRouter",
-    outputs: [
-      { internalType: "contract IBridgeRouter", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract IBridgeRouter", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -361,9 +355,7 @@ export const CCIPDataAdapterAbi = [
   {
     inputs: [],
     name: "ccipRouter",
-    outputs: [
-      { internalType: "contract IRouterClient", name: "", type: "address" },
-    ],
+    outputs: [{ internalType: "contract IRouterClient", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },

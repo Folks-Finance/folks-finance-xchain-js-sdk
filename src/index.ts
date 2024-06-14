@@ -2,12 +2,7 @@
 export { FolksCore } from "./xchain/core/folks-core.js";
 
 // === MODULES ===
-export {
-  FolksAccount,
-  FolksLoan,
-  FolksPool,
-  FolksOracle,
-} from "./xchain/modules/index.js";
+export { FolksAccount, FolksLoan, FolksPool, FolksOracle } from "./xchain/modules/index.js";
 
 // === COMMON ===
 export * from "./common/types/address.js";
@@ -22,10 +17,7 @@ export * from "./common/constants/bytes.js";
 export * from "./common/constants/chain.js";
 export * from "./common/constants/message.js";
 
-export {
-  convertFromGenericAddress,
-  convertToGenericAddress,
-} from "./common/utils/address.js";
+export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
 
 // === CHAINS ===
 
