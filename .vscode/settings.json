@@ -11,6 +11,7 @@
 
   // Linting using ESLint.
   "eslint.validate": ["javascript", "typescript"],
+  "eslint.experimental.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
