@@ -14,7 +14,11 @@ import type { AdapterType } from "../../common/types/message.js";
 import type { PrepareRetryMessageCall } from "../../common/types/module.js";
 
 export const prepare = {
-  async retryMessage(adapterId: AdapterType, messageId: MessageId) {
+  async retryMessage(
+    adapterId: AdapterType,
+    messageId: MessageId,
+    value: bigint,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
@@ -24,6 +28,7 @@ export const prepare = {
       getEvmSignerAddress(FolksCore.getSigner()),
       adapterId,
       messageId,
+      value,
       getHubChain(folksChain.network),
     );
   },
@@ -32,6 +37,7 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     extraArgs: ReverseMessageExtraAgrs,
+    value: bigint,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
@@ -43,6 +49,7 @@ export const prepare = {
       adapterId,
       messageId,
       extraArgs,
+      value,
       getHubChain(folksChain.network),
     );
   },

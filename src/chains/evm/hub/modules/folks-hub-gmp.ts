@@ -20,6 +20,7 @@ export const prepare = {
     sender: EvmAddress,
     adapterId: AdapterType,
     messageId: MessageId,
+    value: bigint,
     hubChain: HubChain,
     transactionOptions: EstimateGasParameters = {
       account: sender,
@@ -34,12 +35,13 @@ export const prepare = {
       [adapterId, messageId],
       {
         ...transactionOptions,
-        value: undefined,
+        value,
       },
     );
 
     return {
       gasLimit,
+      msgValue: value,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
     };
   },
@@ -50,6 +52,7 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     extraArgs: ReverseMessageExtraAgrs,
+    value: bigint,
     hubChain: HubChain,
     transactionOptions: EstimateGasParameters = {
       account: sender,
@@ -64,12 +67,13 @@ export const prepare = {
       [adapterId, messageId, extraArgs],
       {
         ...transactionOptions,
-        value: undefined,
+        value,
       },
     );
 
     return {
       gasLimit,
+      msgValue: value,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
     };
   },
@@ -83,7 +87,7 @@ export const write = {
     messageId: MessageId,
     prepareCall: PrepareRetryMessageCall,
   ) {
-    const { gasLimit, bridgeRouterAddress } = prepareCall;
+    const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
     const bridgeRouter = getBridgeRouterHubContract(
       provider,
@@ -94,7 +98,8 @@ export const write = {
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gasLimit,
+      msgValue,
     });
   },
 
@@ -106,7 +111,7 @@ export const write = {
     extraArgs: ReverseMessageExtraAgrs,
     prepareCall: PrepareReverseMessageCall,
   ) {
-    const { gasLimit, bridgeRouterAddress } = prepareCall;
+    const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
     const bridgeRouter = getBridgeRouterHubContract(
       provider,
@@ -119,7 +124,8 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gasLimit: gasLimit,
+        gasLimit,
+        msgValue,
       },
     );
   },
