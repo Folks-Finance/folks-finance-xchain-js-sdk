@@ -20,6 +20,7 @@ export * from "./common/constants/message.js";
 
 export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
 export { getSupportedMessageAdapters } from "./common/utils/adapter.js";
+export { generateLoanId } from "./common/utils/bytes.js";
 
 // === CHAINS ===
 
