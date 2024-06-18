@@ -1,7 +1,17 @@
 import { isHubChain } from "../../chains/evm/hub/utils/chain.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../../xchain/core/folks-core.js";
+import { DATA_ADAPTERS, HUB_ADAPTERS, TOKEN_ADAPTERS } from "../constants/adapter.js";
+import { MessageAdapterParamsType } from "../types/adapter.js";
 import { AdapterType } from "../types/message.js";
 
+import { isCircleToken } from "./token.js";
+
+import type {
+  MessageAdapterParams,
+  ReceiveTokenMessageAdapterParams,
+  SendTokenMessageAdapterParams,
+} from "../types/adapter.js";
 import type { FolksChainId } from "../types/chain.js";
 
 export function doesAdapterSupportDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
@@ -28,4 +38,44 @@ export function doesAdapterSupportTokenMessage(folksChainId: FolksChainId, adapt
 export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, adapterId: AdapterType): void {
   if (!doesAdapterSupportTokenMessage(folksChainId, adapterId))
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
+}
+
+function getAdapterId({
+  folksTokenId,
+  sourceFolksChainId,
+  network,
+}: ReceiveTokenMessageAdapterParams | SendTokenMessageAdapterParams) {
+  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
+  if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
+  return DATA_ADAPTERS;
+}
+
+function getReturnAdapterId({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
+  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
+  if (isHubChain(destFolksChainId, network)) return HUB_ADAPTERS;
+  return DATA_ADAPTERS;
+}
+
+export function getSupportedMessageAdapters(params: MessageAdapterParams) {
+  const { messageAdapterParamType } = params;
+
+  switch (messageAdapterParamType) {
+    case MessageAdapterParamsType.SendToken:
+      return {
+        adapterId: getAdapterId(params),
+        returnAdapterId: [AdapterType.HUB],
+      };
+    case MessageAdapterParamsType.ReceiveToken:
+      return {
+        adapterId: getAdapterId(params),
+        returnAdapterId: getReturnAdapterId(params),
+      };
+    case MessageAdapterParamsType.Data:
+      return {
+        adapterId: DATA_ADAPTERS,
+        returnAdapterId: [AdapterType.HUB],
+      };
+    default:
+      return exhaustiveCheck(messageAdapterParamType);
+  }
 }

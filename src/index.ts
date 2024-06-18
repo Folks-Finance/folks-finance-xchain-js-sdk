@@ -5,6 +5,7 @@ export { FolksCore } from "./xchain/core/folks-core.js";
 export { FolksAccount, FolksLoan, FolksPool, FolksOracle } from "./xchain/modules/index.js";
 
 // === COMMON ===
+export * from "./common/types/adapter.js";
 export * from "./common/types/address.js";
 export * from "./common/types/chain.js";
 export * from "./common/types/core.js";
@@ -18,6 +19,7 @@ export * from "./common/constants/chain.js";
 export * from "./common/constants/message.js";
 
 export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
+export { getSupportedMessageAdapters } from "./common/utils/adapter.js";
 
 // === CHAINS ===
 
