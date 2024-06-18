@@ -27,7 +27,7 @@ import {
   buildMessagePayload,
   buildSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
-import { getHubChain, getHubTokenAddress, getHubTokenData } from "../utils/chain.js";
+import { getHubChain, getHubTokenData } from "../utils/chain.js";
 import { getBridgeRouterHubContract, getHubContract, getLoanManagerContract } from "../utils/contract.js";
 import { fetchUserLoanIds } from "../utils/events.js";
 
@@ -151,12 +151,7 @@ export async function getSendTokenAdapterFees(
       convertNumberToBytes(amount, UINT256_LENGTH),
     ),
     finalityLevel: FINALITY.FINALISED,
-    extraArgs: buildSendTokenExtraArgsWhenRemoving(
-      hubTokenData.tokenType,
-      spokeTokenData.spokeAddress,
-      getHubTokenAddress(hubTokenData),
-      amount,
-    ),
+    extraArgs: buildSendTokenExtraArgsWhenRemoving(spokeTokenData.spokeAddress, hubTokenData.token, amount),
   };
 
   // get return adapter fee

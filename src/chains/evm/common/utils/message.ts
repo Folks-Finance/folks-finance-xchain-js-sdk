@@ -24,7 +24,7 @@ import type {
   MessageToSend,
   OptionalFeeParams,
 } from "../../../../common/types/message.js";
-import type { SpokeTokenType } from "../../../../common/types/token.js";
+import type { FolksTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex } from "viem";
 
@@ -61,21 +61,21 @@ export function extraArgsToBytes(tokenAddr: GenericAddress, recipientAddr: Gener
 }
 
 export function buildSendTokenExtraArgsWhenRemoving(
-  tokenType: TokenType,
   spokeAddress: GenericAddress,
-  hubTokenAddress: GenericAddress,
+  folksTokenType: FolksTokenType,
   amount: bigint,
 ): Hex {
-  if (tokenType === TokenType.NATIVE || tokenType === TokenType.ERC20) return "0x";
-  return extraArgsToBytes(hubTokenAddress, spokeAddress, BigInt(amount));
+  const { type, address } = folksTokenType;
+  if (type === TokenType.NATIVE || type === TokenType.ERC20) return "0x";
+  return extraArgsToBytes(address, spokeAddress, amount);
 }
 
 export function buildSendTokenExtraArgsWhenAdding(
-  spokeTokenType: SpokeTokenType,
   hubPoolAddress: GenericAddress,
+  folksTokenType: FolksTokenType,
   amount: bigint,
 ): Hex {
-  const { type, address } = spokeTokenType;
+  const { type, address } = folksTokenType;
   if (type === TokenType.NATIVE || type === TokenType.ERC20) return "0x";
   return extraArgsToBytes(address, hubPoolAddress, amount);
 }
@@ -277,7 +277,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.Deposit, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.token, extraArgs.hubPoolAddress, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
@@ -319,7 +319,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.Repay, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.token, extraArgs.hubPoolAddress, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
