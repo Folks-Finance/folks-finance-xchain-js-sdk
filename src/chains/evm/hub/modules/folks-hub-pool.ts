@@ -15,7 +15,10 @@ export async function getPoolInfo(
   network: NetworkType,
   folksTokenId: FolksTokenId,
 ): Promise<PoolInfo> {
-  const { poolAddress, tokenDecimals } = getHubTokenData(folksTokenId, network);
+  const {
+    poolAddress,
+    token: { decimals: tokenDecimals },
+  } = getHubTokenData(folksTokenId, network);
   const hubPool = getHubPoolContract(provider, poolAddress);
 
   // get pool data
