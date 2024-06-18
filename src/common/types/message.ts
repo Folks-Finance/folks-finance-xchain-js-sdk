@@ -37,11 +37,36 @@ export enum Action {
   SendToken,
 }
 
+export type SendTokenAction = Extract<Action, Action.Deposit | Action.Repay>;
+export type ReceiveTokenAction = Extract<Action, Action.Withdraw | Action.Borrow>;
+export type HubAction = Extract<
+  Action,
+  Action.DepositFToken | Action.WithdrawFToken | Action.Liquidate | Action.SendToken
+>;
+export type DataAction = Extract<
+  Action,
+  | Action.CreateAccount
+  | Action.InviteAddress
+  | Action.AcceptInviteAddress
+  | Action.UnregisterAddress
+  | Action.AddDelegate
+  | Action.RemoveDelegate
+  | Action.CreateLoan
+  | Action.DeleteLoan
+  | Action.RepayWithCollateral
+  | Action.SwitchBorrowType
+>;
+
 export type Finality = (typeof FINALITY)[keyof typeof FINALITY];
 
 export type MessageAdapters = {
   adapterId: AdapterType;
   returnAdapterId: AdapterType;
+};
+
+export type SupportedMessageAdapters = {
+  adapterId: Array<AdapterType>;
+  returnAdapterId: Array<AdapterType>;
 };
 
 export type FeeParams = {
