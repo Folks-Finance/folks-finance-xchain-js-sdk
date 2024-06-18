@@ -2,7 +2,7 @@ import { bytesToHex, pad, toHex } from "viem";
 
 import { BYTES32_LENGTH } from "../constants/bytes.js";
 
-import type { AccountId } from "../types/lending.js";
+import type { AccountId, LoanId } from "../types/lending.js";
 import type { Hex } from "viem";
 
 export function getEmptyBytes(length: number): string {
@@ -39,4 +39,8 @@ export function convertBooleanToByte(bool: boolean): Hex {
 
 export function getRandomBytes(length: number): Hex {
   return bytesToHex(crypto.getRandomValues(new Uint8Array(length)));
+}
+
+export function generateLoanId(): LoanId {
+  return getRandomBytes(BYTES32_LENGTH) as LoanId;
 }
