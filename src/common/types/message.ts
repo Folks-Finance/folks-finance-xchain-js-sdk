@@ -43,7 +43,19 @@ export type HubAction = Extract<
   Action,
   Action.DepositFToken | Action.WithdrawFToken | Action.Liquidate | Action.SendToken
 >;
-export type DataAction = Exclude<Action, SendTokenAction | ReceiveTokenAction | HubAction>;
+export type DataAction = Extract<
+  Action,
+  | Action.CreateAccount
+  | Action.InviteAddress
+  | Action.AcceptInviteAddress
+  | Action.UnregisterAddress
+  | Action.AddDelegate
+  | Action.RemoveDelegate
+  | Action.CreateLoan
+  | Action.DeleteLoan
+  | Action.RepayWithCollateral
+  | Action.SwitchBorrowType
+>;
 
 export type Finality = (typeof FINALITY)[keyof typeof FINALITY];
 
