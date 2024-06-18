@@ -18,6 +18,7 @@ export * from "./common/constants/chain.js";
 export * from "./common/constants/message.js";
 
 export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
+export { generateLoanId } from "./common/utils/bytes.js";
 
 // === CHAINS ===
 
