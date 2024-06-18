@@ -44,15 +44,17 @@ function getAdapterId({
   folksTokenId,
   sourceFolksChainId,
   network,
+  messageAdapterParamType,
 }: ReceiveTokenMessageAdapterParams | SendTokenMessageAdapterParams) {
-  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
+  if (messageAdapterParamType == MessageAdapterParamsType.SendToken && isCircleToken(folksTokenId))
+    return TOKEN_ADAPTERS;
   return DATA_ADAPTERS;
 }
 
 function getReturnAdapterId({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
-  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
   if (isHubChain(destFolksChainId, network)) return HUB_ADAPTERS;
+  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
   return DATA_ADAPTERS;
 }
 
