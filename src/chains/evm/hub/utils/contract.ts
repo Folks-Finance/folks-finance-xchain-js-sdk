@@ -28,11 +28,23 @@ export function getAccountManagerContract(
 export function getBridgeRouterHubContract(
   provider: Client,
   address: GenericAddress,
-): GetReadContractReturnType<typeof BridgeRouterHubAbi> {
+): GetReadContractReturnType<typeof BridgeRouterHubAbi>;
+export function getBridgeRouterHubContract(
+  provider: Client,
+  address: GenericAddress,
+  signer: WalletClient,
+): GetContractReturnType<typeof BridgeRouterHubAbi, Client>;
+export function getBridgeRouterHubContract(
+  provider: Client,
+  address: GenericAddress,
+  signer?: WalletClient,
+):
+  | GetReadContractReturnType<typeof BridgeRouterHubAbi>
+  | GetContractReturnType<typeof BridgeRouterHubAbi, Client> {
   return getContract({
     abi: BridgeRouterHubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
-    client: { public: provider },
+    client: { wallet: signer, public: provider },
   });
 }
 
