@@ -1,7 +1,7 @@
 import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId, LoanName } from "./lending.js";
-import type { LoanType } from "./module.js";
+import type { LoanTypeId } from "./module.js";
 import type { FolksTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
@@ -111,7 +111,7 @@ export type UnregisterAddressMessageData = {
 // Data: loan
 export type CreateLoanMessageData = {
   loanId: LoanId;
-  loanTypeId: LoanType;
+  loanTypeId: LoanTypeId;
   loanName: LoanName;
 };
 
@@ -124,7 +124,7 @@ export type CreateLoanAndDepositMessageData = {
   loanId: LoanId;
   poolId: number;
   amount: bigint;
-  loanTypeId: LoanType;
+  loanTypeId: LoanTypeId;
   loanName: LoanName;
 };
 

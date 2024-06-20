@@ -2,7 +2,7 @@ import { FOLKS_CHAIN_ID } from "../../../../common/constants/chain.js";
 import { TESTNET_POOLS } from "../../../../common/constants/pool.js";
 import { NetworkType, ChainType } from "../../../../common/types/chain.js";
 import { AdapterType } from "../../../../common/types/message.js";
-import { LoanType } from "../../../../common/types/module.js";
+import { LoanTypeId } from "../../../../common/types/module.js";
 import { FolksTokenId, TokenType } from "../../../../common/types/token.js";
 import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
@@ -83,7 +83,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.USDC,
         poolId: TESTNET_POOLS[FolksTokenId.USDC],
         poolAddress: convertToGenericAddress("0x8EEa1C4354544410A52d0bA7f83C7D6DE05F1f34" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.AVAX]: {
         token: {
@@ -94,7 +94,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.AVAX,
         poolId: TESTNET_POOLS[FolksTokenId.AVAX],
         poolAddress: convertToGenericAddress("0xace07d39b27e83676B5400c88ED134687bCe3689" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.ETH_eth_sep]: {
         token: {
@@ -105,7 +105,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.ETH_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
         poolAddress: convertToGenericAddress("0xbA678D555AbC80CcA6BBeAdD8CCC89a6795D28CD" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.ETH_base_sep]: {
         token: {
@@ -116,7 +116,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.ETH_base_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
         poolAddress: convertToGenericAddress("0x3b764CD5AD1E23D3dDc531717cE49A2D165A763c" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.LINK_eth_sep]: {
         token: {
@@ -127,7 +127,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         folksTokenId: FolksTokenId.LINK_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
         poolAddress: convertToGenericAddress("0x22237f48b3aBc84bd05e6619A513dA9bCC0Cd387" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanType.DEPOSIT, LoanType.GENERAL]),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
     },
   },

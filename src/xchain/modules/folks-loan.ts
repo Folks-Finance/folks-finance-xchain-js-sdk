@@ -49,7 +49,7 @@ import type {
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
-  LoanType,
+  LoanTypeId,
   PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
@@ -65,7 +65,7 @@ export const prepare = {
   async createLoan(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     adapters: MessageAdapters,
   ) {
@@ -184,7 +184,7 @@ export const prepare = {
   async createLoanAndDeposit(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     folksTokenId: FolksTokenId,
     amount: bigint,
@@ -265,7 +265,7 @@ export const prepare = {
   async deposit(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     adapters: MessageAdapters,
@@ -535,7 +535,7 @@ export const prepare = {
   async repay(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     maxOverRepayment: bigint,
@@ -799,7 +799,7 @@ export const write = {
   async createLoan(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     prepareCall: PrepareCreateLoanCall,
   ) {
@@ -845,7 +845,7 @@ export const write = {
   async createLoanAndDeposit(
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     amount: bigint,
     includeApproval: boolean,
@@ -1079,7 +1079,7 @@ export const read = {
     }
   },
 
-  async loanTypeInfo(loanTypeId: LoanType): Promise<LoanTypeInfo> {
+  async loanTypeInfo(loanTypeId: LoanTypeId): Promise<LoanTypeInfo> {
     const network = FolksCore.getSelectedNetwork();
 
     // filter for all tokens supported in loan type
@@ -1090,7 +1090,7 @@ export const read = {
     return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
-  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanType): Promise<Array<LoanId>> {
+  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanTypeId): Promise<Array<LoanId>> {
     const network = FolksCore.getSelectedNetwork();
     // get active user loans ids
     return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
@@ -1105,7 +1105,7 @@ export const read = {
   userLoansInfo(
     userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
-    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+    loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
   ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan

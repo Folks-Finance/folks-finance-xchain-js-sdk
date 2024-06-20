@@ -16,7 +16,7 @@ import type {
   PrepareRetryMessageCall as PrepareRetryMessageEVMCall,
 } from "../../chains/evm/common/types/module.js";
 
-export enum LoanType {
+export enum LoanTypeId {
   DEPOSIT = 1, // no support for borrows
   GENERAL = 2,
 }

@@ -1,5 +1,5 @@
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
-import type { LoanType } from "../../../../common/types/module.js";
+import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { GetEventParams, GetReadContractReturnType } from "../../common/types/contract.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
@@ -28,7 +28,7 @@ export type LoanPoolInfo = {
 };
 
 export type LoanTypeInfo = {
-  loanTypeId: LoanType;
+  loanTypeId: LoanTypeId;
   deprecated: boolean;
   loanTargetHealth: Dnum;
   pools: Partial<Record<FolksTokenId, LoanPoolInfo>>;
@@ -68,7 +68,7 @@ export type UserLoanInfoBorrow = {
 
 export type UserLoanInfo = {
   loanId: LoanId;
-  loanTypeId: LoanType;
+  loanTypeId: LoanTypeId;
   accountId: AccountId;
   collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>>;
   borrows: Partial<Record<FolksTokenId, UserLoanInfoBorrow>>;
@@ -87,7 +87,7 @@ export type UserLoanInfo = {
 export type CreateUserLoanEventParams = GetEventParams & {
   loanManager: GetReadContractReturnType<typeof LoanManagerAbi>;
   accountId: AccountId;
-  loanTypeId?: LoanType;
+  loanTypeId?: LoanTypeId;
 };
 
 export type DeleteUserLoanEventParams = GetEventParams & {

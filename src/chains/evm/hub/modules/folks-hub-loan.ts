@@ -42,7 +42,7 @@ import type {
   LiquidateMessageData,
   LiquidateMessageDataParams,
 } from "../../../../common/types/message.js";
-import type { LoanType } from "../../../../common/types/module.js";
+import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { PrepareLiquidateCall } from "../../common/types/module.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
@@ -162,7 +162,7 @@ export async function getSendTokenAdapterFees(
 export async function getLoanTypeInfo(
   provider: Client,
   network: NetworkType,
-  loanTypeId: LoanType,
+  loanTypeId: LoanTypeId,
   tokens: Array<HubTokenData>,
 ): Promise<LoanTypeInfo> {
   const hubChain = getHubChain(network);
@@ -271,7 +271,7 @@ export async function getUserLoanIds(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
-  loanTypeIdFilter?: LoanType,
+  loanTypeIdFilter?: LoanTypeId,
 ): Promise<Array<LoanId>> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
@@ -310,7 +310,7 @@ export async function getUserLoans(
 export function getUserLoansInfo(
   userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
-  loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+  loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
 ): Record<LoanId, UserLoanInfo> {
   const poolIdToFolksTokenId = new Map(
@@ -322,7 +322,7 @@ export function getUserLoansInfo(
   for (const [loanId, userLoan] of userLoansMap.entries()) {
     const [accountId, loanTypeId, colPools, borPools, cols, bors] = userLoan;
 
-    const loanTypeInfo = loanTypesInfo[loanTypeId as LoanType];
+    const loanTypeInfo = loanTypesInfo[loanTypeId as LoanTypeId];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
 
     // common to collaterals and borrows

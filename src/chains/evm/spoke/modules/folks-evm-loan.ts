@@ -14,7 +14,7 @@ import type { EvmAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, NetworkType, SpokeChain } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId, LoanName } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
-import type { LoanType } from "../../../../common/types/module.js";
+import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId, SpokeTokenData } from "../../../../common/types/token.js";
 import type {
   PrepareBorrowCall,
@@ -36,7 +36,7 @@ export const prepare = {
     messageToSend: MessageToSend,
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -354,7 +354,7 @@ export const write = {
     signer: WalletClient,
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     prepareCall: PrepareCreateLoanCall,
   ) {
@@ -394,7 +394,7 @@ export const write = {
     signer: WalletClient,
     accountId: AccountId,
     loanId: LoanId,
-    loanTypeId: LoanType,
+    loanTypeId: LoanTypeId,
     loanName: LoanName,
     amount: bigint,
     includeApprove = true,

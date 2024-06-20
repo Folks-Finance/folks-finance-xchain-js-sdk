@@ -2,7 +2,7 @@ import { HUB_CHAIN } from "../constants/chain.js";
 
 import type { FolksChainId, NetworkType } from "../../../../common/types/chain.js";
 import type { AdapterType } from "../../../../common/types/message.js";
-import type { LoanType } from "../../../../common/types/module.js";
+import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { HubChain } from "../types/chain.js";
 import type { HubTokenData } from "../types/token.js";
@@ -25,12 +25,12 @@ export function getHubTokenData(folksTokenId: FolksTokenId, network: NetworkType
   return token;
 }
 
-export function isLoanTypeSupported(loanType: LoanType, folksTokenId: FolksTokenId, network: NetworkType): boolean {
+export function isLoanTypeSupported(loanType: LoanTypeId, folksTokenId: FolksTokenId, network: NetworkType): boolean {
   const token = getHubTokenData(folksTokenId, network);
   return token.supportedLoanTypes.has(loanType);
 }
 
-export function assertLoanTypeSupported(loanType: LoanType, folksTokenId: FolksTokenId, network: NetworkType): void {
+export function assertLoanTypeSupported(loanType: LoanTypeId, folksTokenId: FolksTokenId, network: NetworkType): void {
   if (!isLoanTypeSupported(loanType, folksTokenId, network))
     throw new Error(`Loan type ${loanType} is not supported for folksTokenId: ${folksTokenId}`);
 }
