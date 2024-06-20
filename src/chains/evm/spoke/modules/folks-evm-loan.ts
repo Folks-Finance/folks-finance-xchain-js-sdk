@@ -12,7 +12,7 @@ import { getBridgeRouterSpokeContract, getSpokeCommonContract, getSpokeTokenCont
 
 import type { EvmAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, NetworkType, SpokeChain } from "../../../../common/types/chain.js";
-import type { AccountId, LoanId } from "../../../../common/types/lending.js";
+import type { AccountId, LoanId, LoanName } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
 import type { LoanType } from "../../../../common/types/module.js";
 import type { FolksTokenId, SpokeTokenData } from "../../../../common/types/token.js";
@@ -351,13 +351,14 @@ export const write = {
     accountId: AccountId,
     loanId: LoanId,
     loanTypeId: LoanType,
+    loanName: LoanName,
     prepareCall: PrepareCreateLoanCall,
   ) {
     const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId], {
+    return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId, loanName], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gasLimit: gasLimit,
@@ -382,6 +383,44 @@ export const write = {
       gasLimit: gasLimit,
       value: msgValue,
     });
+  },
+
+  async createLoanAndDeposit(
+    provider: Client,
+    signer: WalletClient,
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanType,
+    loanName: LoanName,
+    amount: bigint,
+    includeApprove = true,
+    prepareCall: PrepareDepositCall,
+  ) {
+    const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
+    const { token } = spokeTokenData;
+
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
+
+    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
+      const approveTxId = await sendERC20Approve(
+        provider,
+        token.address,
+        signer,
+        convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM),
+        amount,
+      );
+      if (approveTxId !== null) await waitForTransactionReceipt(provider, { hash: approveTxId });
+    }
+
+    return await spokeToken.write.createLoanAndDeposit(
+      [messageParams, accountId, loanId, amount, loanTypeId, loanName],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gasLimit: gasLimit,
+        value: msgValue,
+      },
+    );
   },
 
   async deposit(

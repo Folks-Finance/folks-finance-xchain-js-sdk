@@ -1,6 +1,6 @@
 import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
-import type { AccountId, LoanId } from "./lending.js";
+import type { AccountId, LoanId, LoanName } from "./lending.js";
 import type { LoanType } from "./module.js";
 import type { FolksTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
@@ -112,11 +112,20 @@ export type UnregisterAddressMessageData = {
 export type CreateLoanMessageData = {
   loanId: LoanId;
   loanTypeId: LoanType;
+  loanName: LoanName;
 };
 
 export type DeleteLoanMessageData = {
   accountId: AccountId;
   loanId: LoanId;
+};
+
+export type CreateLoanAndDepositMessageData = {
+  loanId: LoanId;
+  poolId: number;
+  amount: bigint;
+  loanTypeId: LoanType;
+  loanName: LoanName;
 };
 
 export type DepositMessageData = {
@@ -230,16 +239,22 @@ export type DeleteLoanMessageDataParams = {
   extraArgs: DefaultExtraArgs;
 };
 
-export type WithdrawMessageDataParams = {
-  action: Action.Withdraw;
-  data: WithdrawMessageData;
-  extraArgs: DefaultExtraArgs;
+export type CreateLoanAndDepositMessageDataParams = {
+  action: Action.CreateLoanAndDeposit;
+  data: CreateLoanAndDepositMessageData;
+  extraArgs: DepositExtraArgs;
 };
 
 export type DepositMessageDataParams = {
   action: Action.Deposit;
   data: DepositMessageData;
   extraArgs: DepositExtraArgs;
+};
+
+export type WithdrawMessageDataParams = {
+  action: Action.Withdraw;
+  data: WithdrawMessageData;
+  extraArgs: DefaultExtraArgs;
 };
 
 export type BorrowMessageDataParams = {
@@ -279,6 +294,7 @@ export type MessageDataParams =
   | UnregisterAddressMessageDataParams
   | CreateLoanMessageDataParams
   | DeleteLoanMessageDataParams
+  | CreateLoanAndDepositMessageDataParams
   | DepositMessageDataParams
   | WithdrawMessageDataParams
   | BorrowMessageDataParams

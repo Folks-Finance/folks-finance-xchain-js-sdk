@@ -269,6 +269,18 @@ export function buildEvmMessageToSend(
       };
       return message;
     }
+    case Action.CreateLoanAndDeposit: {
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(Action.CreateLoanAndDeposit, accountId, userAddress, data),
+        finalityLevel: FINALITY.FINALISED,
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
+      };
+      return message;
+    }
     case Action.Deposit: {
       const message: MessageToSend = {
         params,
