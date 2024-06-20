@@ -324,6 +324,31 @@ export const SpokeTokenAbi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        components: [
+          { internalType: "uint16", name: "adapterId", type: "uint16" },
+          { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
+          { internalType: "uint256", name: "receiverValue", type: "uint256" },
+          { internalType: "uint256", name: "gasLimit", type: "uint256" },
+          { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
+        ],
+        internalType: "struct Messages.MessageParams",
+        name: "params",
+        type: "tuple",
+      },
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      { internalType: "bytes32", name: "loanId", type: "bytes32" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "uint16", name: "loanTypeId", type: "uint16" },
+      { internalType: "bytes32", name: "loanName", type: "bytes32" },
+    ],
+    name: "createLoanAndDeposit",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "currentCapacity",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],

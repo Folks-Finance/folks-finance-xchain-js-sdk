@@ -24,6 +24,7 @@ export enum Action {
   RemoveDelegate,
   CreateLoan,
   DeleteLoan,
+  CreateLoanAndDeposit,
   Deposit,
   DepositFToken,
   Withdraw,

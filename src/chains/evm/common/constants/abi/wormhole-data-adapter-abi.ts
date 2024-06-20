@@ -154,6 +154,25 @@ export const WormholeDataAdapterAbi = [
         name: "messageId",
         type: "bytes32",
       },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "adapterAddress",
+        type: "bytes32",
+      },
+    ],
+    name: "ReceiveMessage",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "messageId",
+        type: "bytes32",
+      },
     ],
     name: "ReceiveMessage",
     type: "event",
@@ -221,6 +240,12 @@ export const WormholeDataAdapterAbi = [
   {
     anonymous: false,
     inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "operationId",
+        type: "bytes32",
+      },
       {
         components: [
           {
