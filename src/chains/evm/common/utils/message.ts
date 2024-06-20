@@ -106,10 +106,19 @@ export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      return concat([data.loanId, convertNumberToBytes(data.loanTypeId, UINT16_LENGTH)]);
+      return concat([data.loanId, convertNumberToBytes(data.loanTypeId, UINT16_LENGTH), data.loanName]);
     }
     case Action.DeleteLoan: {
       return data.loanId;
+    }
+    case Action.CreateLoanAndDeposit: {
+      return concat([
+        data.loanId,
+        convertNumberToBytes(data.poolId, UINT8_LENGTH),
+        convertNumberToBytes(data.amount, UINT256_LENGTH),
+        convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),
+        data.loanName,
+      ]);
     }
     case Action.Deposit: {
       return concat([

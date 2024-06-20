@@ -37,6 +37,7 @@ export const prepare = {
     accountId: AccountId,
     loanId: LoanId,
     loanTypeId: LoanType,
+    loanName: LoanName,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
   ): Promise<PrepareCreateLoanCall> {
@@ -49,10 +50,13 @@ export const prepare = {
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createLoan([messageToSend.params, accountId, loanId, loanTypeId], {
-      value: msgValue,
-      ...transactionOptions,
-    });
+    const gasLimit = await spokeCommon.estimateGas.createLoan(
+      [messageToSend.params, accountId, loanId, loanTypeId, loanName],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
 
     return {
       msgValue,

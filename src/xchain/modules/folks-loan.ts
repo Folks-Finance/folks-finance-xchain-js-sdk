@@ -118,6 +118,7 @@ export const prepare = {
           accountId,
           loanId,
           loanTypeId,
+          loanName,
           spokeChain,
         );
       default:
