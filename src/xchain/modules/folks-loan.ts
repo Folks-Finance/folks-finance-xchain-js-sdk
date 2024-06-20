@@ -25,7 +25,7 @@ import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
+import type { LoanManagerGetUserLoanType, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
 import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
@@ -962,17 +962,21 @@ export const read = {
     return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
-  async userLoansInfo(
-    accountId: AccountId,
-    poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
-    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
-    oraclePrices: OraclePrices,
-    loanTypeIdFilter?: LoanType,
-  ) {
+  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanType): Promise<Array<LoanId>> {
     const network = FolksCore.getSelectedNetwork();
 
     // get active user loans
-    const loanIds = await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
+    return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
+  },
+
+  async userLoansInfo(
+    loanIds: Array<LoanId>,
+    poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
+    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+    oraclePrices: OraclePrices,
+    userLoans?: Array<LoanManagerGetUserLoanType>,
+  ): Promise<Record<LoanId, UserLoanInfo>> {
+    const network = FolksCore.getSelectedNetwork();
 
     // get info of each user loan
     return await FolksHubLoan.getUserLoansInfo(
@@ -982,6 +986,7 @@ export const read = {
       poolsInfo,
       loanTypesInfo,
       oraclePrices,
+      userLoans,
     );
   },
 };

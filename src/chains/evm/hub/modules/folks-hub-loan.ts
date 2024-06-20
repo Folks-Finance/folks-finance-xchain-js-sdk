@@ -48,6 +48,7 @@ import type { PrepareLiquidateCall } from "../../common/types/module.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type {
+  LoanManagerGetUserLoanType,
   LoanPoolInfo,
   LoanTypeInfo,
   UserLoanInfo,
@@ -290,6 +291,7 @@ export async function getUserLoansInfo(
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
   loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
+  userLoans?: Array<LoanManagerGetUserLoanType>,
 ): Promise<Record<LoanId, UserLoanInfo>> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
@@ -297,17 +299,19 @@ export async function getUserLoansInfo(
     Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [poolId, folksTokenId]),
   );
 
-  const getUserLoans: Array<ContractFunctionParameters> = loanIds.map((loanId) => ({
-    address: loanManager.address,
-    abi: loanManager.abi,
-    functionName: "getUserLoan",
-    args: [loanId],
-  }));
+  if (!userLoans) {
+    const getUserLoans: Array<ContractFunctionParameters> = loanIds.map((loanId) => ({
+      address: loanManager.address,
+      abi: loanManager.abi,
+      functionName: "getUserLoan",
+      args: [loanId],
+    }));
 
-  const userLoans = (await multicall(provider, {
-    contracts: getUserLoans,
-    allowFailure: false,
-  })) as Array<ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">>;
+    userLoans = (await multicall(provider, {
+      contracts: getUserLoans,
+      allowFailure: false,
+    })) as Array<LoanManagerGetUserLoanType>;
+  }
 
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
   for (let i = 0; i < userLoans.length; i++) {
