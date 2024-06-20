@@ -111,6 +111,8 @@ export function calcLiquidationMargin(
   return dn.div(
     dn.sub(totalEffectiveCollateralBalanceValue, totalEffectiveBorrowBalanceValue),
     totalEffectiveCollateralBalanceValue,
-    { rounding: "ROUND_DOWN" },
+    {
+      rounding: "ROUND_DOWN",
+    },
   );
 }
