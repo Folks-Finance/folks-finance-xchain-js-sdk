@@ -222,6 +222,12 @@ export const CCIPDataAdapterAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "bytes32",
+        name: "operationId",
+        type: "bytes32",
+      },
+      {
         components: [
           {
             components: [

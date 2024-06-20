@@ -330,6 +330,7 @@ export const SpokeCommonAbi = [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "bytes32", name: "loanId", type: "bytes32" },
       { internalType: "uint16", name: "loanTypeId", type: "uint16" },
+      { internalType: "bytes32", name: "loanName", type: "bytes32" },
     ],
     name: "createLoan",
     outputs: [],

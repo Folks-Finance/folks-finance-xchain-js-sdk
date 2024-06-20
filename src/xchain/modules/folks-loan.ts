@@ -30,9 +30,10 @@ import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
-import type { AccountId, LoanId } from "../../common/types/lending.js";
+import type { AccountId, LoanId, LoanName } from "../../common/types/lending.js";
 import type {
   BorrowMessageData,
+  CreateLoanAndDepositMessageData,
   CreateLoanMessageData,
   DeleteLoanMessageData,
   DepositExtraArgs,
@@ -48,7 +49,7 @@ import type {
   WithdrawMessageData,
 } from "../../common/types/message.js";
 import type {
-  LoanType,
+  LoanTypeId,
   PrepareBorrowCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
@@ -61,7 +62,13 @@ import type {
 import type { FolksTokenId } from "../../common/types/token.js";
 
 export const prepare = {
-  async createLoan(accountId: AccountId, loanId: LoanId, loanTypeId: LoanType, adapters: MessageAdapters) {
+  async createLoan(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanTypeId,
+    loanName: LoanName,
+    adapters: MessageAdapters,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
@@ -76,6 +83,7 @@ export const prepare = {
     const data: CreateLoanMessageData = {
       loanId,
       loanTypeId,
+      loanName,
     };
     const messageBuilderParams: MessageBuilderParams = {
       userAddress,
@@ -110,6 +118,7 @@ export const prepare = {
           accountId,
           loanId,
           loanTypeId,
+          loanName,
           spokeChain,
         );
       default:
@@ -172,10 +181,11 @@ export const prepare = {
     }
   },
 
-  async deposit(
+  async createLoanAndDeposit(
     accountId: AccountId,
     loanId: LoanId,
-    loanType: LoanType,
+    loanTypeId: LoanTypeId,
+    loanName: LoanName,
     folksTokenId: FolksTokenId,
     amount: bigint,
     adapters: MessageAdapters,
@@ -183,7 +193,87 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    assertLoanTypeSupported(loanTypeId, folksTokenId, folksChain.network);
+    const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
+    const hubChain = getHubChain(folksChain.network);
+
+    const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+    const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
+
+    if (spokeTokenData.token.type === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    const data: CreateLoanAndDepositMessageData = {
+      loanId,
+      poolId: hubTokenData.poolId,
+      amount,
+      loanTypeId,
+      loanName,
+    };
+    const extraArgs: DepositExtraArgs = {
+      token: spokeTokenData.token,
+      hubPoolAddress: hubTokenData.poolAddress,
+      amount,
+    };
+    const messageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.CreateLoanAndDeposit,
+      sender: spokeChain.spokeCommonAddress,
+      destinationChainId: hubChain.folksChainId,
+      handler: hubChain.hubAddress,
+      data,
+      extraArgs,
+    };
+    const feeParams: OptionalFeeParams = {};
+
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
+      FolksCore.getHubProvider(),
+      folksChain.network,
+      MessageDirection.SpokeToHub,
+      messageBuilderParams,
+    );
+
+    const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.prepare.deposit(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          convertFromGenericAddress(userAddress, folksChain.chainType),
+          messageToSend,
+          accountId,
+          loanId,
+          amount,
+          spokeChain,
+          spokeTokenData,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async deposit(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanTypeId,
+    folksTokenId: FolksTokenId,
+    amount: bigint,
+    adapters: MessageAdapters,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
+    assertLoanTypeSupported(loanTypeId, folksTokenId, folksChain.network);
     const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
@@ -445,7 +535,7 @@ export const prepare = {
   async repay(
     accountId: AccountId,
     loanId: LoanId,
-    loanType: LoanType,
+    loanTypeId: LoanTypeId,
     folksTokenId: FolksTokenId,
     amount: bigint,
     maxOverRepayment: bigint,
@@ -454,7 +544,7 @@ export const prepare = {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupportFolksToken(folksChain.folksChainId, folksTokenId, folksChain.network);
-    assertLoanTypeSupported(loanType, folksTokenId, folksChain.network);
+    assertLoanTypeSupported(loanTypeId, folksTokenId, folksChain.network);
     const spokeChain = getSpokeChain(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
 
@@ -706,7 +796,13 @@ export const prepare = {
 };
 
 export const write = {
-  async createLoan(accountId: AccountId, loanId: LoanId, loanTypeId: LoanType, prepareCall: PrepareCreateLoanCall) {
+  async createLoan(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanTypeId,
+    loanName: LoanName,
+    prepareCall: PrepareCreateLoanCall,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -719,6 +815,7 @@ export const write = {
           accountId,
           loanId,
           loanTypeId,
+          loanName,
           prepareCall,
         );
       default:
@@ -738,6 +835,37 @@ export const write = {
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
           loanId,
+          prepareCall,
+        );
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
+  async createLoanAndDeposit(
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanTypeId,
+    loanName: LoanName,
+    amount: bigint,
+    includeApproval: boolean,
+    prepareCall: PrepareDepositCall,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
+
+    switch (folksChain.chainType) {
+      case ChainType.EVM:
+        return await FolksEvmLoan.write.createLoanAndDeposit(
+          FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+          FolksCore.getSigner<ChainType.EVM>(),
+          accountId,
+          loanId,
+          loanTypeId,
+          loanName,
+          amount,
+          includeApproval,
           prepareCall,
         );
       default:
@@ -951,7 +1079,7 @@ export const read = {
     }
   },
 
-  async loanTypeInfo(loanTypeId: LoanType): Promise<LoanTypeInfo> {
+  async loanTypeInfo(loanTypeId: LoanTypeId): Promise<LoanTypeInfo> {
     const network = FolksCore.getSelectedNetwork();
 
     // filter for all tokens supported in loan type
@@ -962,7 +1090,7 @@ export const read = {
     return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
-  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanType): Promise<Array<LoanId>> {
+  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanTypeId): Promise<Array<LoanId>> {
     const network = FolksCore.getSelectedNetwork();
     // get active user loans ids
     return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
@@ -977,7 +1105,7 @@ export const read = {
   userLoansInfo(
     userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
-    loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
+    loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
   ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan

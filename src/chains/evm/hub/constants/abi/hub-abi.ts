@@ -66,6 +66,7 @@ export const HubAbi = [
     name: "NotRegisteredToAccount",
     type: "error",
   },
+  { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
   {
     inputs: [
       { internalType: "uint16", name: "chainId", type: "uint16" },
