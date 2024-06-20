@@ -2,15 +2,9 @@ import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
-import type {
-  MessageId,
-  ReverseMessageExtraAgrs,
-} from "../../../../common/types/gmp.js";
+import type { MessageId, ReverseMessageExtraAgrs } from "../../../../common/types/gmp.js";
 import type { AdapterType } from "../../../../common/types/message.js";
-import type {
-  PrepareRetryMessageCall,
-  PrepareReverseMessageCall,
-} from "../../common/types/module.js";
+import type { PrepareRetryMessageCall, PrepareReverseMessageCall } from "../../common/types/module.js";
 import type { HubChain } from "../types/chain.js";
 import type { Client, EstimateGasParameters, WalletClient } from "viem";
 
@@ -26,18 +20,12 @@ export const prepare = {
       account: sender,
     },
   ): Promise<PrepareRetryMessageCall> {
-    const bridgeRouter = getBridgeRouterHubContract(
-      provider,
-      hubChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
 
-    const gasLimit = await bridgeRouter.estimateGas.retryMessage(
-      [adapterId, messageId],
-      {
-        ...transactionOptions,
-        value,
-      },
-    );
+    const gasLimit = await bridgeRouter.estimateGas.retryMessage([adapterId, messageId], {
+      ...transactionOptions,
+      value,
+    });
 
     return {
       gasLimit,
@@ -58,18 +46,12 @@ export const prepare = {
       account: sender,
     },
   ): Promise<PrepareRetryMessageCall> {
-    const bridgeRouter = getBridgeRouterHubContract(
-      provider,
-      hubChain.bridgeRouterAddress,
-    );
+    const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
 
-    const gasLimit = await bridgeRouter.estimateGas.reverseMessage(
-      [adapterId, messageId, extraArgs],
-      {
-        ...transactionOptions,
-        value,
-      },
-    );
+    const gasLimit = await bridgeRouter.estimateGas.reverseMessage([adapterId, messageId, extraArgs], {
+      ...transactionOptions,
+      value,
+    });
 
     return {
       gasLimit,
@@ -89,11 +71,7 @@ export const write = {
   ) {
     const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
-    const bridgeRouter = getBridgeRouterHubContract(
-      provider,
-      bridgeRouterAddress,
-      signer,
-    );
+    const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
 
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
@@ -113,20 +91,13 @@ export const write = {
   ) {
     const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
-    const bridgeRouter = getBridgeRouterHubContract(
-      provider,
-      bridgeRouterAddress,
-      signer,
-    );
+    const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
 
-    return await bridgeRouter.write.reverseMessage(
-      [adapterId, messageId, extraArgs],
-      {
-        account: getEvmSignerAccount(signer),
-        chain: signer.chain,
-        gasLimit,
-        msgValue,
-      },
-    );
+    return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gasLimit,
+      msgValue,
+    });
   },
 };

@@ -38,9 +38,7 @@ export function getBridgeRouterHubContract(
   provider: Client,
   address: GenericAddress,
   signer?: WalletClient,
-):
-  | GetReadContractReturnType<typeof BridgeRouterHubAbi>
-  | GetContractReturnType<typeof BridgeRouterHubAbi, Client> {
+): GetReadContractReturnType<typeof BridgeRouterHubAbi> | GetContractReturnType<typeof BridgeRouterHubAbi, Client> {
   return getContract({
     abi: BridgeRouterHubAbi,
     address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),

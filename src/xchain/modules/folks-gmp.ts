@@ -6,19 +6,12 @@ import { FolksCore } from "../core/folks-core.js";
 
 import type { PrepareReverseMessageCall } from "../../chains/evm/common/types/module.js";
 import type { ChainType } from "../../common/types/chain.js";
-import type {
-  MessageId,
-  ReverseMessageExtraAgrs,
-} from "../../common/types/gmp.js";
+import type { MessageId, ReverseMessageExtraAgrs } from "../../common/types/gmp.js";
 import type { AdapterType } from "../../common/types/message.js";
 import type { PrepareRetryMessageCall } from "../../common/types/module.js";
 
 export const prepare = {
-  async retryMessage(
-    adapterId: AdapterType,
-    messageId: MessageId,
-    value: bigint,
-  ) {
+  async retryMessage(adapterId: AdapterType, messageId: MessageId, value: bigint) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
@@ -56,11 +49,7 @@ export const prepare = {
 };
 
 export const write = {
-  async retryMessage(
-    adapterId: AdapterType,
-    messageId: MessageId,
-    prepareCall: PrepareRetryMessageCall,
-  ) {
+  async retryMessage(adapterId: AdapterType, messageId: MessageId, prepareCall: PrepareRetryMessageCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
