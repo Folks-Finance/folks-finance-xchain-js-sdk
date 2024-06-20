@@ -4,6 +4,7 @@ import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { GetEventParams, GetReadContractReturnType } from "../../common/types/contract.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { Dnum } from "dnum";
+import type { ReadContractReturnType } from "viem";
 
 export type LoanPoolInfo = {
   folksTokenId: FolksTokenId;
@@ -93,3 +94,5 @@ export type DeleteUserLoanEventParams = GetEventParams & {
   loanManager: GetReadContractReturnType<typeof LoanManagerAbi>;
   accountId: AccountId;
 };
+
+export type LoanManagerGetUserLoanType = ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">;

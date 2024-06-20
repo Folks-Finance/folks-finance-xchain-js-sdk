@@ -25,7 +25,7 @@ import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
+import type { LoanManagerGetUserLoanType, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
 import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
@@ -962,26 +962,25 @@ export const read = {
     return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
-  async userLoansInfo(
-    accountId: AccountId,
+  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanType): Promise<Array<LoanId>> {
+    const network = FolksCore.getSelectedNetwork();
+    // get active user loans ids
+    return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
+  },
+
+  async userLoans(loanIds: Array<LoanId>): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
+    const network = FolksCore.getSelectedNetwork();
+    // get user loans
+    return await FolksHubLoan.getUserLoans(FolksCore.getHubProvider(), network, loanIds);
+  },
+
+  userLoansInfo(
+    userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
-    loanTypeIdFilter?: LoanType,
-  ) {
-    const network = FolksCore.getSelectedNetwork();
-
-    // get active user loans
-    const loanIds = await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
-
+  ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan
-    return await FolksHubLoan.getUserLoansInfo(
-      FolksCore.getHubProvider(),
-      network,
-      loanIds,
-      poolsInfo,
-      loanTypesInfo,
-      oraclePrices,
-    );
+    return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices);
   },
 };
