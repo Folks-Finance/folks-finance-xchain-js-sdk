@@ -284,39 +284,43 @@ export async function getUserLoanIds(
   });
 }
 
-export async function getUserLoansInfo(
+export async function getUserLoans(
   provider: Client,
   network: NetworkType,
   loanIds: Array<LoanId>,
+): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
+  const hubChain = getHubChain(network);
+  const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
+
+  const getUserLoansCall: Array<ContractFunctionParameters> = loanIds.map((loanId) => ({
+    address: loanManager.address,
+    abi: loanManager.abi,
+    functionName: "getUserLoan",
+    args: [loanId],
+  }));
+
+  const userLoans: Array<LoanManagerGetUserLoanType> = (await multicall(provider, {
+    contracts: getUserLoansCall,
+    allowFailure: false,
+  })) as Array<LoanManagerGetUserLoanType>;
+
+  return new Map(loanIds.map((loanId, i) => [loanId, userLoans[i]]));
+}
+
+export function getUserLoansInfo(
+  userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
   loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
-  userLoans?: Array<LoanManagerGetUserLoanType>,
-): Promise<Record<LoanId, UserLoanInfo>> {
-  const hubChain = getHubChain(network);
-  const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
+): Record<LoanId, UserLoanInfo> {
   const poolIdToFolksTokenId = new Map(
     Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [poolId, folksTokenId]),
   );
 
-  if (!userLoans) {
-    const getUserLoans: Array<ContractFunctionParameters> = loanIds.map((loanId) => ({
-      address: loanManager.address,
-      abi: loanManager.abi,
-      functionName: "getUserLoan",
-      args: [loanId],
-    }));
-
-    userLoans = (await multicall(provider, {
-      contracts: getUserLoans,
-      allowFailure: false,
-    })) as Array<LoanManagerGetUserLoanType>;
-  }
-
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
-  for (let i = 0; i < userLoans.length; i++) {
-    const loanId = loanIds[i];
-    const [accountId, loanTypeId, colPools, borPools, cols, bors] = userLoans[i];
+
+  for (const [loanId, userLoan] of userLoansMap.entries()) {
+    const [accountId, loanTypeId, colPools, borPools, cols, bors] = userLoan;
 
     const loanTypeInfo = loanTypesInfo[loanTypeId as LoanType];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
@@ -329,9 +333,8 @@ export async function getUserLoansInfo(
     const collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>> = {};
     let totalCollateralBalanceValue: Dnum = dn.from(0, 8);
     let totalEffectiveCollateralBalanceValue: Dnum = dn.from(0, 8);
-    for (let j = 0; j < cols.length; i++) {
+    for (const [j, { balance: fTokenBalance }] of cols.entries()) {
       const poolId = colPools[j];
-      const { balance: fTokenBalance } = cols[j];
 
       const folksTokenId = poolIdToFolksTokenId.get(poolId);
       if (!folksTokenId) throw new Error(`Unknown pool id ${poolId}`);
@@ -379,15 +382,18 @@ export async function getUserLoansInfo(
     let totalBorrowedAmountValue: Dnum = dn.from(0, 8);
     let totalBorrowBalanceValue: Dnum = dn.from(0, 8);
     let totalEffectiveBorrowBalanceValue: Dnum = dn.from(0, 8);
-    for (let j = 0; j < bors.length; i++) {
-      const poolId = borPools[j];
-      const {
+    for (const [
+      j,
+      {
         amount: borrowedAmount,
         balance: oldBorrowBalance,
         lastInterestIndex: lii,
         stableInterestRate: sbir,
         lastStableUpdateTimestamp,
-      } = bors[j];
+      },
+    ] of bors.entries()) {
+      const poolId = borPools[j];
+
       const lastBorrowInterestIndex: Dnum = [lii, 18];
       const stableBorrowInterestRate: Dnum = [sbir, 18];
 

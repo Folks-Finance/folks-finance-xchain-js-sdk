@@ -964,29 +964,23 @@ export const read = {
 
   async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanType): Promise<Array<LoanId>> {
     const network = FolksCore.getSelectedNetwork();
-
-    // get active user loans
+    // get active user loans ids
     return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
   },
 
-  async userLoansInfo(
-    loanIds: Array<LoanId>,
+  async userLoans(loanIds: Array<LoanId>): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
+    const network = FolksCore.getSelectedNetwork();
+    // get user loans
+    return await FolksHubLoan.getUserLoans(FolksCore.getHubProvider(), network, loanIds);
+  },
+
+  userLoansInfo(
+    userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanType, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
-    userLoans?: Array<LoanManagerGetUserLoanType>,
-  ): Promise<Record<LoanId, UserLoanInfo>> {
-    const network = FolksCore.getSelectedNetwork();
-
+  ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan
-    return await FolksHubLoan.getUserLoansInfo(
-      FolksCore.getHubProvider(),
-      network,
-      loanIds,
-      poolsInfo,
-      loanTypesInfo,
-      oraclePrices,
-      userLoans,
-    );
+    return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices);
   },
 };
