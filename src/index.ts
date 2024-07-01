@@ -33,3 +33,11 @@ export * from "./chains/evm/common/constants/chain.js";
 export * from "./chains/evm/common/types/chain.js";
 
 export { isEvmChainId } from "./chains/evm/common/utils/chain.js";
+
+// - EVM: HUB
+export * from "./chains/evm/hub/types/account.js";
+export * from "./chains/evm/hub/types/chain.js";
+export * from "./chains/evm/hub/types/loan.js";
+export * from "./chains/evm/hub/types/oracle.js";
+export * from "./chains/evm/hub/types/pool.js";
+export * from "./chains/evm/hub/types/token.js";
