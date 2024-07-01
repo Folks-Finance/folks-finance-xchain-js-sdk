@@ -25,6 +25,9 @@ export { generateLoanId } from "./common/utils/bytes.js";
 export { getAdapterAddress } from "./common/utils/chain.js";
 export { getCcipData, getWormholeData } from "./common/utils/gmp.js";
 
+// === HUB ===
+export { isHubChain } from "./chains/evm/hub/utils/chain.js";
+
 // === CHAINS ===
 
 // - EVM
