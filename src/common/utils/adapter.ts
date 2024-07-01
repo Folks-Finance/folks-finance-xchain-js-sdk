@@ -7,11 +7,7 @@ import { AdapterType } from "../types/message.js";
 
 import { isCircleToken } from "./token.js";
 
-import type {
-  MessageAdapterParams,
-  ReceiveTokenMessageAdapterParams,
-  SendTokenMessageAdapterParams,
-} from "../types/adapter.js";
+import type { MessageAdapterParams, ReceiveTokenMessageAdapterParams } from "../types/adapter.js";
 import type { FolksChainId } from "../types/chain.js";
 
 export function doesAdapterSupportDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
@@ -40,14 +36,10 @@ export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, ad
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
 }
 
-function getAdapterId({
-  folksTokenId,
-  sourceFolksChainId,
-  network,
-  messageAdapterParamType,
-}: ReceiveTokenMessageAdapterParams | SendTokenMessageAdapterParams) {
+function getAdapterId(messageAdapterParams: MessageAdapterParams) {
+  const { sourceFolksChainId, network, messageAdapterParamType } = messageAdapterParams;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
-  if (messageAdapterParamType == MessageAdapterParamsType.SendToken && isCircleToken(folksTokenId))
+  if (messageAdapterParamType == MessageAdapterParamsType.SendToken && isCircleToken(messageAdapterParams.folksTokenId))
     return TOKEN_ADAPTERS;
   return DATA_ADAPTERS;
 }
@@ -74,7 +66,7 @@ export function getSupportedMessageAdapters(params: MessageAdapterParams) {
       };
     case MessageAdapterParamsType.Data:
       return {
-        adapterId: DATA_ADAPTERS,
+        adapterId: getAdapterId(params),
         returnAdapterId: [AdapterType.HUB],
       };
     default:
