@@ -47,12 +47,12 @@ export function calcRewardIndex(used: bigint, ma: bigint, rit1: Dnum, rs: Dnum, 
 }
 
 export function toFAmount(underlyingAmount: bigint, diit: Dnum): bigint {
-  const [fAmount] = dn.div(underlyingAmount, diit, { rounding: "ROUND_DOWN" });
+  const [fAmount] = dn.div([underlyingAmount, 0], diit, { rounding: "ROUND_DOWN" });
   return fAmount;
 }
 
 export function toUnderlyingAmount(fAmount: bigint, diit: Dnum): bigint {
-  const [underlyingAmount] = dn.mul(fAmount, diit, { rounding: "ROUND_DOWN" });
+  const [underlyingAmount] = dn.mul([fAmount, 0], diit, { rounding: "ROUND_DOWN" });
   return underlyingAmount;
 }
 
@@ -81,7 +81,9 @@ export function calcBorrowAssetLoanValue(
 }
 
 export function calcBorrowBalance(bbtn1: bigint, biit: Dnum, biitn1: Dnum): bigint {
-  const [borrowBalance] = dn.mul(bbtn1, dn.div(biit, biitn1, { rounding: "ROUND_UP" }), { rounding: "ROUND_UP" });
+  const [borrowBalance] = dn.mul([bbtn1, 0], dn.div(biit, biitn1, { rounding: "ROUND_UP" }), {
+    rounding: "ROUND_UP",
+  });
   return borrowBalance;
 }
 
