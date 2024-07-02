@@ -87,7 +87,7 @@ export type UserLoanInfo = {
 export type CreateUserLoanEventParams = GetEventParams & {
   loanManager: GetReadContractReturnType<typeof LoanManagerAbi>;
   accountId: AccountId;
-  loanTypeId?: LoanTypeId;
+  loanTypeIds?: Array<LoanTypeId>;
 };
 
 export type DeleteUserLoanEventParams = GetEventParams & {

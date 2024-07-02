@@ -271,15 +271,15 @@ export async function getUserLoanIds(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
-  loanTypeIdFilter?: LoanTypeId,
-): Promise<Array<LoanId>> {
+  loanTypeIdsFilter?: Array<LoanTypeId>,
+): Promise<Map<LoanTypeId, Array<LoanId>>> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
   return fetchUserLoanIds({
     loanManager,
     accountId,
-    loanTypeId: loanTypeIdFilter,
+    loanTypeIds: loanTypeIdsFilter,
     eventParams: defaultEventParams,
   });
 }

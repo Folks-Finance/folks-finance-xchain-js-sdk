@@ -1,18 +1,19 @@
 import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
+import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { AcceptInviteAddressEventParams, InviteAddressEventParams } from "../types/account.js";
 import type { CreateUserLoanEventParams, DeleteUserLoanEventParams } from "../types/loan.js";
 
 export async function fetchCreateUserLoanEvents(params: CreateUserLoanEventParams) {
-  const { loanManager, accountId, loanTypeId, eventParams } = params;
+  const { loanManager, accountId, loanTypeIds, eventParams } = params;
   const logs = await loanManager.getEvents.CreateUserLoan({ accountId }, eventParams);
   return logs
-    .filter((log) => loanTypeId === undefined || loanTypeId === log.args.loanTypeId)
+    .filter((log) => loanTypeIds === undefined || (log.args.loanTypeId && loanTypeIds.includes(log.args.loanTypeId)))
     .map((log) => ({
       blockNumber: log.blockNumber,
-      loanId: log.args.loanId,
+      loanId: log.args.loanId as LoanId,
       accountId,
-      loanTypeId: log.args.loanTypeId,
+      loanTypeId: log.args.loanTypeId as LoanTypeId,
     }));
 }
 
@@ -26,24 +27,35 @@ export async function fetchDeleteUserLoanEvents(params: DeleteUserLoanEventParam
   }));
 }
 
-export async function fetchUserLoanIds(params: CreateUserLoanEventParams) {
+export async function fetchUserLoanIds(params: CreateUserLoanEventParams): Promise<Map<LoanTypeId, Array<LoanId>>> {
   const createdUserLoans = await fetchCreateUserLoanEvents(params);
   const deletedUserLoans = await fetchDeleteUserLoanEvents(params);
 
   // add created and remove deleted through counting
-  const loanIds = new Map<LoanId, number>();
+  const loanIdsMap = new Map<LoanId, { loanTypeId: LoanTypeId; count: number }>();
   for (const userLoan of createdUserLoans) {
-    const loanId = userLoan.loanId as LoanId;
-    const num = loanIds.get(loanId) ?? 0;
-    loanIds.set(loanId, num + 1);
+    const loanId = userLoan.loanId;
+    const loanIdCount = loanIdsMap.get(loanId);
+    if (!loanIdCount) loanIdsMap.set(loanId, { loanTypeId: userLoan.loanTypeId, count: 1 });
+    else loanIdCount.count++;
   }
   for (const userLoan of deletedUserLoans) {
     const loanId = userLoan.loanId as LoanId;
-    const num = loanIds.get(loanId) ?? 1;
-    num === 1 ? loanIds.delete(loanId) : loanIds.set(loanId, num - 1);
+    const loanIdCount = loanIdsMap.get(loanId);
+    if (loanIdCount)
+      if (loanIdCount.count === 1) loanIdsMap.delete(loanId);
+      else loanIdCount.count--;
   }
 
-  return Array.from(loanIds.keys());
+  const loanTypeMap = new Map<LoanTypeId, Array<LoanId>>();
+
+  for (const [loanId, { loanTypeId }] of loanIdsMap.entries()) {
+    const loanTypeIds = loanTypeMap.get(loanTypeId);
+    if (!loanTypeIds) loanTypeMap.set(loanTypeId, [loanId]);
+    else loanTypeIds.push(loanId);
+  }
+
+  return loanTypeMap;
 }
 
 async function fetchReceivedInvitationEventByAddress(params: InviteAddressEventParams) {

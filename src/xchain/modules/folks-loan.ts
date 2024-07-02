@@ -1090,10 +1090,13 @@ export const read = {
     return await FolksHubLoan.getLoanTypeInfo(FolksCore.getHubProvider(), network, loanTypeId, tokensData);
   },
 
-  async userLoansIds(accountId: AccountId, loanTypeIdFilter?: LoanTypeId): Promise<Array<LoanId>> {
+  async userLoansIds(
+    accountId: AccountId,
+    loanTypeIdsFilter?: Array<LoanTypeId>,
+  ): Promise<Map<LoanTypeId, Array<LoanId>>> {
     const network = FolksCore.getSelectedNetwork();
     // get active user loans ids
-    return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdFilter);
+    return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdsFilter);
   },
 
   async userLoans(loanIds: Array<LoanId>): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
