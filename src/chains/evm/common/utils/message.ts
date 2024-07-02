@@ -2,9 +2,10 @@ import { concat, isHex } from "viem";
 
 import { BYTES32_LENGTH, UINT16_LENGTH, UINT256_LENGTH, UINT8_LENGTH } from "../../../../common/constants/bytes.js";
 import { FINALITY } from "../../../../common/constants/message.js";
+import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
-import { isAccountId, isGenericAddress } from "../../../../common/utils/address.js";
+import { convertFromGenericAddress, isAccountId, isGenericAddress } from "../../../../common/utils/address.js";
 import { convertBooleanToByte, convertNumberToBytes, getRandomBytes } from "../../../../common/utils/bytes.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
@@ -13,8 +14,10 @@ import {
   getWormholeDataAdapterContract,
 } from "./contract.js";
 import { encodeEvmPayloadWithMetadata } from "./gmp.js";
+import { getBalanceOfStateOverride } from "./tokens.js";
 
 import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
 import type { AccountId } from "../../../../common/types/lending.js";
 import type {
   MessageAdapters,
@@ -23,10 +26,11 @@ import type {
   MessageParams,
   MessageToSend,
   OptionalFeeParams,
+  SendTokenExtraArgs,
 } from "../../../../common/types/message.js";
-import type { FolksTokenType } from "../../../../common/types/token.js";
+import type { FolksTokenId, FolksTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
-import type { Client, Hex } from "viem";
+import type { Client, Hex, StateOverride } from "viem";
 
 export const buildMessageParams = ({
   adapters,
@@ -184,7 +188,7 @@ export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
       ]);
     }
     case Action.SendToken: {
-      throw new Error("Not implemented yet: Action.SendToken case");
+      return convertNumberToBytes(data.amount, UINT256_LENGTH);
     }
     default:
       return exhaustiveCheck(action);
@@ -286,7 +290,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.CreateLoanAndDeposit, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.recipient, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
@@ -298,7 +302,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.Deposit, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.recipient, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
@@ -340,7 +344,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.Repay, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.hubPoolAddress, extraArgs.token, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.recipient, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
@@ -388,6 +392,7 @@ export async function estimateEvmWormholeDataGasLimit(
   wormholeRelayer: EvmAddress,
   wormholeDataAdapterAddress: GenericAddress,
   sourceWormholeDataAdapterAddress: GenericAddress,
+  stateOverride: StateOverride,
 ) {
   const messageId = getRandomBytes(BYTES32_LENGTH);
   const wormholeDataAdapter = getWormholeDataAdapterContract(provider, wormholeDataAdapterAddress);
@@ -413,7 +418,7 @@ export async function estimateEvmWormholeDataGasLimit(
     {
       value: receiverValue,
       account: wormholeRelayer,
-      stateOverride: [{ address: wormholeRelayer, balance: receiverValue }],
+      stateOverride: [{ address: wormholeRelayer, balance: receiverValue }, ...stateOverride],
     },
   );
 }
@@ -452,4 +457,30 @@ export async function estimateEvmCcipDataGasLimit(
   return await ccipDataAdapter.estimateGas.ccipReceive([ccipMessage], {
     account: ccipRouter,
   });
+}
+
+export function getSendTokenStateOverride(
+  folksChainId: FolksChainId,
+  folksTokenId: FolksTokenId,
+  extraArgs: SendTokenExtraArgs,
+) {
+  const { amount, recipient, token } = extraArgs;
+  if (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20) {
+    const erc20Address = convertFromGenericAddress(token.address, ChainType.EVM);
+    return getBalanceOfStateOverride([
+      {
+        erc20Address,
+        stateDiff: [
+          {
+            owner: convertFromGenericAddress(recipient, ChainType.EVM),
+            folksChainId,
+            folksTokenId,
+            tokenType: token.type,
+            amount: amount,
+          },
+        ],
+      },
+    ]);
+  }
+  return [];
 }

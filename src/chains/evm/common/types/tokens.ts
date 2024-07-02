@@ -18,3 +18,14 @@ export type AllowanceStateOverride = {
     amount: bigint;
   }>;
 };
+
+export type BalanceOfStateOverride = {
+  erc20Address: EvmAddress;
+  stateDiff: Array<{
+    owner: EvmAddress;
+    folksChainId: EvmFolksChainId;
+    folksTokenId: FolksTokenId;
+    tokenType: TokenType;
+    amount: bigint;
+  }>;
+};
