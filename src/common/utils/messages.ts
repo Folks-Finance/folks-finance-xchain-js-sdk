@@ -2,12 +2,13 @@ import {
   buildEvmMessageToSend,
   estimateEvmCcipDataGasLimit,
   estimateEvmWormholeDataGasLimit,
+  getSendTokenStateOverride,
 } from "../../chains/evm/common/utils/message.js";
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { ChainType } from "../types/chain.js";
 import { MessageDirection } from "../types/gmp.js";
-import { AdapterType } from "../types/message.js";
+import { Action, AdapterType } from "../types/message.js";
 
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
@@ -16,7 +17,7 @@ import { getCcipData, getWormholeData } from "./gmp.js";
 import type { FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type { MessageAdapters, MessageBuilderParams, MessageToSend, OptionalFeeParams } from "../types/message.js";
-import type { Client as EVMProvider } from "viem";
+import type { Client as EVMProvider, StateOverride } from "viem";
 
 export function buildMessageToSend(
   chainType: ChainType,
@@ -77,7 +78,17 @@ export async function estimateAdapterReceiveGasLimit(
   );
 
   switch (destFolksChain.chainType) {
-    case ChainType.EVM:
+    case ChainType.EVM: {
+      let stateOverride: StateOverride = [];
+      if (messageBuilderParams.action === Action.SendToken) {
+        stateOverride = stateOverride.concat(
+          getSendTokenStateOverride(
+            destFolksChainId,
+            messageBuilderParams.data.folksTokenId,
+            messageBuilderParams.extraArgs,
+          ),
+        );
+      }
       switch (adapterId) {
         case AdapterType.WORMHOLE_DATA: {
           const sourceWormholeChainId = getWormholeData(sourceFolksChainId).wormholeChainId;
@@ -96,6 +107,7 @@ export async function estimateAdapterReceiveGasLimit(
             wormholeRelayer,
             destAdapterAddress,
             sourceAdapterAddress,
+            stateOverride,
           );
         }
         case AdapterType.WORMHOLE_CCTP: {
@@ -113,7 +125,7 @@ export async function estimateAdapterReceiveGasLimit(
           );
 
           // Due to ERC20 transfer and additional checks in the Wormhole CCTP Adapter
-          const increaseGasLimit = BigInt(100000);
+          const increaseGasLimit = BigInt(150000);
           const gasLimitEstimation = await estimateEvmWormholeDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
@@ -124,6 +136,7 @@ export async function estimateAdapterReceiveGasLimit(
             wormholeRelayer,
             destAdapterAddress,
             sourceAdapterAddress,
+            stateOverride,
           );
           return gasLimitEstimation + increaseGasLimit;
         }
@@ -150,7 +163,7 @@ export async function estimateAdapterReceiveGasLimit(
         default:
           return exhaustiveCheck(adapterId);
       }
-
+    }
     default:
       return exhaustiveCheck(destFolksChain.chainType);
   }

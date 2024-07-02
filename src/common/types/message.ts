@@ -2,7 +2,7 @@ import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId, LoanName } from "./lending.js";
 import type { LoanTypeId } from "./module.js";
-import type { FolksTokenType } from "./token.js";
+import type { FolksTokenId, FolksTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -178,19 +178,30 @@ export type LiquidateMessageData = {
   minSeizedAmount: bigint;
 };
 
+export type SendTokenMessageData = {
+  folksTokenId: FolksTokenId;
+  amount: bigint;
+};
+
 // Extra args
 export type DefaultExtraArgs = "0x";
 
 // Extra args: loan
 export type DepositExtraArgs = {
   token: FolksTokenType;
-  hubPoolAddress: GenericAddress;
+  recipient: GenericAddress;
   amount: bigint;
 };
 
 export type RepayExtraArgs = {
   token: FolksTokenType;
-  hubPoolAddress: GenericAddress;
+  recipient: GenericAddress;
+  amount: bigint;
+};
+
+export type SendTokenExtraArgs = {
+  token: FolksTokenType;
+  recipient: GenericAddress;
   amount: bigint;
 };
 
@@ -201,8 +212,7 @@ export type DefaultMessageDataParams = {
     | Action.AddDelegate
     | Action.RemoveDelegate
     | Action.DepositFToken
-    | Action.WithdrawFToken
-    | Action.SendToken;
+    | Action.WithdrawFToken;
   data: DefaultMessageData;
   extraArgs: DefaultExtraArgs;
 };
@@ -275,7 +285,7 @@ export type RepayWithCollateralMessageDataParams = {
   extraArgs: DefaultExtraArgs;
 };
 
-export type SwitchBorrowTypeDataParams = {
+export type SwitchBorrowTypeMessageDataParams = {
   action: Action.SwitchBorrowType;
   data: SwitchBorrowTypeMessageData;
   extraArgs: DefaultExtraArgs;
@@ -285,6 +295,12 @@ export type LiquidateMessageDataParams = {
   action: Action.Liquidate;
   data: LiquidateMessageData;
   extraArgs: DefaultExtraArgs;
+};
+
+export type SendTokenMessageDataParams = {
+  action: Action.SendToken;
+  data: SendTokenMessageData;
+  extraArgs: SendTokenExtraArgs;
 };
 
 export type MessageDataParams =
@@ -300,8 +316,9 @@ export type MessageDataParams =
   | BorrowMessageDataParams
   | RepayMessageDataParams
   | RepayWithCollateralMessageDataParams
-  | SwitchBorrowTypeDataParams
-  | LiquidateMessageDataParams;
+  | SwitchBorrowTypeMessageDataParams
+  | LiquidateMessageDataParams
+  | SendTokenMessageDataParams;
 
 export type MessageBuilderParams = {
   userAddress: GenericAddress;

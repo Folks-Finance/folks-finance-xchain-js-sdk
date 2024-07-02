@@ -45,6 +45,8 @@ import type {
   RepayExtraArgs,
   RepayMessageData,
   RepayWithCollateralMessageData,
+  SendTokenExtraArgs,
+  SendTokenMessageData,
   SwitchBorrowTypeMessageData,
   WithdrawMessageData,
 } from "../../common/types/message.js";
@@ -218,7 +220,7 @@ export const prepare = {
     };
     const extraArgs: DepositExtraArgs = {
       token: spokeTokenData.token,
-      hubPoolAddress: hubTokenData.poolAddress,
+      recipient: hubTokenData.poolAddress,
       amount,
     };
     const messageBuilderParams: MessageBuilderParams = {
@@ -226,7 +228,7 @@ export const prepare = {
       accountId,
       adapters,
       action: Action.CreateLoanAndDeposit,
-      sender: spokeChain.spokeCommonAddress,
+      sender: getSpokeTokenData(spokeChain, folksTokenId).spokeAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
@@ -296,7 +298,7 @@ export const prepare = {
     };
     const extraArgs: DepositExtraArgs = {
       token: spokeTokenData.token,
-      hubPoolAddress: hubTokenData.poolAddress,
+      recipient: hubTokenData.poolAddress,
       amount,
     };
     const messageBuilderParams: MessageBuilderParams = {
@@ -304,7 +306,7 @@ export const prepare = {
       accountId,
       adapters,
       action: Action.Deposit,
-      sender: spokeChain.spokeCommonAddress,
+      sender: getSpokeTokenData(spokeChain, folksTokenId).spokeAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,
@@ -361,11 +363,44 @@ export const prepare = {
     const hubTokenData = getHubTokenData(folksTokenId, network);
 
     const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
+    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
       chainType: folksChain.chainType,
     });
+
+    const feeParams: OptionalFeeParams = {};
+
+    const returnData: SendTokenMessageData = {
+      folksTokenId,
+      amount,
+    };
+    const returnExtraArgs: SendTokenExtraArgs = {
+      token: receiverSpokeTokenData.token,
+      recipient: receiverSpokeTokenData.spokeAddress,
+      amount,
+    };
+    const returnMessageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.SendToken,
+      sender: hubChain.hubAddress,
+      destinationChainId: receiverFolksChainId,
+      handler: receiverSpokeTokenData.spokeAddress,
+      data: returnData,
+      extraArgs: returnExtraArgs,
+    };
+    feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
+      hubChain.folksChainId,
+      receiverFolksChain.folksChainId,
+      FolksCore.getEVMProvider(receiverFolksChain.folksChainId),
+      folksChain.network,
+      MessageDirection.HubToSpoke,
+      returnMessageBuilderParams,
+    );
 
     const data: WithdrawMessageData = {
       loanId,
@@ -385,16 +420,6 @@ export const prepare = {
       data,
       extraArgs: "0x",
     };
-    const feeParams: OptionalFeeParams = {};
-
-    feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
-      hubChain.folksChainId,
-      receiverFolksChain.folksChainId,
-      FolksCore.getEVMProvider(receiverFolksChain.folksChainId),
-      folksChain.network,
-      MessageDirection.HubToSpoke,
-      messageBuilderParams,
-    );
     feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
       FolksCore.getHubProvider(),
       network,
@@ -457,11 +482,44 @@ export const prepare = {
     const hubTokenData = getHubTokenData(folksTokenId, network);
 
     const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
+    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
       chainType: folksChain.chainType,
     });
+
+    const feeParams: OptionalFeeParams = {};
+
+    const returnData: SendTokenMessageData = {
+      folksTokenId,
+      amount,
+    };
+    const returnExtraArgs: SendTokenExtraArgs = {
+      token: receiverSpokeTokenData.token,
+      recipient: receiverSpokeTokenData.spokeAddress,
+      amount,
+    };
+    const returnMessageBuilderParams: MessageBuilderParams = {
+      userAddress,
+      accountId,
+      adapters,
+      action: Action.SendToken,
+      sender: hubChain.hubAddress,
+      destinationChainId: receiverFolksChainId,
+      handler: receiverSpokeTokenData.spokeAddress,
+      data: returnData,
+      extraArgs: returnExtraArgs,
+    };
+    feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
+      hubChain.folksChainId,
+      receiverFolksChain.folksChainId,
+      FolksCore.getEVMProvider(receiverFolksChain.folksChainId),
+      folksChain.network,
+      MessageDirection.HubToSpoke,
+      returnMessageBuilderParams,
+    );
 
     const data: BorrowMessageData = {
       loanId,
@@ -481,16 +539,6 @@ export const prepare = {
       data,
       extraArgs: "0x",
     };
-    const feeParams: OptionalFeeParams = {};
-
-    feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
-      hubChain.folksChainId,
-      receiverFolksChain.folksChainId,
-      FolksCore.getEVMProvider(receiverFolksChain.folksChainId),
-      folksChain.network,
-      MessageDirection.HubToSpoke,
-      messageBuilderParams,
-    );
     feeParams.receiverValue = await FolksHubLoan.getSendTokenAdapterFees(
       FolksCore.getHubProvider(),
       network,
@@ -568,7 +616,7 @@ export const prepare = {
     };
     const extraArgs: RepayExtraArgs = {
       token: spokeTokenData.token,
-      hubPoolAddress: hubTokenData.poolAddress,
+      recipient: hubTokenData.poolAddress,
       amount,
     };
     const messageBuilderParams: MessageBuilderParams = {
@@ -576,7 +624,7 @@ export const prepare = {
       accountId,
       adapters,
       action: Action.Repay,
-      sender: spokeChain.spokeCommonAddress,
+      sender: getSpokeTokenData(spokeChain, folksTokenId).spokeAddress,
       destinationChainId: hubChain.folksChainId,
       handler: hubChain.hubAddress,
       data,

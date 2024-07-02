@@ -2,11 +2,11 @@ import { encodeAbiParameters } from "viem";
 
 import { CONTRACT_SLOT } from "../constants/tokens.js";
 
-import { getAllowanceSlotHash } from "./contract.js";
+import { getAllowanceSlotHash, getBalanceOfSlotHash } from "./contract.js";
 
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { EvmFolksChainId } from "../types/chain.js";
-import type { AllowanceStateOverride } from "../types/tokens.js";
+import type { AllowanceStateOverride, BalanceOfStateOverride } from "../types/tokens.js";
 import type { StateOverride } from "viem";
 
 export function getContractSlot(folksChainId: EvmFolksChainId) {
@@ -36,6 +36,16 @@ export function getAllowanceStateOverride(allowanceStatesOverride: Array<Allowan
         sd.spender,
         getFolksTokenContractSlot(sd.folksChainId, sd.folksTokenId).allowance,
       ),
+      value: encodeAbiParameters([{ type: "uint256" }], [sd.amount]),
+    })),
+  }));
+}
+
+export function getBalanceOfStateOverride(balanceOfStatesOverride: Array<BalanceOfStateOverride>): StateOverride {
+  return balanceOfStatesOverride.map((bso) => ({
+    address: bso.erc20Address,
+    stateDiff: bso.stateDiff.map((sd) => ({
+      slot: getBalanceOfSlotHash(sd.owner, getFolksTokenContractSlot(sd.folksChainId, sd.folksTokenId).balanceOf),
       value: encodeAbiParameters([{ type: "uint256" }], [sd.amount]),
     })),
   }));
