@@ -355,16 +355,19 @@ export const prepare = {
     const network = folksChain.network;
     const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
 
+    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
+    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
+
     assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    if (receiverSpokeTokenData.token.type === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    else assertAdapterSupportsDataMessage(receiverFolksChainId, adapters.returnAdapterId);
+
     assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
-
-    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
-    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
-    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
@@ -474,16 +477,18 @@ export const prepare = {
     const network = folksChain.network;
     const receiverFolksChain = getFolksChain(receiverFolksChainId, network);
 
+    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
+    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
+    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
+
     assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    if (receiverSpokeTokenData.token.type === TokenType.CIRCLE)
+      assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    else assertAdapterSupportsDataMessage(receiverFolksChainId, adapters.returnAdapterId);
     assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
 
     const hubChain = getHubChain(network);
     const hubTokenData = getHubTokenData(folksTokenId, network);
-
-    const spokeChain = getSpokeChain(folksChain.folksChainId, network);
-    const receiverSpokeChain = getSpokeChain(receiverFolksChainId, network);
-    const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
