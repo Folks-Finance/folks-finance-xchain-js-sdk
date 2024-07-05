@@ -88,7 +88,6 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.AVAX]: {
         token: {
           type: TokenType.NATIVE,
-          address: null,
           decimals: 18,
         },
         folksTokenId: FolksTokenId.AVAX,
@@ -99,7 +98,6 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.ETH_eth_sep]: {
         token: {
           type: TokenType.NATIVE,
-          address: null,
           decimals: 18,
         },
         folksTokenId: FolksTokenId.ETH_eth_sep,
@@ -109,9 +107,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       },
       [FolksTokenId.ETH_base_sep]: {
         token: {
-          address: null,
-          decimals: 18,
           type: TokenType.NATIVE,
+          decimals: 18,
         },
         folksTokenId: FolksTokenId.ETH_base_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
@@ -121,7 +118,6 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       [FolksTokenId.LINK_eth_sep]: {
         token: {
           type: TokenType.ERC20,
-          address: convertToGenericAddress("0x33C9fBbEfE5eca28F569D39380CfBDfB14460491" as EvmAddress, ChainType.EVM),
           decimals: 18,
         },
         folksTokenId: FolksTokenId.LINK_eth_sep,
