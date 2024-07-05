@@ -157,7 +157,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         [FolksTokenId.LINK_eth_sep]: {
           token: {
             type: TokenType.ERC20,
-            address: convertToGenericAddress("0x514910771af9ca656af840dff83e8264ecf986ca" as EvmAddress, ChainType.EVM),
+            address: convertToGenericAddress("0x779877A7B0D9E8603169DdbD7836e478b4624789" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
           folksTokenId: FolksTokenId.LINK_eth_sep,
