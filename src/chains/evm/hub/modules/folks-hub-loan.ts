@@ -110,7 +110,7 @@ export const write = {
     return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
     });
   },
 };

@@ -183,7 +183,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gasLimit: gasLimit,
+        gas: gasLimit,
         value: msgValue,
       },
     );
@@ -202,7 +202,7 @@ export const write = {
     return await spokeCommon.write.acceptInviteAddress([messageParams, accountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -221,7 +221,7 @@ export const write = {
     return await spokeCommon.write.unregisterAddress([messageParams, accountId, folksChainIdToUnregister], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },

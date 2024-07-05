@@ -365,7 +365,7 @@ export const write = {
     return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId, loanName], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -384,7 +384,7 @@ export const write = {
     return await spokeCommon.write.deleteLoan([messageParams, accountId, loanId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -421,7 +421,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gasLimit: gasLimit,
+        gas: gasLimit,
         value: msgValue,
       },
     );
@@ -455,7 +455,7 @@ export const write = {
     return await spokeToken.write.deposit([messageParams, accountId, loanId, amount], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -480,7 +480,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gasLimit: gasLimit,
+        gas: gasLimit,
         value: msgValue,
       },
     );
@@ -506,7 +506,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gasLimit: gasLimit,
+        gas: gasLimit,
         value: msgValue,
       },
     );
@@ -532,7 +532,7 @@ export const write = {
     return await spokeToken.write.repay([messageParams, accountId, loanId, amount, maxOverRepayment], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -553,7 +553,7 @@ export const write = {
     return await spokeCommon.write.repayWithCollateral([messageParams, accountId, loanId, poolId, amount], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -574,7 +574,7 @@ export const write = {
     return await spokeCommon.write.switchBorrowType([messageParams, accountId, loanId, poolId, maxStableRate], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
       value: msgValue,
     });
   },
