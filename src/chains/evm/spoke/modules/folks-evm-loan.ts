@@ -113,7 +113,7 @@ export const prepare = {
 
     const spender = convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM);
 
-    //get state override
+    // get state override
     let stateOverride;
     if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
       const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
@@ -249,6 +249,29 @@ export const prepare = {
     const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
     const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
+    const spender = convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM);
+
+    // get state override
+    let stateOverride;
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+      const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
+      stateOverride = getAllowanceStateOverride([
+        {
+          erc20Address,
+          stateDiff: [
+            {
+              owner: sender,
+              spender,
+              folksChainId: spokeChain.folksChainId,
+              folksTokenId: spokeTokenData.folksTokenId,
+              tokenType: spokeTokenData.token.type,
+              amount,
+            },
+          ],
+        },
+      ]);
+    }
+
     // get adapter fees
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
@@ -258,6 +281,7 @@ export const prepare = {
       {
         value: msgValue,
         ...transactionOptions,
+        stateOverride,
       },
     );
 
@@ -523,11 +547,20 @@ export const write = {
     prepareCall: PrepareRepayCall,
   ) {
     const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
+    const { token } = spokeTokenData;
 
     const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
-    if (includeApprove && spokeTokenData.token.type !== TokenType.NATIVE)
-      await sendERC20Approve(provider, spokeTokenData.spokeAddress, signer, spokeToken.address as EvmAddress, amount);
+    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
+      const approveTxId = await sendERC20Approve(
+        provider,
+        token.address,
+        signer,
+        convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM),
+        amount,
+      );
+      if (approveTxId !== null) await waitForTransactionReceipt(provider, { hash: approveTxId });
+    }
 
     return await spokeToken.write.repay([messageParams, accountId, loanId, amount, maxOverRepayment], {
       account: getEvmSignerAccount(signer),
