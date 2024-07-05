@@ -87,7 +87,6 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         [FolksTokenId.AVAX]: {
           token: {
             type: TokenType.NATIVE,
-            address: null,
             decimals: 18,
           },
           folksTokenId: FolksTokenId.AVAX,
@@ -144,7 +143,6 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         [FolksTokenId.ETH_eth_sep]: {
           token: {
             type: TokenType.NATIVE,
-            address: null,
             decimals: 18,
           },
           folksTokenId: FolksTokenId.ETH_eth_sep,
@@ -214,7 +212,6 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         [FolksTokenId.ETH_base_sep]: {
           token: {
             type: TokenType.NATIVE,
-            address: null,
             decimals: 18,
           },
           folksTokenId: FolksTokenId.ETH_base_sep,

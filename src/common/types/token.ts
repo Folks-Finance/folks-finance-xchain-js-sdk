@@ -18,9 +18,14 @@ export type ITokenData = {
   folksTokenId: FolksTokenId;
 };
 
-type Erc20TokenType = {
+type Erc20SpokeTokenType = {
   type: TokenType.ERC20;
   address: GenericAddress;
+  decimals: number;
+};
+
+type Erc20HubTokenType = {
+  type: TokenType.ERC20;
   decimals: number;
 };
 
@@ -32,14 +37,14 @@ type CircleTokenType = {
 
 type NativeTokenType = {
   type: TokenType.NATIVE;
-  address: null;
   decimals: number;
 };
 
-export type FolksTokenType = Erc20TokenType | CircleTokenType | NativeTokenType;
+export type FolksSpokeTokenType = Erc20SpokeTokenType | CircleTokenType | NativeTokenType;
+export type FolksHubTokenType = Erc20HubTokenType | CircleTokenType | NativeTokenType;
 
 export type SpokeTokenData = {
   poolId: number;
   spokeAddress: GenericAddress;
-  token: FolksTokenType;
+  token: FolksSpokeTokenType;
 } & ITokenData;

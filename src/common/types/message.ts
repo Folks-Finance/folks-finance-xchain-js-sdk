@@ -2,7 +2,7 @@ import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId, LoanName } from "./lending.js";
 import type { LoanTypeId } from "./module.js";
-import type { FolksTokenId, FolksTokenType } from "./token.js";
+import type { FolksTokenId, FolksSpokeTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
 import type { Hex } from "viem";
 
@@ -188,19 +188,19 @@ export type DefaultExtraArgs = "0x";
 
 // Extra args: loan
 export type DepositExtraArgs = {
-  token: FolksTokenType;
+  token: FolksSpokeTokenType;
   recipient: GenericAddress;
   amount: bigint;
 };
 
 export type RepayExtraArgs = {
-  token: FolksTokenType;
+  token: FolksSpokeTokenType;
   recipient: GenericAddress;
   amount: bigint;
 };
 
 export type SendTokenExtraArgs = {
-  token: FolksTokenType;
+  token: FolksSpokeTokenType;
   recipient: GenericAddress;
   amount: bigint;
 };

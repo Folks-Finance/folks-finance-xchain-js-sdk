@@ -28,7 +28,7 @@ import type {
   OptionalFeeParams,
   SendTokenExtraArgs,
 } from "../../../../common/types/message.js";
-import type { FolksTokenId, FolksTokenType } from "../../../../common/types/token.js";
+import type { FolksTokenId, FolksSpokeTokenType, FolksHubTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex, StateOverride } from "viem";
 
@@ -66,22 +66,32 @@ export function extraArgsToBytes(tokenAddr: GenericAddress, recipientAddr: Gener
 
 export function buildSendTokenExtraArgsWhenRemoving(
   spokeAddress: GenericAddress,
-  folksTokenType: FolksTokenType,
+  folksTokenType: FolksHubTokenType,
   amount: bigint,
 ): Hex {
-  const { type, address } = folksTokenType;
-  if (type === TokenType.NATIVE || type === TokenType.ERC20) return "0x";
-  return extraArgsToBytes(address, spokeAddress, amount);
+  const { type } = folksTokenType;
+  switch (type) {
+    case TokenType.NATIVE:
+    case TokenType.ERC20:
+      return "0x";
+    default:
+      return extraArgsToBytes(folksTokenType.address, spokeAddress, amount);
+  }
 }
 
 export function buildSendTokenExtraArgsWhenAdding(
   hubPoolAddress: GenericAddress,
-  folksTokenType: FolksTokenType,
+  folksTokenType: FolksSpokeTokenType,
   amount: bigint,
 ): Hex {
-  const { type, address } = folksTokenType;
-  if (type === TokenType.NATIVE || type === TokenType.ERC20) return "0x";
-  return extraArgsToBytes(address, hubPoolAddress, amount);
+  const { type } = folksTokenType;
+  switch (type) {
+    case TokenType.NATIVE:
+    case TokenType.ERC20:
+      return "0x";
+    default:
+      return extraArgsToBytes(folksTokenType.address, hubPoolAddress, amount);
+  }
 }
 
 export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
