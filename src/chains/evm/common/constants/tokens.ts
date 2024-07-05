@@ -30,6 +30,10 @@ export const CONTRACT_SLOT: Partial<
         balanceOf: 9n,
         allowance: 10n,
       },
+      [FolksTokenId.LINK_eth_sep]: {
+        balanceOf: 0n,
+        allowance: 1n,
+      },
     },
   },
 } as const;
