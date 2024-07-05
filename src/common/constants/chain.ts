@@ -57,16 +57,16 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
     [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
       folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
       spokeCommonAddress: convertToGenericAddress(
-        "0xd2ff3F3e401B67002A4AA9a1997D919a9a9Cdf5A" as EvmAddress,
+        "0x5DcDB6DB2f9Bbf4D48d256601a9e303F9be64bbb" as EvmAddress,
         ChainType.EVM,
       ),
       bridgeRouterAddress: convertToGenericAddress(
-        "0x15800cF5060D860cf1AC379885269B59692b70E0" as EvmAddress,
+        "0xa37dB64D347331fc3c9c15938932875B3BD5D593" as EvmAddress,
         ChainType.EVM,
       ),
       adapters: {
         [AdapterType.HUB]: convertToGenericAddress(
-          "0xdCa2476901b5f942653747972d177A142106141d" as EvmAddress,
+          "0xBD9569a7a71B431a4160Cc317875B191374c47A1" as EvmAddress,
           ChainType.EVM,
         ),
       },
@@ -80,7 +80,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
-            "0x3EA381D434b5b020ce2F9a0fba28248F93BCbB8b" as EvmAddress,
+            "0x721834f869dDec36fB0087aD29A86ad7EE82B6ac" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -93,7 +93,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.AVAX,
           poolId: TESTNET_POOLS[FolksTokenId.AVAX],
           spokeAddress: convertToGenericAddress(
-            "0x1005CFDc2F195a8a549F13DFF41B1bA005c8488f" as EvmAddress,
+            "0xbCfdC7bda35931705d5Dc141D24Ff0897F97353B" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -102,28 +102,28 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
     [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
       folksChainId: FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA,
       spokeCommonAddress: convertToGenericAddress(
-        "0x1A72784AdEaBC4B51E8F3e877ab42f74FEa96b38" as EvmAddress,
+        "0x2c92177c2a8B2dFcA61B804C970CBD311090293e" as EvmAddress,
         ChainType.EVM,
       ),
       bridgeRouterAddress: convertToGenericAddress(
-        "0xE5A36FF4E291EaA87fb780792C966a08C163B92b" as EvmAddress,
+        "0x1BC0112BD83EA33941148737E5Ef9CcC35Df6a0c" as EvmAddress,
         ChainType.EVM,
       ),
       adapters: {
         [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-          "0xF060E7C049a1dD65509AaC2B0a82D6f8fDef5978" as EvmAddress,
+          "0xa2Ca92b5A7CC5cCA41e56F20a1f9Daf0A9ed2eB5" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
-          "0x11C3F8d7947eAfF66d1D113ADfdb76BD08D710ae" as EvmAddress,
+          "0x1D459CfA522472c47c6171B96561cE93B327d2F2" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.CCIP_DATA]: convertToGenericAddress(
-          "0x0a079Fb8EC634307A2190Bdb41F3146BCf1fBF78" as EvmAddress,
+          "0x054DD1f0697aDC2E092b712F05829Ebdbc9bbdcb" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
-          "0x1Bf67e08e4afac11b4E789334Ea4Ea9971DC8B2B" as EvmAddress,
+          "0xfB29aa4e30908Babb022cc397444b9d5bBa06bAd" as EvmAddress,
           ChainType.EVM,
         ),
       },
@@ -137,7 +137,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
-            "0x46cA7b3D9F9390E4a541f3f1C8a0E913087e087F" as EvmAddress,
+            "0x22644D46e5aE39Fa6b9d9706AaA1d398E5EB8aBc" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -150,7 +150,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.ETH_eth_sep,
           poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
           spokeAddress: convertToGenericAddress(
-            "0xF42700A23c0BC0837716C03458fEB2c138144C42" as EvmAddress,
+            "0x993C9a918B145B90E69A8D22B7e3b6d3413e3755" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -163,7 +163,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.LINK_eth_sep,
           poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
           spokeAddress: convertToGenericAddress(
-            "0x909E5e98E8BD62d89b4d4f8849708D63c781799e" as EvmAddress,
+            "0x5927Cb7b0760b4eDb0235629f4a042b55C36b592" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -172,28 +172,28 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
     [FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
       folksChainId: FOLKS_CHAIN_ID.BASE_SEPOLIA,
       spokeCommonAddress: convertToGenericAddress(
-        "0x14366C26C1b8e70571C1e42734aD4d5aADCB4ADf" as EvmAddress,
+        "0xd35c94e34d01880CA6F2A43c42c2Ea8d6bda2aF9" as EvmAddress,
         ChainType.EVM,
       ),
       bridgeRouterAddress: convertToGenericAddress(
-        "0x281f21759e184481F42691EAd154Da3BBa1bC5d1" as EvmAddress,
+        "0x46cA7b3D9F9390E4a541f3f1C8a0E913087e087F" as EvmAddress,
         ChainType.EVM,
       ),
       adapters: {
         [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-          "0x2fD94F6B9A56879f31c14Ef1723F1315eff81d42" as EvmAddress,
+          "0xF42700A23c0BC0837716C03458fEB2c138144C42" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
-          "0x11e11845EC4E28d12a4AD313027B43492f4915FF" as EvmAddress,
+          "0x909E5e98E8BD62d89b4d4f8849708D63c781799e" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.CCIP_DATA]: convertToGenericAddress(
-          "0x4B466063f81E1a4aD6D730ab836D92D709F9D7a6" as EvmAddress,
+          "0x6401174D1dd518c908f379006F0d9C95Bb2C332D" as EvmAddress,
           ChainType.EVM,
         ),
         [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
-          "0x90733D01ed00E920519d78F3854448c15671FDF1" as EvmAddress,
+          "0x7c0cd88d1BfD57b57C565D79d14BE8857268d645" as EvmAddress,
           ChainType.EVM,
         ),
       },
@@ -207,7 +207,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.USDC,
           poolId: TESTNET_POOLS[FolksTokenId.USDC],
           spokeAddress: convertToGenericAddress(
-            "0x84Ad2276aDeeFDB1F486523819ffa81d362c2666" as EvmAddress,
+            "0x4D74D3630Ac5f70Ed25313EaEe690Ab7418aBA48" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -220,7 +220,7 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           folksTokenId: FolksTokenId.ETH_base_sep,
           poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
           spokeAddress: convertToGenericAddress(
-            "0xe720592Bc4719befeEb7c001592D145f1Fc70BCa" as EvmAddress,
+            "0x8f9f941327e5E457494796e9D03cb82F788F0c2b" as EvmAddress,
             ChainType.EVM,
           ),
         },
