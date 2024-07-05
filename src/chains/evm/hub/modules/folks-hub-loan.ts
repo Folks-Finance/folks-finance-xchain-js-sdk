@@ -110,7 +110,7 @@ export const write = {
     return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit: gasLimit,
+      gas: gasLimit,
     });
   },
 };
@@ -138,7 +138,7 @@ export async function getSendTokenAdapterFees(
       adapterId: adapters.returnAdapterId,
       returnAdapterId: 0 as AdapterType,
     },
-    gasLimit: feeParams.returnGasLimit,
+    gas: feeParams.returnGasLimit,
   });
   const returnMessage: MessageToSend = {
     params: returnParams,
