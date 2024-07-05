@@ -138,7 +138,7 @@ export async function getSendTokenAdapterFees(
       adapterId: adapters.returnAdapterId,
       returnAdapterId: 0 as AdapterType,
     },
-    gas: feeParams.returnGasLimit,
+    gasLimit: feeParams.returnGasLimit,
   });
   const returnMessage: MessageToSend = {
     params: returnParams,
