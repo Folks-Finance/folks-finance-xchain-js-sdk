@@ -498,10 +498,10 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
   const [accountId, loanType, oldColPools, oldBorPools, oldCollaterals, oldBorrows] = loan;
 
   // make copy which can update
-  const colPools = oldColPools.slice();
-  const borPools = oldBorPools.slice();
-  const collaterals = oldCollaterals.slice();
-  const borrows = oldBorrows.slice();
+  const colPools = [...structuredClone(oldColPools)];
+  const borPools = [...structuredClone(oldBorPools)];
+  const collaterals = [...structuredClone(oldCollaterals)];
+  const borrows = [...structuredClone(oldBorrows)];
 
   // simulate changes
   for (const change of changes) {
