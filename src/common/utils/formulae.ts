@@ -87,6 +87,10 @@ export function calcBorrowBalance(bbtn1: bigint, biit: Dnum, biitn1: Dnum): bigi
   return borrowBalance;
 }
 
+export function calcStableInterestRate(bbt: bigint, amount: bigint, sbirtn1: Dnum, sbirt1: Dnum): Dnum {
+  return dn.div(dn.add(dn.mul(sbirtn1, [bbt, 0]), dn.mul(sbirt1, [amount, 0])), dn.add([bbt, 0], [amount, 0]));
+}
+
 export function calcLtvRatio(totalBorrowBalanceValue: Dnum, totalCollateralBalanceValue: Dnum): Dnum {
   const [, decimals] = totalBorrowBalanceValue;
   if (dn.equal(totalCollateralBalanceValue, 0)) return dn.from(0, decimals);

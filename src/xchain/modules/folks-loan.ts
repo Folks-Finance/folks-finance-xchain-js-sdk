@@ -25,7 +25,7 @@ import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
-import type { LoanManagerGetUserLoanType, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
+import type { LoanChange, LoanManagerUserLoan, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
 import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
@@ -1152,19 +1152,25 @@ export const read = {
     return await FolksHubLoan.getUserLoanIds(FolksCore.getHubProvider(), network, accountId, loanTypeIdsFilter);
   },
 
-  async userLoans(loanIds: Array<LoanId>): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
+  async userLoans(loanIds: Array<LoanId>): Promise<Map<LoanId, LoanManagerUserLoan>> {
     const network = FolksCore.getSelectedNetwork();
     // get user loans
     return await FolksHubLoan.getUserLoans(FolksCore.getHubProvider(), network, loanIds);
   },
+};
 
+export const util = {
   userLoansInfo(
-    userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
+    userLoansMap: Map<LoanId, LoanManagerUserLoan>,
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
   ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan
     return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices);
+  },
+
+  simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
+    return FolksHubLoan.simulateLoanChanges(loan, changes);
   },
 };
