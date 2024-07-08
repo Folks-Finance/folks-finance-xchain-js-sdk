@@ -18,7 +18,8 @@ import {
   calcRewardIndex,
   toUnderlyingAmount,
 } from "../../../../common/utils/formulae.js";
-import { compoundEverySecond } from "../../../../common/utils/math-lib.js";
+import { bigIntMin, compoundEverySecond } from "../../../../common/utils/math-lib.js";
+import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 import { defaultEventParams } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
@@ -27,9 +28,11 @@ import {
   buildMessagePayload,
   buildSendTokenExtraArgsWhenRemoving,
 } from "../../common/utils/message.js";
+import { LoanChangeType } from "../types/loan.js";
 import { getHubChain, getHubTokenData } from "../utils/chain.js";
 import { getBridgeRouterHubContract, getHubContract, getLoanManagerContract } from "../utils/contract.js";
 import { fetchUserLoanIds } from "../utils/events.js";
+import { initLoanBorrowInterests, updateLoanBorrowInterests } from "../utils/loan.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, NetworkType } from "../../../../common/types/chain.js";
@@ -48,7 +51,8 @@ import type { PrepareLiquidateCall } from "../../common/types/module.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type {
-  LoanManagerGetUserLoanType,
+  LoanChange,
+  LoanManagerUserLoan,
   LoanPoolInfo,
   LoanTypeInfo,
   UserLoanInfo,
@@ -288,7 +292,7 @@ export async function getUserLoans(
   provider: Client,
   network: NetworkType,
   loanIds: Array<LoanId>,
-): Promise<Map<LoanId, LoanManagerGetUserLoanType>> {
+): Promise<Map<LoanId, LoanManagerUserLoan>> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
@@ -299,16 +303,16 @@ export async function getUserLoans(
     args: [loanId],
   }));
 
-  const userLoans: Array<LoanManagerGetUserLoanType> = (await multicall(provider, {
+  const userLoans: Array<LoanManagerUserLoan> = (await multicall(provider, {
     contracts: getUserLoansCall,
     allowFailure: false,
-  })) as Array<LoanManagerGetUserLoanType>;
+  })) as Array<LoanManagerUserLoan>;
 
   return new Map(loanIds.map((loanId, i) => [loanId, userLoans[i]]));
 }
 
 export function getUserLoansInfo(
-  userLoansMap: Map<LoanId, LoanManagerGetUserLoanType>,
+  userLoansMap: Map<LoanId, LoanManagerUserLoan>,
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
@@ -488,4 +492,112 @@ export function getUserLoansInfo(
   }
 
   return userLoansInfo;
+}
+
+export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
+  const [accountId, loanType, oldColPools, oldBorPools, oldCollaterals, oldBorrows] = loan;
+
+  // make copy which can update
+  const colPools = [...structuredClone(oldColPools)];
+  const borPools = [...structuredClone(oldBorPools)];
+  const collaterals = [...structuredClone(oldCollaterals)];
+  const borrows = [...structuredClone(oldBorrows)];
+
+  // simulate changes
+  for (const change of changes) {
+    const { type: changeType, poolInfo } = change;
+    switch (changeType) {
+      case LoanChangeType.AddCollateral: {
+        const colIndex = colPools.findIndex((poolId) => poolId === poolInfo.poolId);
+        const { fTokenAmount } = change;
+
+        if (colIndex === -1) {
+          // new collateral
+          colPools.push(poolInfo.poolId);
+          collaterals.push({ balance: fTokenAmount, rewardIndex: 0n });
+        } else {
+          // existing collateral
+          collaterals[colIndex].balance += fTokenAmount;
+        }
+        break;
+      }
+      case LoanChangeType.ReduceCollateral: {
+        const colIndex = colPools.findIndex((poolId) => poolId === poolInfo.poolId);
+        if (colIndex === -1) throw Error(`Cannot find collateral for pool ${poolInfo.poolId}`);
+        const { fTokenAmount } = change;
+
+        const collateral = collaterals[colIndex];
+        collateral.balance -= fTokenAmount;
+        if (collateral.balance < 0) throw Error(`Insufficient collateral for pool ${poolInfo.poolId}`);
+        if (collateral.balance === 0n) {
+          colPools.splice(colIndex, 1);
+          collaterals.splice(colIndex, 1);
+        }
+        break;
+      }
+
+      case LoanChangeType.Borrow: {
+        const borIndex = borPools.findIndex((poolId) => poolId === poolInfo.poolId);
+        const { tokenAmount, isStable } = change;
+
+        if (borIndex === -1) {
+          // new borrow
+          borPools.push(poolInfo.poolId);
+          const borrow = initLoanBorrowInterests(isStable, poolInfo);
+          borrow.amount = tokenAmount;
+          borrow.balance = tokenAmount;
+          borrows.push(borrow);
+        } else {
+          // existing borrow
+          const borrow = borrows[borIndex];
+          if (isStable !== borrow.stableInterestRate > 0)
+            throw Error(`Borrow type mismatch for pool ${poolInfo.poolId}`);
+
+          updateLoanBorrowInterests(borrow, tokenAmount, poolInfo, true);
+          borrow.amount += tokenAmount;
+          borrow.balance += tokenAmount;
+        }
+        break;
+      }
+      case LoanChangeType.Repay: {
+        const borIndex = borPools.findIndex((poolId) => poolId === poolInfo.poolId);
+        if (borIndex === -1) throw Error(`Cannot find borrow for pool ${poolInfo.poolId}`);
+        const { tokenAmount } = change;
+
+        const borrow = borrows[borIndex];
+        updateLoanBorrowInterests(borrow, tokenAmount, poolInfo, false);
+        const balance = borrow.balance;
+        const interest = balance - borrow.amount;
+        const excessPaid = tokenAmount > balance ? tokenAmount - balance : 0n;
+        const interestPaid = bigIntMin(tokenAmount, interest);
+        const principalPaid = tokenAmount - interestPaid - excessPaid;
+        borrow.amount -= principalPaid;
+        borrow.balance -= principalPaid + interestPaid;
+        if (borrow.balance === 0n) {
+          borPools.splice(borIndex, 1);
+          borrows.splice(borIndex, 1);
+        }
+        break;
+      }
+      case LoanChangeType.SwitchBorrowType: {
+        const borIndex = borPools.findIndex((poolId) => poolId === poolInfo.poolId);
+        if (borIndex === -1) throw Error(`Cannot find borrow for pool ${poolInfo.poolId}`);
+        const { isSwitchingToStable } = change;
+        if (isSwitchingToStable === borrows[borIndex].stableInterestRate > 0)
+          throw Error(`Borrow type mismatch for pool ${poolInfo.poolId}`);
+
+        const { amount, balance } = updateLoanBorrowInterests(borrows[borIndex], 0n, poolInfo, false);
+        const borrow = initLoanBorrowInterests(isSwitchingToStable, poolInfo);
+        borrow.amount = amount;
+        borrow.balance = balance;
+        borrows[borIndex] = borrow;
+        break;
+      }
+      default:
+        exhaustiveCheck(changeType);
+        break;
+    }
+  }
+
+  return [accountId, loanType, colPools, borPools, collaterals, borrows];
 }

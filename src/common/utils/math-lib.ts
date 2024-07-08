@@ -41,3 +41,6 @@ export function compoundEverySecond(rate: Dnum): Dnum {
 export function compoundEveryHour(rate: Dnum): Dnum {
   return compound(rate, HOURS_IN_YEAR);
 }
+
+export const bigIntMax = (...args: Array<bigint>) => args.reduce((m, e) => (e > m ? e : m));
+export const bigIntMin = (...args: Array<bigint>) => args.reduce((m, e) => (e < m ? e : m));

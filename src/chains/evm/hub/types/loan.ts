@@ -1,3 +1,4 @@
+import type { PoolInfo } from "./pool.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
@@ -95,4 +96,52 @@ export type DeleteUserLoanEventParams = GetEventParams & {
   accountId: AccountId;
 };
 
-export type LoanManagerGetUserLoanType = ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">;
+export type LoanManagerUserLoan = ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">;
+
+export type LoanManagerUserLoanBorrow = LoanManagerUserLoan[5][0];
+
+export enum LoanChangeType {
+  AddCollateral,
+  ReduceCollateral,
+  Borrow,
+  Repay,
+  SwitchBorrowType,
+}
+
+type LoanBaseChange = {
+  type: LoanChangeType;
+  poolInfo: PoolInfo;
+};
+
+type LoanAddCollateralChange = LoanBaseChange & {
+  type: LoanChangeType.AddCollateral;
+  fTokenAmount: bigint;
+};
+
+type LoanReduceCollateralChange = LoanBaseChange & {
+  type: LoanChangeType.ReduceCollateral;
+  fTokenAmount: bigint;
+};
+
+type LoanBorrowChange = LoanBaseChange & {
+  type: LoanChangeType.Borrow;
+  tokenAmount: bigint;
+  isStable: boolean;
+};
+
+type LoanRepayChange = LoanBaseChange & {
+  type: LoanChangeType.Repay;
+  tokenAmount: bigint;
+};
+
+type LoanSwitchBorrowTypeChange = LoanBaseChange & {
+  type: LoanChangeType.SwitchBorrowType;
+  isSwitchingToStable: boolean;
+};
+
+export type LoanChange =
+  | LoanAddCollateralChange
+  | LoanReduceCollateralChange
+  | LoanBorrowChange
+  | LoanRepayChange
+  | LoanSwitchBorrowTypeChange;
