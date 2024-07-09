@@ -53,6 +53,7 @@ import type {
 import type {
   LoanTypeId,
   PrepareBorrowCall,
+  PrepareCreateLoanAndDepositCall,
   PrepareCreateLoanCall,
   PrepareDepositCall,
   PrepareLiquidateCall,
@@ -249,12 +250,14 @@ export const prepare = {
 
     switch (folksChain.chainType) {
       case ChainType.EVM:
-        return await FolksEvmLoan.prepare.deposit(
+        return await FolksEvmLoan.prepare.createLoanAndDeposit(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
           loanId,
+          loanTypeId,
+          loanName,
           amount,
           spokeChain,
           spokeTokenData,
@@ -806,23 +809,19 @@ export const prepare = {
 
   async liquidate(
     accountId: AccountId,
-    loanId: LoanId,
+    liquidatorLoanId: LoanId,
     violatorLoanId: LoanId,
     folksTokenIdToLiq: FolksTokenId,
     folksTokenIdToSeize: FolksTokenId,
     repayingAmount: bigint,
     minSeizedAmount: bigint,
-    adapters: MessageAdapters,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
-    const network = folksChain.network;
+    assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+    const hubChain = getHubChain(folksChain.network);
 
-    assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-
-    const hubChain = getHubChain(network);
-
-    const hubTokenToLiquidateData = getHubTokenData(folksTokenIdToLiq, network);
-    const hubTokenToSeizeData = getHubTokenData(folksTokenIdToSeize, network);
+    const hubTokenToLiquidateData = getHubTokenData(folksTokenIdToLiq, folksChain.network);
+    const hubTokenToSeizeData = getHubTokenData(folksTokenIdToSeize, folksChain.network);
 
     const userAddress = getSignerGenericAddress({
       signer: FolksCore.getFolksSigner().signer,
@@ -830,7 +829,7 @@ export const prepare = {
     });
 
     const data: LiquidateMessageData = {
-      liquidatorLoanId: loanId,
+      liquidatorLoanId,
       violatorLoanId,
       colPoolId: hubTokenToSeizeData.poolId,
       borPoolId: hubTokenToLiquidateData.poolId,
@@ -902,7 +901,7 @@ export const write = {
     loanName: LoanName,
     amount: bigint,
     includeApproval: boolean,
-    prepareCall: PrepareDepositCall,
+    prepareCall: PrepareCreateLoanAndDepositCall,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
