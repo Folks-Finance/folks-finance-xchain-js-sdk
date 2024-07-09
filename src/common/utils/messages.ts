@@ -158,7 +158,29 @@ export async function estimateAdapterReceiveGasLimit(
           );
         }
         case AdapterType.CCIP_TOKEN: {
-          throw new Error("Not implemented yet: AdapterType.CCIP_TOKEN case");
+          const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
+            messageDirection,
+            sourceFolksChainId,
+            destFolksChainId,
+            network,
+            AdapterType.CCIP_DATA,
+          );
+          const sourceCcipChainId = getCcipData(sourceFolksChainId).ccipChainId;
+          const ccipRouter = convertFromGenericAddress(getCcipData(destFolksChainId).ccipRouter, ChainType.EVM);
+
+          // Due to ERC20 transfer and additional checks in the CCIP Token Adapter
+          const increaseGasLimit = BigInt(150000);
+          const gasLimitEstimation = await estimateEvmCcipDataGasLimit(
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            destFolksChainProvider as EVMProvider,
+            messageBuilderParams,
+            returnGasLimit,
+            sourceCcipChainId,
+            ccipRouter,
+            destAdapterAddress,
+            sourceAdapterAddress,
+          );
+          return gasLimitEstimation + increaseGasLimit;
         }
         default:
           return exhaustiveCheck(adapterId);
