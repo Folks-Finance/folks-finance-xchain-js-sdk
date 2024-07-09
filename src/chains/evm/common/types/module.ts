@@ -71,9 +71,11 @@ export type PrepareLiquidateCall = {
 } & Omit<PrepareCall, "messageParams" | "msgValue">;
 
 export type PrepareRetryMessageCall = {
+  isHub: boolean;
   bridgeRouterAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams">;
 
 export type PrepareReverseMessageCall = {
+  isHub: boolean;
   bridgeRouterAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams">;
