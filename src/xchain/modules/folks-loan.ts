@@ -809,7 +809,7 @@ export const prepare = {
 
   async liquidate(
     accountId: AccountId,
-    loanId: LoanId,
+    liquidatorLoanId: LoanId,
     violatorLoanId: LoanId,
     folksTokenIdToLiq: FolksTokenId,
     folksTokenIdToSeize: FolksTokenId,
@@ -829,7 +829,7 @@ export const prepare = {
     });
 
     const data: LiquidateMessageData = {
-      liquidatorLoanId: loanId,
+      liquidatorLoanId,
       violatorLoanId,
       colPoolId: hubTokenToSeizeData.poolId,
       borPoolId: hubTokenToLiquidateData.poolId,
