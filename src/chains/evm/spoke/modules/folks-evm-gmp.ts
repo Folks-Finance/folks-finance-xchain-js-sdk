@@ -1,11 +1,11 @@
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
-import { getBridgeRouterHubContract } from "../utils/contract.js";
+import { getBridgeRouterSpokeContract } from "../utils/contract.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
+import type { SpokeChain } from "../../../../common/types/chain.js";
 import type { MessageId, ReverseMessageExtraAgrs } from "../../../../common/types/gmp.js";
 import type { AdapterType } from "../../../../common/types/message.js";
 import type { PrepareRetryMessageCall, PrepareReverseMessageCall } from "../../common/types/module.js";
-import type { HubChain } from "../types/chain.js";
 import type { Client, EstimateGasParameters, WalletClient } from "viem";
 
 export const prepare = {
@@ -15,12 +15,12 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     value: bigint,
-    hubChain: HubChain,
+    spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = {
       account: sender,
     },
   ): Promise<PrepareRetryMessageCall> {
-    const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     const gasLimit = await bridgeRouter.estimateGas.retryMessage([adapterId, messageId], {
       ...transactionOptions,
@@ -30,8 +30,8 @@ export const prepare = {
     return {
       gasLimit,
       msgValue: value,
-      isHub: true,
-      bridgeRouterAddress: hubChain.bridgeRouterAddress,
+      isHub: false,
+      bridgeRouterAddress: spokeChain.bridgeRouterAddress,
     };
   },
 
@@ -42,12 +42,12 @@ export const prepare = {
     messageId: MessageId,
     extraArgs: ReverseMessageExtraAgrs,
     value: bigint,
-    hubChain: HubChain,
+    spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = {
       account: sender,
     },
   ): Promise<PrepareRetryMessageCall> {
-    const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
 
     const gasLimit = await bridgeRouter.estimateGas.reverseMessage([adapterId, messageId, extraArgs], {
       ...transactionOptions,
@@ -57,8 +57,8 @@ export const prepare = {
     return {
       gasLimit,
       msgValue: value,
-      isHub: true,
-      bridgeRouterAddress: hubChain.bridgeRouterAddress,
+      isHub: false,
+      bridgeRouterAddress: spokeChain.bridgeRouterAddress,
     };
   },
 };
@@ -73,7 +73,7 @@ export const write = {
   ) {
     const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
-    const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, bridgeRouterAddress, signer);
 
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
@@ -93,7 +93,7 @@ export const write = {
   ) {
     const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
 
-    const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, bridgeRouterAddress, signer);
 
     return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
       account: getEvmSignerAccount(signer),

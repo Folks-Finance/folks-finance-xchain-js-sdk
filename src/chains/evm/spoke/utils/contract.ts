@@ -34,6 +34,15 @@ export function getSpokeCommonContract(
 export function getBridgeRouterSpokeContract(
   provider: Client,
   address: GenericAddress,
+): GetReadContractReturnType<typeof BridgeRouterSpokeAbi>;
+export function getBridgeRouterSpokeContract(
+  provider: Client,
+  address: GenericAddress,
+  signer: WalletClient,
+): GetContractReturnType<typeof BridgeRouterSpokeAbi, Client>;
+export function getBridgeRouterSpokeContract(
+  provider: Client,
+  address: GenericAddress,
   signer?: WalletClient,
 ): GetReadContractReturnType<typeof BridgeRouterSpokeAbi> {
   return getContract({
