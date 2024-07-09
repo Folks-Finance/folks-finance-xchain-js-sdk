@@ -508,7 +508,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit + BigInt(10000),
+        gas: gasLimit,
         value: msgValue,
       },
     );
