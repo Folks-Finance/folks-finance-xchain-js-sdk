@@ -76,7 +76,7 @@ export const write = {
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit,
+      gas: gasLimit,
       msgValue,
     });
   },
@@ -96,7 +96,7 @@ export const write = {
     return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gasLimit,
+      gas: gasLimit,
       msgValue,
     });
   },
