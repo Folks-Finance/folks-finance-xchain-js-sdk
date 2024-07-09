@@ -18,6 +18,7 @@ import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId, SpokeTokenData } from "../../../../common/types/token.js";
 import type {
   PrepareBorrowCall,
+  PrepareCreateLoanAndDepositCall,
   PrepareCreateLoanCall,
   PrepareDeleteLoanCall,
   PrepareDepositCall,
@@ -94,6 +95,68 @@ export const prepare = {
       gasLimit,
       messageParams: messageToSend.params,
       spokeCommonAddress,
+    };
+  },
+
+  async createLoanAndDeposit(
+    provider: Client,
+    sender: EvmAddress,
+    messageToSend: MessageToSend,
+    accountId: AccountId,
+    loanId: LoanId,
+    loanTypeId: LoanTypeId,
+    loanName: LoanName,
+    amount: bigint,
+    spokeChain: SpokeChain,
+    spokeTokenData: SpokeTokenData,
+    transactionOptions: EstimateGasParameters = { account: sender },
+  ) {
+    const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress);
+    const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+
+    const spender = convertFromGenericAddress(spokeTokenData.spokeAddress, ChainType.EVM);
+
+    // get state override
+    let stateOverride;
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+      const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
+      stateOverride = getAllowanceStateOverride([
+        {
+          erc20Address,
+          stateDiff: [
+            {
+              owner: sender,
+              spender,
+              folksChainId: spokeChain.folksChainId,
+              folksTokenId: spokeTokenData.folksTokenId,
+              tokenType: spokeTokenData.token.type,
+              amount,
+            },
+          ],
+        },
+      ]);
+    }
+
+    // get adapter fees
+    const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
+    const value = spokeTokenData.token.type === TokenType.NATIVE ? amount : BigInt(0);
+    const msgValue = adapterFees + value;
+
+    // get gas limits
+    const gasLimit = await spokeToken.estimateGas.createLoanAndDeposit(
+      [messageToSend.params, accountId, loanId, amount, loanTypeId, loanName],
+      {
+        value: msgValue,
+        ...transactionOptions,
+        stateOverride,
+      },
+    );
+
+    return {
+      msgValue,
+      gasLimit,
+      messageParams: messageToSend.params,
+      spokeTokenData: spokeTokenData,
     };
   },
 
@@ -422,7 +485,7 @@ export const write = {
     loanName: LoanName,
     amount: bigint,
     includeApprove = true,
-    prepareCall: PrepareDepositCall,
+    prepareCall: PrepareCreateLoanAndDepositCall,
   ) {
     const { msgValue, gasLimit, messageParams, spokeTokenData } = prepareCall;
     const { token } = spokeTokenData;
@@ -445,7 +508,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit,
+        gas: gasLimit + BigInt(10000),
         value: msgValue,
       },
     );

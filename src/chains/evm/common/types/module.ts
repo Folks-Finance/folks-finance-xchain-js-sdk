@@ -41,6 +41,10 @@ export type PrepareDeleteLoanCall = {
   spokeCommonAddress: GenericAddress;
 } & PrepareCall;
 
+export type PrepareCreateLoanAndDepositCall = {
+  spokeTokenData: SpokeTokenData;
+} & PrepareCall;
+
 export type PrepareDepositCall = {
   spokeTokenData: SpokeTokenData;
 } & PrepareCall;

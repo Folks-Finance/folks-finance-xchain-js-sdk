@@ -5,6 +5,7 @@ import type {
   PrepareUnregisterAddressCall as PrepareUnregisterAddressEVMCall,
   PrepareCreateLoanCall as PrepareCreateLoanEVMCall,
   PrepareDeleteLoanCall as PrepareDeleteLoanEVMCall,
+  PrepareCreateLoanAndDepositCall as PrepareCreateLoanAndDepositEVMCall,
   PrepareDepositCall as PrepareDepositEVMCall,
   PrepareWithdrawCall as PrepareWithdrawEVMCall,
   PrepareCall as PrepareEVMCall,
@@ -30,6 +31,7 @@ export type PrepareUnregisterAddressCall = PrepareUnregisterAddressEVMCall;
 
 export type PrepareCreateLoanCall = PrepareCreateLoanEVMCall;
 export type PrepareDeleteLoanCall = PrepareDeleteLoanEVMCall;
+export type PrepareCreateLoanAndDepositCall = PrepareCreateLoanAndDepositEVMCall;
 export type PrepareDepositCall = PrepareDepositEVMCall;
 export type PrepareWithdrawCall = PrepareWithdrawEVMCall;
 export type PrepareBorrowCall = PrepareBorrowEVMCall;
