@@ -36,7 +36,7 @@ export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, ad
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
 }
 
-function getAdapterId(messageAdapterParams: MessageAdapterParams) {
+function getAdapterIds(messageAdapterParams: MessageAdapterParams) {
   const { sourceFolksChainId, network, messageAdapterParamType } = messageAdapterParams;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
   if (messageAdapterParamType == MessageAdapterParamsType.SendToken && isCircleToken(messageAdapterParams.folksTokenId))
@@ -44,7 +44,7 @@ function getAdapterId(messageAdapterParams: MessageAdapterParams) {
   return DATA_ADAPTERS;
 }
 
-function getReturnAdapterId({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
+function getReturnAdapterIds({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
   if (isHubChain(destFolksChainId, network)) return HUB_ADAPTERS;
   if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
   return DATA_ADAPTERS;
@@ -56,18 +56,18 @@ export function getSupportedMessageAdapters(params: MessageAdapterParams) {
   switch (messageAdapterParamType) {
     case MessageAdapterParamsType.SendToken:
       return {
-        adapterId: getAdapterId(params),
-        returnAdapterId: [AdapterType.HUB],
+        adapterIds: getAdapterIds(params),
+        returnAdapterIds: [AdapterType.HUB],
       };
     case MessageAdapterParamsType.ReceiveToken:
       return {
-        adapterId: getAdapterId(params),
-        returnAdapterId: getReturnAdapterId(params),
+        adapterIds: getAdapterIds(params),
+        returnAdapterIds: getReturnAdapterIds(params),
       };
     case MessageAdapterParamsType.Data:
       return {
-        adapterId: getAdapterId(params),
-        returnAdapterId: [AdapterType.HUB],
+        adapterIds: getAdapterIds(params),
+        returnAdapterIds: [AdapterType.HUB],
       };
     default:
       return exhaustiveCheck(messageAdapterParamType);

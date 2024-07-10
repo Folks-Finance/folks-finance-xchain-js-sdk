@@ -1,7 +1,17 @@
 import { createWalletClient, http } from "viem";
+import { mnemonicToAccount } from "viem/accounts";
 
 import { getRandomBytes } from "../src/common/utils/bytes.js";
-import { NetworkType, FolksCore, FolksAccount, AdapterType, FOLKS_CHAIN_ID, BYTES32_LENGTH } from "../src/index.js";
+import {
+  NetworkType,
+  FolksCore,
+  FolksAccount,
+  FOLKS_CHAIN_ID,
+  BYTES32_LENGTH,
+  getSupportedMessageAdapters,
+  Action,
+  MessageAdapterParamsType,
+} from "../src/index.js";
 
 import type { AccountId } from "../src/common/types/lending.js";
 import type { FolksCoreConfig, MessageAdapters } from "../src/index.js";
@@ -23,12 +33,24 @@ async function main() {
   console.log(accountInfo);
 
   // write
+  const MNEMONIC = "your mnemonic here";
+  const account = mnemonicToAccount(MNEMONIC);
+
   const signer = createWalletClient({
+    account,
     transport: http(),
   });
+
+  const { adapterIds, returnAdapterIds } = getSupportedMessageAdapters({
+    action: Action.CreateAccount,
+    messageAdapterParamType: MessageAdapterParamsType.Data,
+    network: NetworkType.TESTNET,
+    sourceFolksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
+  });
+
   const adapters: MessageAdapters = {
-    adapterId: AdapterType.WORMHOLE_DATA,
-    returnAdapterId: AdapterType.HUB,
+    adapterId: adapterIds[0],
+    returnAdapterId: returnAdapterIds[0],
   };
 
   FolksCore.setFolksSigner({
