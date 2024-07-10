@@ -2,6 +2,7 @@
   "name": "@folks-finance/xchain-sdk",
   "description": "The official JavaScript SDK for the Folks Finance Cross-Chain Lending Protocol",
   "version": "0.0.1",
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
