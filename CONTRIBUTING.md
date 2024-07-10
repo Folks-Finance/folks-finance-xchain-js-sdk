@@ -2,9 +2,12 @@
 
 ## Table of Contents
 
-- [Using nvm to Manage Node.js Version](#using-nvm-to-manage-nodejs-version)
-- [Using pnpm Managed via Corepack](#using-pnpm-managed-via-corepack)
-- [Commit Guidelines](#commit-guidelines)
+- [Contributing to folks-finance-xchain-js-sdk](#contributing-to-folks-finance-xchain-js-sdk)
+  - [Table of Contents](#table-of-contents)
+    - [Using nvm to Manage Node.js Version](#using-nvm-to-manage-nodejs-version)
+    - [Using pnpm Managed via Corepack](#using-pnpm-managed-via-corepack)
+    - [Commit Guidelines](#commit-guidelines)
+    - [Changesets and Automated Versioning](#changesets-and-automated-versioning)
 
 ### Using nvm to Manage Node.js Version
 
@@ -48,3 +51,17 @@ pnpm commit
 This will launch an automated prompt that guides you step by step through writing a commit message according to our conventions.
 
 For more information on the `conventional-commit` convention, please refer to the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/).
+
+### Changesets and Automated Versioning
+
+All commits must go through pull requests. In every pull request where changes are made that modify the SDK, you have to generate a changeset by launching:
+
+```bash
+pnpm changeset
+```
+
+This command will guide you through creating a changeset file that describes the changes made in the pull request and specifies the type of version bump required (patch, minor, major).
+
+Package versioning, publishing, and the generation of changelogs on GitHub releases are automated via GitHub Actions. This ensures that the package is always up-to-date and that every change is properly versioned, published, and documented without manual intervention.
+
+For more information on creating and managing changesets, please refer to the [Changesets documentation](https://github.com/changesets/changesets/blob/b59375614b1b3dabdf67806cd202defb314686a8/docs/adding-a-changeset.md).
