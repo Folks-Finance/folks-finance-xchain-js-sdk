@@ -1,8 +1,13 @@
 {
   "name": "@folks-finance/xchain-sdk",
+  "description": "The official JavaScript SDK for the Folks Finance Cross-Chain Lending Protocol",
   "version": "0.0.1",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Folks-Finance/folks-finance-xchain-js-sdk.git"
   },
   "type": "module",
   "engines": {
@@ -62,5 +67,13 @@
       "path": "@commitlint/cz-commitlint"
     }
   },
-  "packageManager": "pnpm@9.1.1+sha256.9551e803dcb7a1839fdf5416153a844060c7bce013218ce823410532504ac10b"
+  "packageManager": "pnpm@9.1.1+sha256.9551e803dcb7a1839fdf5416153a844060c7bce013218ce823410532504ac10b",
+  "keywords": [
+    "folks-finance",
+    "cross-chain",
+    "xlending",
+    "blockchain",
+    "ethereum",
+    "evm"
+  ]
 }
