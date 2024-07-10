@@ -30,47 +30,47 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   },
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
-    hubAddress: convertToGenericAddress("0xFaf5fAE6c1f504a569da7406806F1648CC6861A1" as EvmAddress, ChainType.EVM),
+    hubAddress: convertToGenericAddress("0xaE4C62510F4d930a5C8796dbfB8C4Bc7b9B62140" as EvmAddress, ChainType.EVM),
     bridgeRouterAddress: convertToGenericAddress(
-      "0x88bAdc8E232991361EfD49E63B0423217954be70" as EvmAddress,
+      "0xa9491a1f4f058832e5742b76eE3f1F1fD7bb6837" as EvmAddress,
       ChainType.EVM,
     ),
     adapters: {
       [AdapterType.HUB]: convertToGenericAddress(
-        "0xBD9569a7a71B431a4160Cc317875B191374c47A1" as EvmAddress,
+        "0xf472ab58969709De9FfEFaeFFd24F9e90cf8DbF9" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-        "0x61d05977bEc40650D7321501483aBf7ACBC776E7" as EvmAddress,
+        "0x8F27355662D6de024FEE83b176dD8DB1F2CA1585" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
-        "0x341f2878C60b1a79daAcf0569C98460EB7692FfE" as EvmAddress,
+        "0x8a81dbF6D6b6A8693181de7ad6Ff7F4c47a5B8bd" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.CCIP_DATA]: convertToGenericAddress(
-        "0xd41DF022F94BA062fb11a1d6c31846672499f7d4" as EvmAddress,
+        "0xE7F80b606614989209f2c36F6074bAfDe1565A19" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
-        "0x6572f27fb2Ec4ded7a19ff62e5A02328c7fD7f39" as EvmAddress,
+        "0x006A9A176662920306074bB00B57f5CA836e4200" as EvmAddress,
         ChainType.EVM,
       ),
     },
     oracleManagerAddress: convertToGenericAddress(
-      "0xfa2b921CaD0A11707817d9eE94D9fF5d1e3d15c3" as EvmAddress,
+      "0x46c425F4Ec43b25B6222bcc05De051e6D3845165" as EvmAddress,
       ChainType.EVM,
     ),
     spokeManagerAddress: convertToGenericAddress(
-      "0xF7Fa20e7Eda417FbcB3746980eb7B07df7580B9e" as EvmAddress,
+      "0xA5b9525a0A46d4D4bf6f588f565f0d15AffDB81d" as EvmAddress,
       ChainType.EVM,
     ),
     accountManagerAddress: convertToGenericAddress(
-      "0xb8c2B6C1c50725E1769AeDd433B0880080c76d6F" as EvmAddress,
+      "0x3324B5BF2b5C85999C6DAf2f77b5a29aB74197cc" as EvmAddress,
       ChainType.EVM,
     ),
     loanManagerAddress: convertToGenericAddress(
-      "0x2fba123E34a8dc89d0766205de5a02bcfd94d552" as EvmAddress,
+      "0x2cAa1315bd676FbecABFC3195000c642f503f1C9" as EvmAddress,
       ChainType.EVM,
     ),
     tokens: {
@@ -82,7 +82,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         },
         folksTokenId: FolksTokenId.USDC,
         poolId: TESTNET_POOLS[FolksTokenId.USDC],
-        poolAddress: convertToGenericAddress("0xEA1CfF944949f29b62621c4c975bf054c45374c8" as EvmAddress, ChainType.EVM),
+        poolAddress: convertToGenericAddress("0x1968237f3a7D256D08BcAb212D7ae28fEda72c34" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.AVAX]: {
@@ -92,7 +92,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         },
         folksTokenId: FolksTokenId.AVAX,
         poolId: TESTNET_POOLS[FolksTokenId.AVAX],
-        poolAddress: convertToGenericAddress("0x897bc16dBB0A0Bc19F4b3095D27C7D178A992b0F" as EvmAddress, ChainType.EVM),
+        poolAddress: convertToGenericAddress("0xd90B7614551E799Cdef87463143eCe2efd4054f9" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.ETH_eth_sep]: {
@@ -102,7 +102,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         },
         folksTokenId: FolksTokenId.ETH_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_eth_sep],
-        poolAddress: convertToGenericAddress("0x0b2f0fD49D29AAc6A1Ba53eA1d8d8Bf9315fCC26" as EvmAddress, ChainType.EVM),
+        poolAddress: convertToGenericAddress("0xecD328082035146d99fd621E809Bc9642cDd0BAd" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.ETH_base_sep]: {
@@ -112,7 +112,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         },
         folksTokenId: FolksTokenId.ETH_base_sep,
         poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
-        poolAddress: convertToGenericAddress("0xb5E2250d56BefC8Cd4B69E5E4298D24041657C97" as EvmAddress, ChainType.EVM),
+        poolAddress: convertToGenericAddress("0x9E7dfcDFA94C007e868917ec3088107De0B8Dff8" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
       [FolksTokenId.LINK_eth_sep]: {
@@ -122,7 +122,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         },
         folksTokenId: FolksTokenId.LINK_eth_sep,
         poolId: TESTNET_POOLS[FolksTokenId.LINK_eth_sep],
-        poolAddress: convertToGenericAddress("0xB02218947f74deA381201ED782f664815eFAcD3B" as EvmAddress, ChainType.EVM),
+        poolAddress: convertToGenericAddress("0xf66A38192A953fe22dCA4229d9429219aaeB09d8" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
     },
