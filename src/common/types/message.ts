@@ -38,7 +38,7 @@ export enum Action {
   SendToken,
 }
 
-export type SendTokenAction = Extract<Action, Action.Deposit | Action.Repay>;
+export type SendTokenAction = Extract<Action, Action.CreateLoanAndDeposit | Action.Deposit | Action.Repay>;
 export type ReceiveTokenAction = Extract<Action, Action.Withdraw | Action.Borrow>;
 export type HubAction = Extract<
   Action,
