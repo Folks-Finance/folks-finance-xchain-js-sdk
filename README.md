@@ -1,6 +1,6 @@
 # @folks-finance/xchain-sdk
 
-![og](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/assets/9802152/dc6e8374-a4d2-48dd-b13c-26c83b304259)
+![xChain Header](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/raw/main/media/repo-header.png)
 
 The official JavaScript SDK for the Folks Finance Cross-Chain Lending Protocol.
 
