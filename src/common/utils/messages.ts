@@ -1,3 +1,7 @@
+import { parseEventLogs } from "viem";
+import { getTransactionReceipt } from "viem/actions";
+
+import { WormholeDataAdapterAbi } from "../../chains/evm/common/constants/abi/wormhole-data-adapter-abi.js";
 import {
   buildEvmMessageToSend,
   estimateEvmCcipDataGasLimit,
@@ -13,11 +17,12 @@ import { Action, AdapterType } from "../types/message.js";
 import { convertFromGenericAddress } from "./address.js";
 import { getFolksChain, getSpokeChainAdapterAddress } from "./chain.js";
 import { getCcipData, getWormholeData } from "./gmp.js";
+import { waitTransaction } from "./transaction.js";
 
 import type { FolksChainId, NetworkType } from "../types/chain.js";
 import type { FolksProvider } from "../types/core.js";
 import type { MessageAdapters, MessageBuilderParams, MessageToSend, OptionalFeeParams } from "../types/message.js";
-import type { Client as EVMProvider, StateOverride } from "viem";
+import type { Client as EVMProvider, Hex, StateOverride } from "viem";
 
 export function buildMessageToSend(
   chainType: ChainType,
@@ -188,5 +193,40 @@ export async function estimateAdapterReceiveGasLimit(
     }
     default:
       return exhaustiveCheck(destFolksChain.chainType);
+  }
+}
+
+export async function getOperationIdsByTransaction(chainType: ChainType, folksProvider: FolksProvider, txnHash: Hex) {
+  switch (chainType) {
+    case ChainType.EVM: {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const receipt = await getTransactionReceipt(folksProvider!, {
+        hash: txnHash,
+      });
+      const logs = parseEventLogs({
+        abi: WormholeDataAdapterAbi,
+        logs: receipt.logs,
+        eventName: "SendMessage",
+      });
+      return logs.map((log) => log.args.operationId);
+    }
+    default:
+      return exhaustiveCheck(chainType);
+  }
+}
+
+export async function waitOperationIds(
+  chainType: ChainType,
+  folksProvider: FolksProvider,
+  txnHash: Hex,
+  confirmations = 1,
+) {
+  switch (chainType) {
+    case ChainType.EVM: {
+      const receipt = await waitTransaction(chainType, folksProvider, txnHash, confirmations);
+      return await getOperationIdsByTransaction(chainType, folksProvider, receipt.transactionHash);
+    }
+    default:
+      return exhaustiveCheck(chainType);
   }
 }
