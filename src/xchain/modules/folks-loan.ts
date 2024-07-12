@@ -1169,6 +1169,10 @@ export const util = {
     return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices);
   },
 
+  emptyLoanForSimulate(accountId: AccountId, loanType: LoanTypeId): LoanManagerUserLoan {
+    return [accountId, loanType, [], [], [], []];
+  },
+
   simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
     return FolksHubLoan.simulateLoanChanges(loan, changes);
   },
