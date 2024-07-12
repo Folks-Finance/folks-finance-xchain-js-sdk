@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.4
+
+### Patch Changes
+
+- [#98](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/98) [`fb85a71`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/fb85a71b72b0846295a0b8a39a2f0ea215e1606f) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added util to create empty loan for simulate
+
 ## 0.0.3
 
 ### Patch Changes
