@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.5
+
+### Patch Changes
+
+- [`33dfe7c`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/33dfe7ca1f242f93222d4209f904ea31da235c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Exports transaction utils
+
 ## 0.0.4
 
 ### Patch Changes
