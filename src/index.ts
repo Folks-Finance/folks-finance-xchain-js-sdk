@@ -25,6 +25,8 @@ export { convertFromGenericAddress, convertToGenericAddress } from "./common/uti
 export { generateLoanId } from "./common/utils/bytes.js";
 export { getAdapterAddress } from "./common/utils/chain.js";
 export { getCcipData, getWormholeData } from "./common/utils/gmp.js";
+export { getOperationIdsByTransaction, waitOperationIds } from "./common/utils/messages.js";
+export { waitTransaction } from "./common/utils/transaction.js";
 
 // === HUB ===
 export { isHubChain } from "./chains/evm/hub/utils/chain.js";
