@@ -1,5 +1,5 @@
 ---
-"@folks-finance/xchain-sdk": minor
+"@folks-finance/xchain-sdk": patch
 ---
 
 added util to create empty loan for simulate
