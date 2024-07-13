@@ -29,7 +29,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: false,
       bridgeRouterAddress: spokeChain.bridgeRouterAddress,
@@ -56,7 +56,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: false,
       bridgeRouterAddress: spokeChain.bridgeRouterAddress,
@@ -79,7 +79,7 @@ export const write = {
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
       msgValue,
     });
   },
@@ -99,7 +99,7 @@ export const write = {
     return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
       msgValue,
     });
   },

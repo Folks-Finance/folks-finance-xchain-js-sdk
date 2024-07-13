@@ -40,7 +40,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -76,7 +76,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -106,7 +106,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -139,7 +139,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -161,7 +161,7 @@ export const write = {
     return await spokeCommon.write.createAccount([messageParams, accountId, refAccountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -184,7 +184,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+        gas: gasLimit,
         value: msgValue,
       },
     );
@@ -203,7 +203,7 @@ export const write = {
     return await spokeCommon.write.acceptInviteAddress([messageParams, accountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
       value: msgValue,
     });
   },
@@ -222,7 +222,7 @@ export const write = {
     return await spokeCommon.write.unregisterAddress([messageParams, accountId, folksChainIdToUnregister], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
       value: msgValue,
     });
   },

@@ -98,7 +98,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       hubAddress: hubChain.hubAddress,
       messageData,
     };
@@ -114,7 +114,7 @@ export const write = {
     return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gas: gasLimit,
     });
   },
 };
