@@ -4,6 +4,7 @@ import { ChainType } from "../../../../common/types/chain.js";
 import { TokenType } from "../../../../common/types/token.js";
 import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import { calcNextPeriodReset, calcPeriodNumber } from "../../../../common/utils/formulae.js";
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { sendERC20Approve } from "../../common/utils/contract.js";
 import { getAllowanceStateOverride } from "../../common/utils/tokens.js";
@@ -452,7 +453,7 @@ export const write = {
     return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId, loanName], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -471,7 +472,7 @@ export const write = {
     return await spokeCommon.write.deleteLoan([messageParams, accountId, loanId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -508,7 +509,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit,
+        gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
         value: msgValue,
       },
     );
@@ -542,7 +543,7 @@ export const write = {
     return await spokeToken.write.deposit([messageParams, accountId, loanId, amount], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -567,7 +568,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit,
+        gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
         value: msgValue,
       },
     );
@@ -593,7 +594,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit,
+        gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
         value: msgValue,
       },
     );
@@ -628,7 +629,7 @@ export const write = {
     return await spokeToken.write.repay([messageParams, accountId, loanId, amount, maxOverRepayment], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -649,7 +650,7 @@ export const write = {
     return await spokeCommon.write.repayWithCollateral([messageParams, accountId, loanId, poolId, amount], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -670,7 +671,7 @@ export const write = {
     return await spokeCommon.write.switchBorrowType([messageParams, accountId, loanId, poolId, maxStableRate], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },

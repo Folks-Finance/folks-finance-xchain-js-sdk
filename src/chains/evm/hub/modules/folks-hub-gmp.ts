@@ -1,3 +1,4 @@
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
@@ -78,7 +79,7 @@ export const write = {
     return await bridgeRouter.write.retryMessage([adapterId, messageId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue,
     });
   },
@@ -98,7 +99,7 @@ export const write = {
     return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue,
     });
   },

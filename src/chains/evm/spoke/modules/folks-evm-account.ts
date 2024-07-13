@@ -1,3 +1,4 @@
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterSpokeContract, getSpokeCommonContract } from "../utils/contract.js";
 
@@ -160,7 +161,7 @@ export const write = {
     return await spokeCommon.write.createAccount([messageParams, accountId, refAccountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -183,7 +184,7 @@ export const write = {
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
-        gas: gasLimit,
+        gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
         value: msgValue,
       },
     );
@@ -202,7 +203,7 @@ export const write = {
     return await spokeCommon.write.acceptInviteAddress([messageParams, accountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },
@@ -221,7 +222,7 @@ export const write = {
     return await spokeCommon.write.unregisterAddress([messageParams, accountId, folksChainIdToUnregister], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       value: msgValue,
     });
   },

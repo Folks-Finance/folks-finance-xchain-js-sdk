@@ -20,7 +20,7 @@ import {
 } from "../../../../common/utils/formulae.js";
 import { bigIntMin, compoundEverySecond } from "../../../../common/utils/math-lib.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
-import { defaultEventParams } from "../../common/constants/contract.js";
+import { defaultEventParams, GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
   buildEvmMessageData,
@@ -114,7 +114,7 @@ export const write = {
     return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
-      gas: gasLimit,
+      gas: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
     });
   },
 };
