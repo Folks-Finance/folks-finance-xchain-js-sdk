@@ -1,3 +1,4 @@
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterSpokeContract, getSpokeCommonContract } from "../utils/contract.js";
 
@@ -39,7 +40,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -75,7 +76,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -105,7 +106,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };
@@ -138,7 +139,7 @@ export const prepare = {
 
     return {
       msgValue,
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
       spokeCommonAddress,
     };

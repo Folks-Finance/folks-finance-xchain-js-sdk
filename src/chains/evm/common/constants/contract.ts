@@ -5,3 +5,5 @@ export const defaultEventParams: EventParams = {
   toBlock: "latest",
   strict: true,
 };
+
+export const GAS_LIMIT_ESTIMATE_INCREASE = 10_000n;

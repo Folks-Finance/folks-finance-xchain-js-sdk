@@ -2,6 +2,7 @@ import { parseEventLogs } from "viem";
 import { getTransactionReceipt } from "viem/actions";
 
 import { WormholeDataAdapterAbi } from "../../chains/evm/common/constants/abi/wormhole-data-adapter-abi.js";
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../chains/evm/common/constants/contract.js";
 import {
   buildEvmMessageToSend,
   estimateEvmCcipDataGasLimit,
@@ -95,6 +96,9 @@ export async function estimateAdapterReceiveGasLimit(
         );
       }
       switch (adapterId) {
+        case AdapterType.HUB: {
+          return 0n;
+        }
         case AdapterType.WORMHOLE_DATA: {
           const sourceWormholeChainId = getWormholeData(sourceFolksChainId).wormholeChainId;
           const wormholeRelayer = convertFromGenericAddress(
@@ -102,7 +106,7 @@ export async function estimateAdapterReceiveGasLimit(
             ChainType.EVM,
           );
 
-          return await estimateEvmWormholeDataGasLimit(
+          const gasLimitEstimation = await estimateEvmWormholeDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
             messageBuilderParams,
@@ -114,6 +118,7 @@ export async function estimateAdapterReceiveGasLimit(
             sourceAdapterAddress,
             stateOverride,
           );
+          return gasLimitEstimation + GAS_LIMIT_ESTIMATE_INCREASE;
         }
         case AdapterType.WORMHOLE_CCTP: {
           const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
@@ -130,7 +135,8 @@ export async function estimateAdapterReceiveGasLimit(
           );
 
           // Due to ERC20 transfer and additional checks in the Wormhole CCTP Adapter
-          const increaseGasLimit = BigInt(150000);
+          const ADAPTER_EXTRA_GAS_LIMIT = 150_000n;
+
           const gasLimitEstimation = await estimateEvmWormholeDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
@@ -143,15 +149,13 @@ export async function estimateAdapterReceiveGasLimit(
             sourceAdapterAddress,
             stateOverride,
           );
-          return gasLimitEstimation + increaseGasLimit;
-        }
-        case AdapterType.HUB: {
-          return 0n;
+          return gasLimitEstimation + ADAPTER_EXTRA_GAS_LIMIT + GAS_LIMIT_ESTIMATE_INCREASE;
         }
         case AdapterType.CCIP_DATA: {
           const sourceCcipChainId = getCcipData(sourceFolksChainId).ccipChainId;
           const ccipRouter = convertFromGenericAddress(getCcipData(destFolksChainId).ccipRouter, ChainType.EVM);
-          return await estimateEvmCcipDataGasLimit(
+
+          const gasLimitEstimation = await estimateEvmCcipDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
             messageBuilderParams,
@@ -161,6 +165,7 @@ export async function estimateAdapterReceiveGasLimit(
             destAdapterAddress,
             sourceAdapterAddress,
           );
+          return gasLimitEstimation + GAS_LIMIT_ESTIMATE_INCREASE;
         }
         case AdapterType.CCIP_TOKEN: {
           const { sourceAdapterAddress, destAdapterAddress } = getAdaptersAddresses(
@@ -174,7 +179,8 @@ export async function estimateAdapterReceiveGasLimit(
           const ccipRouter = convertFromGenericAddress(getCcipData(destFolksChainId).ccipRouter, ChainType.EVM);
 
           // Due to ERC20 transfer and additional checks in the CCIP Token Adapter
-          const increaseGasLimit = BigInt(150000);
+          const ADAPTER_EXTRA_GAS_LIMIT = 150_000n;
+
           const gasLimitEstimation = await estimateEvmCcipDataGasLimit(
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
             destFolksChainProvider as EVMProvider,
@@ -185,7 +191,7 @@ export async function estimateAdapterReceiveGasLimit(
             destAdapterAddress,
             sourceAdapterAddress,
           );
-          return gasLimitEstimation + increaseGasLimit;
+          return gasLimitEstimation + ADAPTER_EXTRA_GAS_LIMIT + GAS_LIMIT_ESTIMATE_INCREASE;
         }
         default:
           return exhaustiveCheck(adapterId);

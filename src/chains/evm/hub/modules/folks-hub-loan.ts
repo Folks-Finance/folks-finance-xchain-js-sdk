@@ -20,7 +20,7 @@ import {
 } from "../../../../common/utils/formulae.js";
 import { bigIntMin, compoundEverySecond } from "../../../../common/utils/math-lib.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
-import { defaultEventParams } from "../../common/constants/contract.js";
+import { defaultEventParams, GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
   buildEvmMessageData,
@@ -98,7 +98,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       hubAddress: hubChain.hubAddress,
       messageData,
     };

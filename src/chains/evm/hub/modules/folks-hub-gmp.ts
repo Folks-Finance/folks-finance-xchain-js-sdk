@@ -1,3 +1,4 @@
+import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
@@ -28,7 +29,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: true,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
@@ -55,7 +56,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit,
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: true,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
