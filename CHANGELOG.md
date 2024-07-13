@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.6
+
+### Patch Changes
+
+- [#101](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/101) [`d19af87`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/d19af87c21d835bbcef10876c3ab0c5ff9b140eb) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added fixed gas limit estimate increase
+
 ## 0.0.5
 
 ### Patch Changes
