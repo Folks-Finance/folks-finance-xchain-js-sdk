@@ -24,6 +24,7 @@ export { getSupportedMessageAdapters } from "./common/utils/adapter.js";
 export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
 export { generateLoanId } from "./common/utils/bytes.js";
 export { getAdapterAddress } from "./common/utils/chain.js";
+export { toFAmount, toUnderlyingAmount } from "./common/utils/formulae.js";
 export { getCcipData, getWormholeData } from "./common/utils/gmp.js";
 export { getOperationIdsByTransaction, waitOperationIds } from "./common/utils/messages.js";
 export { waitTransaction } from "./common/utils/transaction.js";
