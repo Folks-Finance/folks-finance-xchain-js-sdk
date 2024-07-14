@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.7
+
+### Patch Changes
+
+- [#103](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/103) [`f2b1995`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f2b1995ca706bbf3e0329d4e3b2f4798f61d05a1) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export formulae for converting between underlying and f amount
+
 ## 0.0.6
 
 ### Patch Changes
