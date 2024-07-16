@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.8
+
+### Patch Changes
+
+- [#105](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/105) [`2551022`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2551022f5cb6f5f1919dad17b0d75d171a955954) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add amount to msg value for repay
+
 ## 0.0.7
 
 ### Patch Changes
