@@ -337,7 +337,9 @@ export const prepare = {
     }
 
     // get adapter fees
-    const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
+    const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
+    const value = spokeTokenData.token.type === TokenType.NATIVE ? amount : BigInt(0);
+    const msgValue = adapterFees + value;
 
     // get gas limits
     const gasLimit = await spokeToken.estimateGas.repay(
