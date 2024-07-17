@@ -358,19 +358,20 @@ export function getUserLoansInfo(
 
       const poolInfo = poolsInfo[folksTokenId];
       const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
-      const tokenPrice = oraclePrices[folksTokenId];
-      if (!poolInfo || !loanPoolInfo || !tokenPrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
+      const oraclePrice = oraclePrices[folksTokenId];
+      if (!poolInfo || !loanPoolInfo || !oraclePrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
+      const { price: tokenPrice, decimals: tokenPriceDecimals } = oraclePrice;
 
       const { tokenDecimals, depositData } = poolInfo;
       const { interestRate, interestIndex, interestYield } = depositData;
       const { collateralFactor } = loanPoolInfo;
 
       const tokenBalance = toUnderlyingAmount(fTokenBalance, interestIndex);
-      const balanceValue = calcCollateralAssetLoanValue(tokenBalance, tokenPrice, tokenDecimals, dn.from(1, 4));
+      const balanceValue = calcCollateralAssetLoanValue(tokenBalance, tokenPrice, tokenPriceDecimals, dn.from(1, 4));
       const effectiveBalanceValue = calcCollateralAssetLoanValue(
         tokenBalance,
         tokenPrice,
-        tokenDecimals,
+        tokenPriceDecimals,
         collateralFactor,
       );
 
@@ -419,8 +420,9 @@ export function getUserLoansInfo(
 
       const poolInfo = poolsInfo[folksTokenId];
       const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
-      const tokenPrice = oraclePrices[folksTokenId];
-      if (!poolInfo || !loanPoolInfo || !tokenPrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
+      const oraclePrice = oraclePrices[folksTokenId];
+      if (!poolInfo || !loanPoolInfo || !oraclePrice) throw new Error(`Unknown folks token id ${folksTokenId}`);
+      const { price: tokenPrice, decimals: tokenPriceDecimals } = oraclePrice;
 
       const { tokenDecimals, variableBorrowData } = poolInfo;
       const { interestRate: variableBorrowInterestRate, interestIndex: variableBorrowInterestIndex } =
@@ -431,13 +433,18 @@ export function getUserLoansInfo(
       const bororwInterestIndex = isStable
         ? calcBorrowInterestIndex(stableBorrowInterestRate, lastBorrowInterestIndex, lastStableUpdateTimestamp)
         : variableBorrowInterestIndex;
-      const borrowedAmountValue = calcBorrowAssetLoanValue(borrowedAmount, tokenPrice, tokenDecimals, dn.from(1, 4));
+      const borrowedAmountValue = calcBorrowAssetLoanValue(
+        borrowedAmount,
+        tokenPrice,
+        tokenPriceDecimals,
+        dn.from(1, 4),
+      );
       const borrowBalance = calcBorrowBalance(oldBorrowBalance, bororwInterestIndex, lastBorrowInterestIndex);
-      const borrowBalanceValue = calcBorrowAssetLoanValue(borrowBalance, tokenPrice, tokenDecimals, dn.from(1, 4));
+      const borrowBalanceValue = calcBorrowAssetLoanValue(borrowBalance, tokenPrice, tokenPriceDecimals, dn.from(1, 4));
       const effectiveBorrowBalanceValue = calcBorrowAssetLoanValue(
         borrowBalance,
         tokenPrice,
-        tokenDecimals,
+        tokenPriceDecimals,
         borrowFactor,
       );
       const accruedInterest = borrowBalance - borrowedAmount;

@@ -18,3 +18,7 @@ yarn-error.log*
 
 # macos
 .DS_Store
+
+# local env files
+.env
+.env*.local

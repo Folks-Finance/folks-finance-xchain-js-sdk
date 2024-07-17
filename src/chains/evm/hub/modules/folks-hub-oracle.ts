@@ -30,9 +30,9 @@ export async function getOraclePrices(
   })) as Array<ReadContractReturnType<typeof OracleManagerAbi, "processPriceFeed">>;
 
   const oraclePrices: OraclePrices = {};
-  for (const [i, { price }] of priceFeeds.entries()) {
+  for (const [i, { price, decimals }] of priceFeeds.entries()) {
     const token = tokens[i];
-    oraclePrices[token.folksTokenId] = [price, 18];
+    oraclePrices[token.folksTokenId] = { price: [price, 18], decimals };
   }
   return oraclePrices;
 }
