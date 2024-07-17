@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.10
+
+### Patch Changes
+
+- [#110](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/110) [`0bced11`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0bced11f21bf71a790ca6874ca4fddd114780ff4) Thanks [@gidonkatten](https://github.com/gidonkatten)! - use oracle token decimals rather than defined constant
+
 ## 0.0.9
 
 ### Patch Changes
