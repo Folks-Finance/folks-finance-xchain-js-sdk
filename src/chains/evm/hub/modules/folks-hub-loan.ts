@@ -508,20 +508,7 @@ export function getUserLoansInfo(
 }
 
 export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
-  const {
-    accountId,
-    loanTypeId,
-    colPools: oldColPools,
-    borPools: oldBorPools,
-    userLoanCollateral: oldCollaterals,
-    userLoanBorrow: oldBorrows,
-  } = loan;
-
-  // make copy to simulate changes
-  const colPools = structuredClone(oldColPools);
-  const borPools = structuredClone(oldBorPools);
-  const userLoanCollateral = structuredClone(oldCollaterals);
-  const userLoanBorrow = structuredClone(oldBorrows);
+  const { accountId, loanTypeId, colPools, borPools, userLoanCollateral, userLoanBorrow } = structuredClone(loan);
 
   // simulate changes
   for (const change of changes) {
