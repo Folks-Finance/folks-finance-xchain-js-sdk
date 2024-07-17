@@ -53,6 +53,7 @@ import type { HubChain } from "../types/chain.js";
 import type {
   LoanChange,
   LoanManagerUserLoan,
+  LoanManagerUserLoanAbi,
   LoanPoolInfo,
   LoanTypeInfo,
   UserLoanInfo,
@@ -303,12 +304,24 @@ export async function getUserLoans(
     args: [loanId],
   }));
 
-  const userLoans: Array<LoanManagerUserLoan> = (await multicall(provider, {
+  const userLoans: Array<LoanManagerUserLoanAbi> = (await multicall(provider, {
     contracts: getUserLoansCall,
     allowFailure: false,
-  })) as Array<LoanManagerUserLoan>;
+  })) as Array<LoanManagerUserLoanAbi>;
 
-  return new Map(loanIds.map((loanId, i) => [loanId, userLoans[i]]));
+  return new Map(
+    loanIds.map((loanId, i) => [
+      loanId,
+      {
+        accountId: userLoans[i][0] as AccountId,
+        loanTypeId: userLoans[i][1] as LoanTypeId,
+        colPools: Array.from(userLoans[i][2]),
+        borPools: Array.from(userLoans[i][3]),
+        userLoanCollateral: Array.from(userLoans[i][4]),
+        userLoanBorrow: Array.from(userLoans[i][5]),
+      } satisfies LoanManagerUserLoan,
+    ]),
+  );
 }
 
 export function getUserLoansInfo(
@@ -324,9 +337,9 @@ export function getUserLoansInfo(
   const userLoansInfo: Record<LoanId, UserLoanInfo> = {};
 
   for (const [loanId, userLoan] of userLoansMap.entries()) {
-    const [accountId, loanTypeId, colPools, borPools, cols, bors] = userLoan;
+    const { accountId, loanTypeId, colPools, borPools, userLoanCollateral, userLoanBorrow } = userLoan;
 
-    const loanTypeInfo = loanTypesInfo[loanTypeId as LoanTypeId];
+    const loanTypeInfo = loanTypesInfo[loanTypeId];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
 
     // common to collaterals and borrows
@@ -337,7 +350,7 @@ export function getUserLoansInfo(
     const collaterals: Partial<Record<FolksTokenId, UserLoanInfoCollateral>> = {};
     let totalCollateralBalanceValue: Dnum = dn.from(0, 8);
     let totalEffectiveCollateralBalanceValue: Dnum = dn.from(0, 8);
-    for (const [j, { balance: fTokenBalance }] of cols.entries()) {
+    for (const [j, { balance: fTokenBalance }] of userLoanCollateral.entries()) {
       const poolId = colPools[j];
 
       const folksTokenId = poolIdToFolksTokenId.get(poolId);
@@ -395,7 +408,7 @@ export function getUserLoansInfo(
         stableInterestRate: sbir,
         lastStableUpdateTimestamp,
       },
-    ] of bors.entries()) {
+    ] of userLoanBorrow.entries()) {
       const poolId = borPools[j];
 
       const lastBorrowInterestIndex: Dnum = [lii, 18];
@@ -475,7 +488,7 @@ export function getUserLoansInfo(
     userLoansInfo[loanId] = {
       loanId,
       loanTypeId,
-      accountId: accountId as AccountId,
+      accountId,
       collaterals,
       borrows,
       netRate,
@@ -495,13 +508,20 @@ export function getUserLoansInfo(
 }
 
 export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
-  const [accountId, loanType, oldColPools, oldBorPools, oldCollaterals, oldBorrows] = loan;
+  const {
+    accountId,
+    loanTypeId,
+    colPools: oldColPools,
+    borPools: oldBorPools,
+    userLoanCollateral: oldCollaterals,
+    userLoanBorrow: oldBorrows,
+  } = loan;
 
-  // make copy which can update
-  const colPools = [...structuredClone(oldColPools)];
-  const borPools = [...structuredClone(oldBorPools)];
-  const collaterals = [...structuredClone(oldCollaterals)];
-  const borrows = [...structuredClone(oldBorrows)];
+  // make copy to simulate changes
+  const colPools = structuredClone(oldColPools);
+  const borPools = structuredClone(oldBorPools);
+  const userLoanCollateral = structuredClone(oldCollaterals);
+  const userLoanBorrow = structuredClone(oldBorrows);
 
   // simulate changes
   for (const change of changes) {
@@ -514,10 +534,10 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
         if (colIndex === -1) {
           // new collateral
           colPools.push(poolInfo.poolId);
-          collaterals.push({ balance: fTokenAmount, rewardIndex: 0n });
+          userLoanCollateral.push({ balance: fTokenAmount, rewardIndex: 0n });
         } else {
           // existing collateral
-          collaterals[colIndex].balance += fTokenAmount;
+          userLoanCollateral[colIndex].balance += fTokenAmount;
         }
         break;
       }
@@ -526,12 +546,12 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
         if (colIndex === -1) throw Error(`Cannot find collateral for pool ${poolInfo.poolId}`);
         const { fTokenAmount } = change;
 
-        const collateral = collaterals[colIndex];
+        const collateral = userLoanCollateral[colIndex];
         collateral.balance -= fTokenAmount;
         if (collateral.balance < 0) throw Error(`Insufficient collateral for pool ${poolInfo.poolId}`);
         if (collateral.balance === 0n) {
           colPools.splice(colIndex, 1);
-          collaterals.splice(colIndex, 1);
+          userLoanCollateral.splice(colIndex, 1);
         }
         break;
       }
@@ -546,10 +566,10 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
           const borrow = initLoanBorrowInterests(isStable, poolInfo);
           borrow.amount = tokenAmount;
           borrow.balance = tokenAmount;
-          borrows.push(borrow);
+          userLoanBorrow.push(borrow);
         } else {
           // existing borrow
-          const borrow = borrows[borIndex];
+          const borrow = userLoanBorrow[borIndex];
           if (isStable !== borrow.stableInterestRate > 0)
             throw Error(`Borrow type mismatch for pool ${poolInfo.poolId}`);
 
@@ -564,7 +584,7 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
         if (borIndex === -1) throw Error(`Cannot find borrow for pool ${poolInfo.poolId}`);
         const { tokenAmount } = change;
 
-        const borrow = borrows[borIndex];
+        const borrow = userLoanBorrow[borIndex];
         updateLoanBorrowInterests(borrow, tokenAmount, poolInfo, false);
         const balance = borrow.balance;
         const interest = balance - borrow.amount;
@@ -575,7 +595,7 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
         borrow.balance -= principalPaid + interestPaid;
         if (borrow.balance === 0n) {
           borPools.splice(borIndex, 1);
-          borrows.splice(borIndex, 1);
+          userLoanBorrow.splice(borIndex, 1);
         }
         break;
       }
@@ -583,14 +603,14 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
         const borIndex = borPools.findIndex((poolId) => poolId === poolInfo.poolId);
         if (borIndex === -1) throw Error(`Cannot find borrow for pool ${poolInfo.poolId}`);
         const { isSwitchingToStable } = change;
-        if (isSwitchingToStable === borrows[borIndex].stableInterestRate > 0)
+        if (isSwitchingToStable === userLoanBorrow[borIndex].stableInterestRate > 0)
           throw Error(`Borrow type mismatch for pool ${poolInfo.poolId}`);
 
-        const { amount, balance } = updateLoanBorrowInterests(borrows[borIndex], 0n, poolInfo, false);
+        const { amount, balance } = updateLoanBorrowInterests(userLoanBorrow[borIndex], 0n, poolInfo, false);
         const borrow = initLoanBorrowInterests(isSwitchingToStable, poolInfo);
         borrow.amount = amount;
         borrow.balance = balance;
-        borrows[borIndex] = borrow;
+        userLoanBorrow[borIndex] = borrow;
         break;
       }
       default:
@@ -599,5 +619,5 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
     }
   }
 
-  return [accountId, loanType, colPools, borPools, collaterals, borrows];
+  return { accountId, loanTypeId, colPools, borPools, userLoanCollateral, userLoanBorrow };
 }

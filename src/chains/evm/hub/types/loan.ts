@@ -96,9 +96,19 @@ export type DeleteUserLoanEventParams = GetEventParams & {
   accountId: AccountId;
 };
 
-export type LoanManagerUserLoan = ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">;
+export type LoanManagerUserLoanAbi = ReadContractReturnType<typeof LoanManagerAbi, "getUserLoan">;
 
-export type LoanManagerUserLoanBorrow = LoanManagerUserLoan[5][0];
+export type LoanManagerUserLoanCollateral = LoanManagerUserLoanAbi[4][0];
+export type LoanManagerUserLoanBorrow = LoanManagerUserLoanAbi[5][0];
+
+export type LoanManagerUserLoan = {
+  accountId: AccountId;
+  loanTypeId: LoanTypeId;
+  colPools: Array<number>;
+  borPools: Array<number>;
+  userLoanCollateral: Array<LoanManagerUserLoanCollateral>;
+  userLoanBorrow: Array<LoanManagerUserLoanBorrow>;
+};
 
 export enum LoanChangeType {
   AddCollateral,
