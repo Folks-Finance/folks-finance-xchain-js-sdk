@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.9
+
+### Patch Changes
+
+- [#109](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/109) [`dd97c21`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/dd97c2136a92e716a0e815241b4a83b56b5fd705) Thanks [@palace22](https://github.com/palace22)! - Added read user loans info example
+
+- [#107](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/107) [`795e926`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/795e926ec00b1a81a0d587e07df6c2f35d90738c) Thanks [@palace22](https://github.com/palace22)! - Refactored LoanManagerUserLoan type
+
 ## 0.0.8
 
 ### Patch Changes
