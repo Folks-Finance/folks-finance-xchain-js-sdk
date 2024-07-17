@@ -444,7 +444,7 @@ export function getUserLoansInfo(
       const effectiveBorrowBalanceValue = calcBorrowAssetLoanValue(
         borrowBalance,
         tokenPrice,
-        tokenDecimals,
+        tokenPriceDecimals,
         borrowFactor,
       );
       const accruedInterest = borrowBalance - borrowedAmount;
