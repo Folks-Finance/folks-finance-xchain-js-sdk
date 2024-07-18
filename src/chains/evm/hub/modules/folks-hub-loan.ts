@@ -479,7 +479,7 @@ export function getUserLoansInfo(
 
     if (dn.greaterThan(totalCollateralBalanceValue, 0)) {
       netRate = dn.div(netRate, totalCollateralBalanceValue);
-      netYield = dn.div(netRate, totalCollateralBalanceValue);
+      netYield = dn.div(netYield, totalCollateralBalanceValue);
     }
 
     const loanToValueRatio = calcLtvRatio(totalBorrowBalanceValue, totalCollateralBalanceValue);
