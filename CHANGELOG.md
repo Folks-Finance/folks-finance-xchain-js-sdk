@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.11
+
+### Patch Changes
+
+- [#112](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/112) [`b753d71`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/b753d71e72ae488654a93493a03df06d5f84a863) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fixed calculation of net yield
+
 ## 0.0.10
 
 ### Patch Changes
