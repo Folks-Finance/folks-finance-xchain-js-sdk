@@ -1,3 +1,4 @@
+import type { OraclePrice } from "./oracle.js";
 import type { PoolInfo } from "./pool.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
@@ -39,7 +40,7 @@ export type UserLoanInfoCollateral = {
   folksTokenId: FolksTokenId;
   poolId: number;
   tokenDecimals: number;
-  tokenPrice: Dnum;
+  oraclePrice: OraclePrice;
   collateralFactor: Dnum;
   fTokenBalance: bigint;
   tokenBalance: bigint;
@@ -53,7 +54,7 @@ export type UserLoanInfoBorrow = {
   folksTokenId: FolksTokenId;
   poolId: number;
   tokenDecimals: number;
-  tokenPrice: Dnum;
+  oraclePrice: OraclePrice;
   isStable: boolean;
   borrowFactor: Dnum;
   borrowedAmount: bigint;
