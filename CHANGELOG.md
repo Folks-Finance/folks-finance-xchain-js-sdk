@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.12
+
+### Patch Changes
+
+- [#115](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/115) [`64a211d`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/64a211d298a6dc9c79e73d50885eede2c728c9e3) Thanks [@stefanofa](https://github.com/stefanofa)! - Enforced the return type of adapters id to make it explicit that the returned array always has at least one element
+
 ## 0.0.11
 
 ### Patch Changes
