@@ -26,7 +26,7 @@ import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { LoanChange, LoanManagerUserLoan, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
-import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
+import type { OraclePrice, OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
@@ -63,6 +63,7 @@ import type {
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
+import type { Dnum } from "dnum";
 
 export const prepare = {
   async createLoan(
@@ -1175,5 +1176,33 @@ export const util = {
 
   simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<LoanChange>): LoanManagerUserLoan {
     return FolksHubLoan.simulateLoanChanges(loan, changes);
+  },
+
+  maxReduceBorrowForBorrowUtilisationRatio(
+    loan: UserLoanInfo,
+    reduceFolksTokenId: FolksTokenId,
+    depositInterestIndex: Dnum,
+    targetBorrowUtilisationRatio: Dnum,
+  ) {
+    return FolksHubLoan.maxReduceBorrowForBorrowUtilisationRatio(
+      loan,
+      reduceFolksTokenId,
+      depositInterestIndex,
+      targetBorrowUtilisationRatio,
+    );
+  },
+
+  maxBorrowForBorrowUtilisationRatio(
+    loan: UserLoanInfo,
+    borrowFactor: Dnum,
+    oraclePrice: OraclePrice,
+    targetBorrowUtilisationRatio: Dnum,
+  ) {
+    return FolksHubLoan.maxBorrowForBorrowUtilisationRatio(
+      loan,
+      borrowFactor,
+      oraclePrice,
+      targetBorrowUtilisationRatio,
+    );
   },
 };

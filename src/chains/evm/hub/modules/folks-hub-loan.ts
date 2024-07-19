@@ -16,6 +16,7 @@ import {
   calcLiquidationMargin,
   calcLtvRatio,
   calcRewardIndex,
+  toFAmount,
   toUnderlyingAmount,
 } from "../../../../common/utils/formulae.js";
 import { bigIntMin, compoundEverySecond } from "../../../../common/utils/math-lib.js";
@@ -60,7 +61,7 @@ import type {
   UserLoanInfoBorrow,
   UserLoanInfoCollateral,
 } from "../types/loan.js";
-import type { OraclePrices } from "../types/oracle.js";
+import type { OraclePrice, OraclePrices } from "../types/oracle.js";
 import type { PoolInfo } from "../types/pool.js";
 import type { HubTokenData } from "../types/token.js";
 import type { Dnum } from "dnum";
@@ -384,7 +385,7 @@ export function getUserLoansInfo(
         folksTokenId,
         poolId,
         tokenDecimals,
-        tokenPrice,
+        oraclePrice,
         collateralFactor,
         fTokenBalance,
         tokenBalance,
@@ -462,7 +463,7 @@ export function getUserLoansInfo(
         folksTokenId,
         poolId,
         tokenDecimals,
-        tokenPrice,
+        oraclePrice,
         isStable,
         borrowFactor,
         borrowedAmount,
@@ -614,4 +615,69 @@ export function simulateLoanChanges(loan: LoanManagerUserLoan, changes: Array<Lo
   }
 
   return { accountId, loanTypeId, colPools, borPools, userLoanCollateral, userLoanBorrow };
+}
+
+export function maxReduceBorrowForBorrowUtilisationRatio(
+  loan: UserLoanInfo,
+  reduceFolksTokenId: FolksTokenId,
+  depositInterestIndex: Dnum,
+  targetBorrowUtilisationRatio: Dnum,
+): bigint {
+  const collateral = loan.collaterals[reduceFolksTokenId];
+
+  // if could not find collateral or target is below actual, return 0
+  if (!collateral || dn.lessThan(targetBorrowUtilisationRatio, loan.borrowUtilisationRatio)) return 0n;
+
+  const { price: tokenPrice, decimals: tokenPriceDecimals } = collateral.oraclePrice;
+
+  // check if can reduce all collateral (special case as lack required precision otherwise)
+  const newEffectiveBalanceValue = dn.sub(loan.totalEffectiveCollateralBalanceValue, collateral.effectiveBalanceValue);
+  const newBorrowUtilisationRatio = calcBorrowUtilisationRatio(
+    loan.totalEffectiveBorrowBalanceValue,
+    newEffectiveBalanceValue,
+  );
+  if (
+    !(
+      dn.eq(newEffectiveBalanceValue, dn.from(0)) && dn.greaterThan(loan.totalEffectiveBorrowBalanceValue, dn.from(0))
+    ) &&
+    (dn.lessThan(newBorrowUtilisationRatio, targetBorrowUtilisationRatio) ||
+      dn.eq(newBorrowUtilisationRatio, targetBorrowUtilisationRatio))
+  )
+    return collateral.fTokenBalance;
+
+  // calculate max
+  const targetEffectiveCollateralBalanceValue = dn.div(
+    loan.totalEffectiveBorrowBalanceValue,
+    targetBorrowUtilisationRatio,
+  );
+  const deltaEffectiveBalanceValue = dn.sub(
+    loan.totalEffectiveCollateralBalanceValue,
+    targetEffectiveCollateralBalanceValue,
+  );
+  const deltaBalanceValue = dn.div(deltaEffectiveBalanceValue, collateral.collateralFactor);
+  const deltaAssetBalance = dn.div(deltaBalanceValue, tokenPrice, { decimals: tokenPriceDecimals });
+  const deltafAssetBalance = toFAmount(deltaAssetBalance[0], depositInterestIndex);
+  return bigIntMin(deltafAssetBalance, collateral.fTokenBalance);
+}
+
+export function maxBorrowForBorrowUtilisationRatio(
+  loan: UserLoanInfo,
+  borrowFactor: Dnum,
+  oraclePrice: OraclePrice,
+  targetBorrowUtilisationRatio: Dnum,
+): bigint {
+  const { price: tokenPrice, decimals: tokenPriceDecimals } = oraclePrice;
+
+  // if target is below actual, return 0
+  if (dn.lessThan(targetBorrowUtilisationRatio, loan.borrowUtilisationRatio)) return 0n;
+
+  // calculate max
+  const targetEffectiveBorrowBalanceValue = dn.mul(
+    loan.totalEffectiveCollateralBalanceValue,
+    targetBorrowUtilisationRatio,
+  );
+  const deltaEffectiveBalanceValue = dn.sub(targetEffectiveBorrowBalanceValue, loan.totalEffectiveBorrowBalanceValue);
+  const deltaBalanceValue = dn.div(deltaEffectiveBalanceValue, borrowFactor);
+  const deltaAssetBalance = dn.div(deltaBalanceValue, tokenPrice, { decimals: tokenPriceDecimals });
+  return deltaAssetBalance[0];
 }
