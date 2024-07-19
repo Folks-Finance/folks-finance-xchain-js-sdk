@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.13
+
+### Patch Changes
+
+- [#114](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/114) [`cc749e2`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/cc749e2d8c5a62bccafa6d6454e988c634a1a161) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added loan utils for getting max amounts
+
 ## 0.0.12
 
 ### Patch Changes
