@@ -1,3 +1,4 @@
+import { SEND_TOKEN_ACTION_RETURN_GAS_LIMIT } from "../../chains/evm/common/constants/contract.js";
 import { FolksHubLoan } from "../../chains/evm/hub/modules/index.js";
 import {
   assertLoanTypeSupported,
@@ -246,6 +247,7 @@ export const prepare = {
       MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
+    feeParams.returnGasLimit = SEND_TOKEN_ACTION_RETURN_GAS_LIMIT;
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
@@ -326,6 +328,7 @@ export const prepare = {
       MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
+    feeParams.returnGasLimit = SEND_TOKEN_ACTION_RETURN_GAS_LIMIT;
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
@@ -649,6 +652,7 @@ export const prepare = {
       MessageDirection.SpokeToHub,
       messageBuilderParams,
     );
+    feeParams.returnGasLimit = SEND_TOKEN_ACTION_RETURN_GAS_LIMIT;
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
