@@ -57,7 +57,7 @@ export function getSupportedMessageAdapters(params: MessageAdapterParams) {
     case MessageAdapterParamsType.SendToken:
       return {
         adapterIds: getAdapterIds(params),
-        returnAdapterIds: [AdapterType.HUB],
+        returnAdapterIds: getAdapterIds(params),
       };
     case MessageAdapterParamsType.ReceiveToken:
       return {
