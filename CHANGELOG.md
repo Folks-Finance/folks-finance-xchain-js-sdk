@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.14
+
+### Patch Changes
+
+- [#118](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/118) [`16d51fd`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/16d51fddc1b1c71d1df2dc43c9e0f8906cd7c780) Thanks [@palace22](https://github.com/palace22)! - Added return adapter ids and return gas limit for send token actions
+
 ## 0.0.13
 
 ### Patch Changes
