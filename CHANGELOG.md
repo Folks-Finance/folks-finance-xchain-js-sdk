@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.15
+
+### Patch Changes
+
+- [#120](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/120) [`0dbde90`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0dbde906fd5b3755bae37b29120aca9c9c9ee793) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of bsc and bnb
+
 ## 0.0.14
 
 ### Patch Changes
