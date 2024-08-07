@@ -1,4 +1,4 @@
-import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
+import { avalancheFuji, baseSepolia, bscTestnet, sepolia } from "viem/chains";
 
 import { MAINNET_EVM_FOLKS_CHAIN_ID, TESTNET_EVM_FOLKS_CHAIN_ID } from "../../chains/evm/common/constants/chain.js";
 import { NetworkType, ChainType } from "../types/chain.js";
@@ -46,6 +46,13 @@ export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Folks
       folksChainId: FOLKS_CHAIN_ID.BASE_SEPOLIA,
       chainName: baseSepolia.name,
       chainId: baseSepolia.id,
+      network: NetworkType.TESTNET,
+    },
+    [FOLKS_CHAIN_ID.BSC_TESTNET]: {
+      chainType: ChainType.EVM,
+      folksChainId: FOLKS_CHAIN_ID.BSC_TESTNET,
+      chainName: bscTestnet.name,
+      chainId: bscTestnet.id,
       network: NetworkType.TESTNET,
     },
   },
@@ -218,6 +225,41 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           poolId: TESTNET_POOLS[FolksTokenId.ETH_base_sep],
           spokeAddress: convertToGenericAddress(
             "0xa51cA34831CEB2F8BafE4ADEf032286E067EF2ad" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+      },
+    },
+    [FOLKS_CHAIN_ID.BSC_TESTNET]: {
+      folksChainId: FOLKS_CHAIN_ID.BSC_TESTNET,
+      spokeCommonAddress: convertToGenericAddress(
+        "0x6Eac0286F42c8C0Cbc9997dB3b01b025EeD794f4" as EvmAddress,
+        ChainType.EVM,
+      ),
+      bridgeRouterAddress: convertToGenericAddress(
+        "0xf1565F622FEd835E55aCEacE0D04A4c9786056D2" as EvmAddress,
+        ChainType.EVM,
+      ),
+      adapters: {
+        [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
+          "0x084A113581915b3eF832E5d5bBdc30073001D4B2" as EvmAddress,
+          ChainType.EVM,
+        ),
+        [AdapterType.CCIP_DATA]: convertToGenericAddress(
+          "0x59b5cB2c7413608e00CfFe074F2ac57165eB37e0" as EvmAddress,
+          ChainType.EVM,
+        ),
+      },
+      tokens: {
+        [FolksTokenId.BNB]: {
+          token: {
+            type: TokenType.NATIVE,
+            decimals: 18,
+          },
+          folksTokenId: FolksTokenId.BNB,
+          poolId: TESTNET_POOLS[FolksTokenId.BNB],
+          spokeAddress: convertToGenericAddress(
+            "0x40f7d61365a297eD31BCcEfE9c5B11f594e7CD75" as EvmAddress,
             ChainType.EVM,
           ),
         },

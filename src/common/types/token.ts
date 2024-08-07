@@ -6,6 +6,7 @@ export enum FolksTokenId {
   ETH_eth_sep = "ETH_eth_sep",
   ETH_base_sep = "ETH_base_sep",
   LINK_eth_sep = "LINK_eth_sep",
+  BNB = "BNB",
 }
 
 export enum TokenType {

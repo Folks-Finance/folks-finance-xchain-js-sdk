@@ -125,6 +125,16 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0xf66A38192A953fe22dCA4229d9429219aaeB09d8" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
+      [FolksTokenId.BNB]: {
+        token: {
+          type: TokenType.NATIVE,
+          decimals: 18,
+        },
+        folksTokenId: FolksTokenId.BNB,
+        poolId: TESTNET_POOLS[FolksTokenId.BNB],
+        poolAddress: convertToGenericAddress("0xE6FFe0445716c7498A9E718d12473A110fA1021d" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
     },
   },
 };
