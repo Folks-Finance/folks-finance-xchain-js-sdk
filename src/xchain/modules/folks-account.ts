@@ -8,7 +8,7 @@ import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import { assertSpokeChainSupported, getSignerGenericAddress, getSpokeChain } from "../../common/utils/chain.js";
-import { generateAccountId } from "../../common/utils/lending.js";
+import { buildAccountId } from "../../common/utils/lending.js";
 import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
@@ -46,7 +46,7 @@ export const prepare = {
       chainType: folksChain.chainType,
     });
 
-    const accountId = generateAccountId(userAddress, folksChain.folksChainId, nonce);
+    const accountId = buildAccountId(userAddress, folksChain.folksChainId, nonce);
 
     const data: CreateAccountMessageData = { nonce, refAccountId };
     const messageBuilderParams: MessageBuilderParams = {

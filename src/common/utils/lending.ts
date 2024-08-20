@@ -12,10 +12,10 @@ export function isAccountId(accountId: AccountId): boolean {
   return accountId.length === 64 + 2;
 }
 
-export function generateAccountId(addr: GenericAddress, chainId: FolksChainId, nonce: Nonce): AccountId {
+export function buildAccountId(addr: GenericAddress, chainId: FolksChainId, nonce: Nonce): AccountId {
   return keccak256(concat([addr, convertNumberToBytes(chainId, UINT16_LENGTH), nonce])) as AccountId;
 }
 
-export function generateLoanId(accountId: AccountId, nonce: Nonce): LoanId {
+export function buildLoanId(accountId: AccountId, nonce: Nonce): LoanId {
   return keccak256(concat([accountId, nonce])) as LoanId;
 }

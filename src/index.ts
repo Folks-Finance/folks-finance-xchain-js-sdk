@@ -22,7 +22,7 @@ export * from "./common/constants/message.js";
 
 export { getSupportedMessageAdapters } from "./common/utils/adapter.js";
 export { convertFromGenericAddress, convertToGenericAddress } from "./common/utils/address.js";
-export { generateAccountId, generateLoanId } from "./common/utils/lending.js";
+export { buildAccountId, buildLoanId } from "./common/utils/lending.js";
 export { getAdapterAddress } from "./common/utils/chain.js";
 export { toFAmount, toUnderlyingAmount } from "./common/utils/formulae.js";
 export { getCcipData, getWormholeData } from "./common/utils/gmp.js";

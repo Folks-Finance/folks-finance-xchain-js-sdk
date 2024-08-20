@@ -11,7 +11,7 @@ import {
   getSupportedMessageAdapters,
   Action,
   MessageAdapterParamsType,
-  generateAccountId,
+  buildAccountId,
   convertToGenericAddress,
   ChainType,
 } from "../src/index.js";
@@ -58,7 +58,7 @@ async function main() {
   // read
   const folksChain = FolksCore.getSelectedFolksChain();
   const userAddress = convertToGenericAddress(account.address as EvmAddress, ChainType.EVM);
-  const accountId = generateAccountId(userAddress, folksChain.folksChainId, nonce);
+  const accountId = buildAccountId(userAddress, folksChain.folksChainId, nonce);
   const accountInfo = await FolksAccount.read.accountInfo(accountId);
   console.log(accountInfo);
 
