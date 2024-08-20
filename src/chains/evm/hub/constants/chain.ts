@@ -41,7 +41,7 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
-        "0x17B77e02E1D72Cd17D86c1a31D7F9EC78563c88A" as EvmAddress,
+        "0xc27DE65dC2AC1Af8Bbc3442C743c9bDd6FDEC6F2" as EvmAddress,
         ChainType.EVM,
       ),
       [AdapterType.WORMHOLE_CCTP]: convertToGenericAddress(
