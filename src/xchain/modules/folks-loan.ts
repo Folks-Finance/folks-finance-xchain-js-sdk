@@ -31,7 +31,7 @@ import type { OraclePrice, OraclePrices } from "../../chains/evm/hub/types/oracl
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
-import type { AccountId, LoanId, LoanName } from "../../common/types/lending.js";
+import type { AccountId, LoanId, LoanName, Nonce } from "../../common/types/lending.js";
 import type {
   BorrowMessageData,
   CreateLoanAndDepositMessageData,
@@ -69,7 +69,7 @@ import type { Dnum } from "dnum";
 export const prepare = {
   async createLoan(
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     adapters: MessageAdapters,
@@ -86,7 +86,7 @@ export const prepare = {
     });
 
     const data: CreateLoanMessageData = {
-      loanId,
+      nonce,
       loanTypeId,
       loanName,
     };
@@ -121,7 +121,7 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
-          loanId,
+          nonce,
           loanTypeId,
           loanName,
           spokeChain,
@@ -188,7 +188,7 @@ export const prepare = {
 
   async createLoanAndDeposit(
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     folksTokenId: FolksTokenId,
@@ -215,7 +215,7 @@ export const prepare = {
     });
 
     const data: CreateLoanAndDepositMessageData = {
-      loanId,
+      nonce,
       poolId: hubTokenData.poolId,
       amount,
       loanTypeId,
@@ -258,7 +258,7 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
-          loanId,
+          nonce,
           loanTypeId,
           loanName,
           amount,
@@ -855,7 +855,7 @@ export const prepare = {
 export const write = {
   async createLoan(
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     prepareCall: PrepareCreateLoanCall,
@@ -870,7 +870,7 @@ export const write = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          loanId,
+          nonce,
           loanTypeId,
           loanName,
           prepareCall,
@@ -901,7 +901,7 @@ export const write = {
 
   async createLoanAndDeposit(
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     amount: bigint,
@@ -918,7 +918,7 @@ export const write = {
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
           accountId,
-          loanId,
+          nonce,
           loanTypeId,
           loanName,
           amount,

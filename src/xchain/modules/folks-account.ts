@@ -8,6 +8,7 @@ import { Action } from "../../common/types/message.js";
 import { assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import { assertSpokeChainSupported, getSignerGenericAddress, getSpokeChain } from "../../common/utils/chain.js";
+import { generateAccountId } from "../../common/utils/lending.js";
 import { buildMessageToSend, estimateAdapterReceiveGasLimit } from "../../common/utils/messages.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
@@ -15,7 +16,7 @@ import { FolksCore } from "../core/folks-core.js";
 import type { AccountIdByAddress, AccountInfo } from "../../chains/evm/hub/types/account.js";
 import type { GenericAddress } from "../../common/types/address.js";
 import type { FolksChainId } from "../../common/types/chain.js";
-import type { AccountId } from "../../common/types/lending.js";
+import type { AccountId, Nonce } from "../../common/types/lending.js";
 import type {
   CreateAccountMessageData,
   InviteAddressMessageData,
@@ -32,7 +33,7 @@ import type {
 } from "../../common/types/module.js";
 
 export const prepare = {
-  async createAccount(accountId: AccountId, adapters: MessageAdapters, refAccountId: AccountId = NULL_ACCOUNT_ID) {
+  async createAccount(nonce: Nonce, adapters: MessageAdapters, refAccountId: AccountId = NULL_ACCOUNT_ID) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     // check adapters are compatible
@@ -45,7 +46,9 @@ export const prepare = {
       chainType: folksChain.chainType,
     });
 
-    const data: CreateAccountMessageData = { refAccountId };
+    const accountId = generateAccountId(userAddress, folksChain.folksChainId, nonce);
+
+    const data: CreateAccountMessageData = { nonce, refAccountId };
     const messageBuilderParams: MessageBuilderParams = {
       userAddress,
       accountId,
@@ -77,6 +80,7 @@ export const prepare = {
           convertFromGenericAddress(userAddress, folksChain.chainType),
           messageToSend,
           accountId,
+          nonce,
           refAccountId,
           spokeChain,
         );
@@ -259,11 +263,7 @@ export const prepare = {
 };
 
 export const write = {
-  async createAccount(
-    accountId: AccountId,
-    prepareCall: PrepareCreateAccountCall,
-    refAccountId: AccountId = NULL_ACCOUNT_ID,
-  ) {
+  async createAccount(nonce: Nonce, prepareCall: PrepareCreateAccountCall, refAccountId: AccountId = NULL_ACCOUNT_ID) {
     const folksChain = FolksCore.getSelectedFolksChain();
 
     assertSpokeChainSupported(folksChain.folksChainId, folksChain.network);
@@ -273,7 +273,7 @@ export const write = {
         return await FolksEvmAccount.write.createAccount(
           FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
           FolksCore.getSigner<ChainType.EVM>(),
-          accountId,
+          nonce,
           refAccountId,
           prepareCall,
         );

@@ -1,18 +1,9 @@
 import { bytesToHex, pad, toHex } from "viem";
 
-import { BYTES32_LENGTH } from "../constants/bytes.js";
-
-import type { AccountId, LoanId } from "../types/lending.js";
 import type { Hex } from "viem";
 
 export function getEmptyBytes(length: number): string {
   return pad("0x", { size: length });
-}
-
-export function getAccountIdBytes(accountId: string): AccountId {
-  return pad(toHex(Buffer.from(accountId)), {
-    size: BYTES32_LENGTH,
-  }) as AccountId;
 }
 
 export function convertNumberToBytes(num: number | bigint, length: number): Hex {
@@ -39,8 +30,4 @@ export function convertBooleanToByte(bool: boolean): Hex {
 
 export function getRandomBytes(length: number): Hex {
   return bytesToHex(crypto.getRandomValues(new Uint8Array(length)));
-}
-
-export function generateLoanId(): LoanId {
-  return getRandomBytes(BYTES32_LENGTH) as LoanId;
 }

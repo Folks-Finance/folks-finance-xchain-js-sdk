@@ -1,19 +1,33 @@
 import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
+import { encodeRetryMessageExtraArgs, encodeReverseMessageExtraArgs } from "../../chains/evm/common/utils/gmp.js";
 import { FolksHubGmp } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmGmp } from "../../chains/evm/spoke/modules/index.js";
 import { assertHubChainSelected, getSpokeChain } from "../../common/utils/chain.js";
 import { FolksCore } from "../core/folks-core.js";
 
+import type {
+  MessageReceived,
+  RetryMessageExtraArgs,
+  ReverseMessageExtraArgs,
+} from "../../chains/evm/common/types/gmp.js";
 import type { PrepareReverseMessageCall } from "../../chains/evm/common/types/module.js";
 import type { ChainType } from "../../common/types/chain.js";
-import type { MessageId, ReverseMessageExtraAgrs } from "../../common/types/gmp.js";
+import type { MessageId } from "../../common/types/gmp.js";
 import type { AdapterType } from "../../common/types/message.js";
 import type { PrepareRetryMessageCall } from "../../common/types/module.js";
 
 export const prepare = {
-  async retryMessage(adapterId: AdapterType, messageId: MessageId, value: bigint, isHub = true) {
+  async retryMessage(
+    adapterId: AdapterType,
+    messageId: MessageId,
+    value: bigint,
+    message: MessageReceived,
+    extraArgs: RetryMessageExtraArgs | undefined,
+    isHub = true,
+  ) {
     const folksChain = FolksCore.getSelectedFolksChain();
+    const encodedExtraArgs = encodeRetryMessageExtraArgs(extraArgs);
 
     if (isHub) {
       assertHubChainSelected(folksChain.folksChainId, folksChain.network);
@@ -22,6 +36,8 @@ export const prepare = {
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
+        message,
+        encodedExtraArgs,
         value,
         getHubChain(folksChain.network),
       );
@@ -31,6 +47,8 @@ export const prepare = {
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
+        message,
+        encodedExtraArgs,
         value,
         getSpokeChain(folksChain.folksChainId, folksChain.network),
       );
@@ -40,11 +58,13 @@ export const prepare = {
   async reverseMessage(
     adapterId: AdapterType,
     messageId: MessageId,
-    extraArgs: ReverseMessageExtraAgrs,
+    message: MessageReceived,
+    extraArgs: ReverseMessageExtraArgs | undefined,
     value: bigint,
     isHub = true,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
+    const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
 
     if (isHub) {
       assertHubChainSelected(folksChain.folksChainId, folksChain.network);
@@ -53,7 +73,8 @@ export const prepare = {
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
-        extraArgs,
+        message,
+        encodedExtraArgs,
         value,
         getHubChain(folksChain.network),
       );
@@ -63,7 +84,8 @@ export const prepare = {
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
-        extraArgs,
+        message,
+        encodedExtraArgs,
         value,
         getSpokeChain(folksChain.folksChainId, folksChain.network),
       );
@@ -96,12 +118,7 @@ export const write = {
     }
   },
 
-  async reverseMessage(
-    adapterId: AdapterType,
-    messageId: MessageId,
-    extraArgs: ReverseMessageExtraAgrs,
-    prepareCall: PrepareReverseMessageCall,
-  ) {
+  async reverseMessage(adapterId: AdapterType, messageId: MessageId, prepareCall: PrepareReverseMessageCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
     const { isHub } = prepareCall;
 
@@ -112,7 +129,6 @@ export const write = {
         FolksCore.getSigner<ChainType.EVM>(),
         adapterId,
         messageId,
-        extraArgs,
         prepareCall,
       );
     } else {
@@ -121,7 +137,6 @@ export const write = {
         FolksCore.getSigner<ChainType.EVM>(),
         adapterId,
         messageId,
-        extraArgs,
         prepareCall,
       );
     }

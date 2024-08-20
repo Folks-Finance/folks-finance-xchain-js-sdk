@@ -5,8 +5,9 @@ import { FINALITY } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
-import { convertFromGenericAddress, isAccountId, isGenericAddress } from "../../../../common/utils/address.js";
+import { convertFromGenericAddress, isGenericAddress } from "../../../../common/utils/address.js";
 import { convertBooleanToByte, convertNumberToBytes, getRandomBytes } from "../../../../common/utils/bytes.js";
+import { isAccountId } from "../../../../common/utils/lending.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 
 import {
@@ -98,7 +99,7 @@ export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
   const { action, data } = messageDataParams;
   switch (action) {
     case Action.CreateAccount: {
-      return data.refAccountId;
+      return concat([data.nonce, data.refAccountId]);
     }
     case Action.InviteAddress: {
       return concat([
@@ -120,14 +121,14 @@ export function buildEvmMessageData(messageDataParams: MessageDataParams): Hex {
       throw new Error("Not implemented yet: Action.RemoveDelegate case");
     }
     case Action.CreateLoan: {
-      return concat([data.loanId, convertNumberToBytes(data.loanTypeId, UINT16_LENGTH), data.loanName]);
+      return concat([data.nonce, convertNumberToBytes(data.loanTypeId, UINT16_LENGTH), data.loanName]);
     }
     case Action.DeleteLoan: {
       return data.loanId;
     }
     case Action.CreateLoanAndDeposit: {
       return concat([
-        data.loanId,
+        data.nonce,
         convertNumberToBytes(data.poolId, UINT8_LENGTH),
         convertNumberToBytes(data.amount, UINT256_LENGTH),
         convertNumberToBytes(data.loanTypeId, UINT16_LENGTH),

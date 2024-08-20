@@ -6,7 +6,6 @@ import { BYTES32_LENGTH, EVM_ADDRESS_BYTES_LENGTH } from "../constants/bytes.js"
 import { ChainType } from "../types/chain.js";
 
 import type { AddressType, EvmAddress, GenericAddress } from "../types/address.js";
-import type { AccountId } from "../types/lending.js";
 
 export function getRandomGenericAddress(): GenericAddress {
   return pad(privateKeyToAccount(generatePrivateKey()).address, {
@@ -16,10 +15,6 @@ export function getRandomGenericAddress(): GenericAddress {
 
 export function isGenericAddress(address: GenericAddress): boolean {
   return address.length === 64 + 2;
-}
-
-export function isAccountId(accountId: AccountId): boolean {
-  return accountId.length === 64 + 2;
 }
 
 export function convertToGenericAddress<T extends ChainType>(

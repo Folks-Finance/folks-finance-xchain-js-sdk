@@ -13,7 +13,7 @@ import { getBridgeRouterSpokeContract, getSpokeCommonContract, getSpokeTokenCont
 
 import type { EvmAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, NetworkType, SpokeChain } from "../../../../common/types/chain.js";
-import type { AccountId, LoanId, LoanName } from "../../../../common/types/lending.js";
+import type { AccountId, LoanId, LoanName, Nonce } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId, SpokeTokenData } from "../../../../common/types/token.js";
@@ -37,7 +37,7 @@ export const prepare = {
     sender: EvmAddress,
     messageToSend: MessageToSend,
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     spokeChain: SpokeChain,
@@ -53,7 +53,7 @@ export const prepare = {
 
     // get gas limits
     const gasLimit = await spokeCommon.estimateGas.createLoan(
-      [messageToSend.params, accountId, loanId, loanTypeId, loanName],
+      [messageToSend.params, accountId, nonce, loanTypeId, loanName],
       {
         value: msgValue,
         ...transactionOptions,
@@ -104,7 +104,7 @@ export const prepare = {
     sender: EvmAddress,
     messageToSend: MessageToSend,
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     amount: bigint,
@@ -145,7 +145,7 @@ export const prepare = {
 
     // get gas limits
     const gasLimit = await spokeToken.estimateGas.createLoanAndDeposit(
-      [messageToSend.params, accountId, loanId, amount, loanTypeId, loanName],
+      [messageToSend.params, accountId, nonce, amount, loanTypeId, loanName],
       {
         value: msgValue,
         ...transactionOptions,
@@ -443,7 +443,7 @@ export const write = {
     provider: Client,
     signer: WalletClient,
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     prepareCall: PrepareCreateLoanCall,
@@ -452,7 +452,7 @@ export const write = {
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.createLoan([messageParams, accountId, loanId, loanTypeId, loanName], {
+    return await spokeCommon.write.createLoan([messageParams, accountId, nonce, loanTypeId, loanName], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
@@ -483,7 +483,7 @@ export const write = {
     provider: Client,
     signer: WalletClient,
     accountId: AccountId,
-    loanId: LoanId,
+    nonce: Nonce,
     loanTypeId: LoanTypeId,
     loanName: LoanName,
     amount: bigint,
@@ -507,7 +507,7 @@ export const write = {
     }
 
     return await spokeToken.write.createLoanAndDeposit(
-      [messageParams, accountId, loanId, amount, loanTypeId, loanName],
+      [messageParams, accountId, nonce, amount, loanTypeId, loanName],
       {
         account: getEvmSignerAccount(signer),
         chain: signer.chain,
