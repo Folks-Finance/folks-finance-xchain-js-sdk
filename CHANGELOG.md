@@ -1,5 +1,17 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.16
+
+### Patch Changes
+
+- [#122](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/122) [`7bcc4ba`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7bcc4ba331aa48a086a39582396eaf98de0d5c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Export HUB_CHAIN from package
+
+## 0.0.15
+
+### Patch Changes
+
+- [#120](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/120) [`0dbde90`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0dbde906fd5b3755bae37b29120aca9c9c9ee793) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of bsc and bnb
+
 ## 0.0.14
 
 ### Patch Changes

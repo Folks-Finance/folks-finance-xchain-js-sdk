@@ -31,6 +31,7 @@ export { waitTransaction } from "./common/utils/transaction.js";
 
 // === HUB ===
 export { isHubChain } from "./chains/evm/hub/utils/chain.js";
+export { HUB_CHAIN } from "./chains/evm/hub/constants/chain.js";
 
 // === CHAINS ===
 
