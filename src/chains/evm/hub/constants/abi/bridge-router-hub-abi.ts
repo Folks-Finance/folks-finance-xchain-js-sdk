@@ -52,6 +52,14 @@ export const BridgeRouterHubAbi = [
   },
   {
     inputs: [
+      { internalType: "uint16", name: "adapterId", type: "uint16" },
+      { internalType: "bytes32", name: "messageId", type: "bytes32" },
+    ],
+    name: "FailedMessageUnknown",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "address", name: "recipient", type: "address" },
       { internalType: "uint256", name: "amount", type: "uint256" },
     ],
@@ -61,11 +69,6 @@ export const BridgeRouterHubAbi = [
   {
     inputs: [{ internalType: "bytes32", name: "messageId", type: "bytes32" }],
     name: "MessageAlreadySeen",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "messageId", type: "bytes32" }],
-    name: "MessageUnknown",
     type: "error",
   },
   {
@@ -89,6 +92,7 @@ export const BridgeRouterHubAbi = [
     name: "SenderDoesNotMatch",
     type: "error",
   },
+  { inputs: [], name: "ZeroAddressAdapter", type: "error" },
   {
     anonymous: false,
     inputs: [],
@@ -155,6 +159,27 @@ export const BridgeRouterHubAbi = [
         type: "bytes32",
       },
       { indexed: false, internalType: "bytes", name: "reason", type: "bytes" },
+      {
+        components: [
+          { internalType: "bytes32", name: "messageId", type: "bytes32" },
+          { internalType: "uint16", name: "sourceChainId", type: "uint16" },
+          { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
+          { internalType: "bytes32", name: "handler", type: "bytes32" },
+          { internalType: "bytes", name: "payload", type: "bytes" },
+          { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
+          { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
+        ],
+        indexed: false,
+        internalType: "struct Messages.MessageReceived",
+        name: "message",
+        type: "tuple",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "messageHash",
+        type: "bytes32",
+      },
     ],
     name: "MessageFailed",
     type: "event",
@@ -458,15 +483,7 @@ export const BridgeRouterHubAbi = [
       { internalType: "bytes32", name: "messageId", type: "bytes32" },
     ],
     name: "failedMessages",
-    outputs: [
-      { internalType: "bytes32", name: "messageId", type: "bytes32" },
-      { internalType: "uint16", name: "sourceChainId", type: "uint16" },
-      { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
-      { internalType: "bytes32", name: "handler", type: "bytes32" },
-      { internalType: "bytes", name: "payload", type: "bytes" },
-      { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
-      { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
-    ],
+    outputs: [{ internalType: "bytes32", name: "messageHash", type: "bytes32" }],
     stateMutability: "view",
     type: "function",
   },
@@ -650,6 +667,21 @@ export const BridgeRouterHubAbi = [
     inputs: [
       { internalType: "uint16", name: "adapterId", type: "uint16" },
       { internalType: "bytes32", name: "messageId", type: "bytes32" },
+      {
+        components: [
+          { internalType: "bytes32", name: "messageId", type: "bytes32" },
+          { internalType: "uint16", name: "sourceChainId", type: "uint16" },
+          { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
+          { internalType: "bytes32", name: "handler", type: "bytes32" },
+          { internalType: "bytes", name: "payload", type: "bytes" },
+          { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
+          { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
+        ],
+        internalType: "struct Messages.MessageReceived",
+        name: "message",
+        type: "tuple",
+      },
+      { internalType: "bytes", name: "extraArgs", type: "bytes" },
     ],
     name: "retryMessage",
     outputs: [],
@@ -660,6 +692,20 @@ export const BridgeRouterHubAbi = [
     inputs: [
       { internalType: "uint16", name: "adapterId", type: "uint16" },
       { internalType: "bytes32", name: "messageId", type: "bytes32" },
+      {
+        components: [
+          { internalType: "bytes32", name: "messageId", type: "bytes32" },
+          { internalType: "uint16", name: "sourceChainId", type: "uint16" },
+          { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
+          { internalType: "bytes32", name: "handler", type: "bytes32" },
+          { internalType: "bytes", name: "payload", type: "bytes" },
+          { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
+          { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
+        ],
+        internalType: "struct Messages.MessageReceived",
+        name: "message",
+        type: "tuple",
+      },
       { internalType: "bytes", name: "extraArgs", type: "bytes" },
     ],
     name: "reverseMessage",

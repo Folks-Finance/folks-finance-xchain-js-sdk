@@ -89,6 +89,7 @@ export const HubPoolAbi = [
   { inputs: [], name: "OptimalStableToTotalDebtRatioTooHigh", type: "error" },
   { inputs: [], name: "OptimalUtilisationRatioTooHigh", type: "error" },
   { inputs: [], name: "OptimalUtilisationRatioTooLow", type: "error" },
+  { inputs: [], name: "RatioExceedsOne", type: "error" },
   { inputs: [], name: "RebalanceUpDepositInterestRateTooHigh", type: "error" },
   { inputs: [], name: "RebalanceUpUtilisationRatioTooHigh", type: "error" },
   { inputs: [], name: "ReentrancyGuardReentrantCall", type: "error" },
@@ -991,10 +992,30 @@ export const HubPoolAbi = [
     type: "function",
   },
   {
+    inputs: [
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "bool", name: "isFAmount", type: "bool" },
+    ],
+    name: "preparePoolForWithdraw",
+    outputs: [
+      {
+        components: [
+          { internalType: "uint256", name: "underlingAmount", type: "uint256" },
+          { internalType: "uint256", name: "fAmount", type: "uint256" },
+        ],
+        internalType: "struct DataTypes.WithdrawPoolParams",
+        name: "withdrawPoolParams",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "preparePoolForWithdrawFToken",
     outputs: [],
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1274,22 +1295,9 @@ export const HubPoolAbi = [
     type: "function",
   },
   {
-    inputs: [
-      { internalType: "uint256", name: "amount", type: "uint256" },
-      { internalType: "bool", name: "isFAmount", type: "bool" },
-    ],
+    inputs: [{ internalType: "uint256", name: "underlyingAmount", type: "uint256" }],
     name: "updatePoolWithWithdraw",
-    outputs: [
-      {
-        components: [
-          { internalType: "uint256", name: "underlingAmount", type: "uint256" },
-          { internalType: "uint256", name: "fAmount", type: "uint256" },
-        ],
-        internalType: "struct DataTypes.WithdrawPoolParams",
-        name: "",
-        type: "tuple",
-      },
-    ],
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },

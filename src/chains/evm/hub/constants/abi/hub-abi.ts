@@ -33,6 +33,11 @@ export const HubAbi = [
   },
   {
     inputs: [{ internalType: "bytes32", name: "messageId", type: "bytes32" }],
+    name: "CannotRetryMessage",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "messageId", type: "bytes32" }],
     name: "CannotReverseMessage",
     type: "error",
   },
@@ -169,6 +174,31 @@ export const HubAbi = [
         name: "message",
         type: "tuple",
       },
+      { internalType: "address", name: "caller", type: "address" },
+      { internalType: "bytes", name: "extraArgs", type: "bytes" },
+    ],
+    name: "retryMessage",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "bytes32", name: "messageId", type: "bytes32" },
+          { internalType: "uint16", name: "sourceChainId", type: "uint16" },
+          { internalType: "bytes32", name: "sourceAddress", type: "bytes32" },
+          { internalType: "bytes32", name: "handler", type: "bytes32" },
+          { internalType: "bytes", name: "payload", type: "bytes" },
+          { internalType: "uint16", name: "returnAdapterId", type: "uint16" },
+          { internalType: "uint256", name: "returnGasLimit", type: "uint256" },
+        ],
+        internalType: "struct Messages.MessageReceived",
+        name: "message",
+        type: "tuple",
+      },
+      { internalType: "address", name: "caller", type: "address" },
       { internalType: "bytes", name: "extraArgs", type: "bytes" },
     ],
     name: "reverseMessage",

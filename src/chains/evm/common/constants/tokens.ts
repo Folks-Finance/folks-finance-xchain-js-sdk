@@ -24,6 +24,14 @@ export const CONTRACT_SLOT: Partial<
       },
     },
   },
+  [EVM_FOLKS_CHAIN_ID.ARBITRUM_SEPOLIA]: {
+    erc20: {
+      [FolksTokenId.USDC]: {
+        balanceOf: 9n,
+        allowance: 10n,
+      },
+    },
+  },
   [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
     erc20: {
       [FolksTokenId.USDC]: {

@@ -34,7 +34,7 @@ export const AccountManagerAbi = [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "uint16", name: "chainId", type: "uint16" },
     ],
-    name: "AccountHasAddress",
+    name: "AccountHasAddressRegistered",
     type: "error",
   },
   {
@@ -46,11 +46,24 @@ export const AccountManagerAbi = [
     type: "error",
   },
   {
+    inputs: [{ internalType: "bytes32", name: "accountId", type: "bytes32" }],
+    name: "CannotDeleteAccount",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "address", name: "addr", type: "address" },
     ],
     name: "DelegateAlreadyAdded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "expected", type: "bytes32" },
+      { internalType: "bytes32", name: "actual", type: "bytes32" },
+    ],
+    name: "GeneratedAccountIdMismatch",
     type: "error",
   },
   {
@@ -79,7 +92,7 @@ export const AccountManagerAbi = [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "uint16", name: "chainId", type: "uint16" },
     ],
-    name: "NoAddressRegisterd",
+    name: "NoAddressRegistered",
     type: "error",
   },
   {
@@ -455,6 +468,7 @@ export const AccountManagerAbi = [
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "uint16", name: "chainId", type: "uint16" },
       { internalType: "bytes32", name: "addr", type: "bytes32" },
+      { internalType: "bytes4", name: "nonce", type: "bytes4" },
       { internalType: "bytes32", name: "refAccountId", type: "bytes32" },
     ],
     name: "createAccount",
@@ -510,6 +524,13 @@ export const AccountManagerAbi = [
     ],
     name: "getAddressRegisteredToAccountOnChain",
     outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "accountId", type: "bytes32" }],
+    name: "getNumAddressesRegisteredToAccount",
+    outputs: [{ internalType: "uint16", name: "", type: "uint16" }],
     stateMutability: "view",
     type: "function",
   },

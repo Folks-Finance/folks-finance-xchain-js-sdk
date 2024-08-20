@@ -7,6 +7,7 @@ export const TESTNET_POOLS = {
   [FolksTokenId.AVAX]: 129,
   [FolksTokenId.ETH_eth_sep]: 130,
   [FolksTokenId.ETH_base_sep]: 131,
-  [FolksTokenId.LINK_eth_sep]: 132,
-  [FolksTokenId.BNB]: 133,
+  [FolksTokenId.ETH_arb_sep]: 132,
+  [FolksTokenId.LINK_eth_sep]: 133,
+  [FolksTokenId.BNB]: 134,
 } as const satisfies Partial<Record<FolksTokenId, number>>;
