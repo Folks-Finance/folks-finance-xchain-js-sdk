@@ -6,5 +6,5 @@ export const defaultEventParams: EventParams = {
   strict: true,
 };
 
-export const GAS_LIMIT_ESTIMATE_INCREASE = 10_000n;
+export const GAS_LIMIT_ESTIMATE_INCREASE = 100_000n; // TODO: investigate and reduce
 export const SEND_TOKEN_ACTION_RETURN_GAS_LIMIT = 500_000n;

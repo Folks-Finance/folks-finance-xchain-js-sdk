@@ -561,17 +561,14 @@ export const prepare = {
       adapters,
       feeParams,
     );
-    // TODO: investigate and delete
-    const FIXED_GAS_LIMIT_INCREASE = 100_000n;
-    feeParams.gasLimit =
-      (await estimateAdapterReceiveGasLimit(
-        folksChain.folksChainId,
-        hubChain.folksChainId,
-        FolksCore.getHubProvider(),
-        folksChain.network,
-        MessageDirection.SpokeToHub,
-        messageBuilderParams,
-      )) + FIXED_GAS_LIMIT_INCREASE;
+    feeParams.gasLimit = await estimateAdapterReceiveGasLimit(
+      folksChain.folksChainId,
+      hubChain.folksChainId,
+      FolksCore.getHubProvider(),
+      folksChain.network,
+      MessageDirection.SpokeToHub,
+      messageBuilderParams,
+    );
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
 
