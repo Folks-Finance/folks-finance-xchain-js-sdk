@@ -1,10 +1,10 @@
 import { createWalletClient, http } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 
-import { getRandomBytes } from "../src/common/utils/bytes.js";
 import {
   NetworkType,
   FolksCore,
+  getRandomBytes,
   FolksAccount,
   FOLKS_CHAIN_ID,
   BYTES4_LENGTH,
