@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.17
+
+### Patch Changes
+
+- [#124](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of new contracts
+
+- [#124](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - update contract calls for new contracts
+
 ## 0.0.16
 
 ### Patch Changes
