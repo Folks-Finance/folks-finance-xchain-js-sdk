@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.18
+
+### Patch Changes
+
+- [#126](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/126) [`c9e2e02`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/c9e2e0238e4c62946f17176af6b5616db28d9650) Thanks [@stefanofa](https://github.com/stefanofa)! - Export getRandomBytes
+
 ## 0.0.17
 
 ### Patch Changes
