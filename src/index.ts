@@ -28,6 +28,7 @@ export { toFAmount, toUnderlyingAmount } from "./common/utils/formulae.js";
 export { getCcipData, getWormholeData } from "./common/utils/gmp.js";
 export { getOperationIdsByTransaction, waitOperationIds } from "./common/utils/messages.js";
 export { waitTransaction } from "./common/utils/transaction.js";
+export { getRandomBytes } from "./common/utils/bytes.js";
 
 // === HUB ===
 export { isHubChain } from "./chains/evm/hub/utils/chain.js";
