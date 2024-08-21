@@ -1,6 +1,6 @@
 import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
-import type { AccountId, LoanId, LoanName } from "./lending.js";
+import type { AccountId, LoanId, LoanName, Nonce } from "./lending.js";
 import type { LoanTypeId } from "./module.js";
 import type { FolksTokenId, FolksSpokeTokenType } from "./token.js";
 import type { FINALITY } from "../constants/message.js";
@@ -95,6 +95,7 @@ export type DefaultMessageData = "0x";
 
 // Data: account
 export type CreateAccountMessageData = {
+  nonce: Nonce;
   refAccountId: AccountId;
 };
 
@@ -110,7 +111,7 @@ export type UnregisterAddressMessageData = {
 
 // Data: loan
 export type CreateLoanMessageData = {
-  loanId: LoanId;
+  nonce: Nonce;
   loanTypeId: LoanTypeId;
   loanName: LoanName;
 };
@@ -121,7 +122,7 @@ export type DeleteLoanMessageData = {
 };
 
 export type CreateLoanAndDepositMessageData = {
-  loanId: LoanId;
+  nonce: Nonce;
   poolId: number;
   amount: bigint;
   loanTypeId: LoanTypeId;

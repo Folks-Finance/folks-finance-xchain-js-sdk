@@ -1,4 +1,7 @@
 import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
+import type { FolksChainId } from "../../../../common/types/chain.js";
+import type { AccountId } from "../../../../common/types/lending.js";
+import type { AdapterType } from "../../../../common/types/message.js";
 import type { Hex } from "viem";
 
 type CCIPTokenAmount = {
@@ -12,4 +15,25 @@ export type CCIPAny2EvmMessage = {
   sender: GenericAddress;
   data: Hex;
   destTokenAmounts: Array<CCIPTokenAmount>;
+};
+
+export type RetryMessageExtraArgs = {
+  returnAdapterId: AdapterType;
+  returnGasLimit: bigint;
+};
+
+export type ReverseMessageExtraArgs = {
+  accountId: AccountId;
+  returnAdapterId: AdapterType;
+  returnGasLimit: bigint;
+};
+
+export type MessageReceived = {
+  messageId: Hex;
+  sourceChainId: FolksChainId;
+  sourceAddress: GenericAddress;
+  handler: GenericAddress;
+  payload: Hex;
+  returnAdapterId: AdapterType;
+  returnGasLimit: bigint;
 };

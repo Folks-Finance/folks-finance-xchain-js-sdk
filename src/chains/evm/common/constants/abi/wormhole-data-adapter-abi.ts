@@ -3,6 +3,11 @@ export const WormholeDataAdapterAbi = [
     inputs: [
       { internalType: "address", name: "admin", type: "address" },
       {
+        internalType: "contract IWormhole",
+        name: "_wormhole",
+        type: "address",
+      },
+      {
         internalType: "contract IWormholeRelayer",
         name: "_wormholeRelayer",
         type: "address",
@@ -607,6 +612,13 @@ export const WormholeDataAdapterAbi = [
     inputs: [{ internalType: "bytes4", name: "interfaceId", type: "bytes4" }],
     name: "supportsInterface",
     outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "wormhole",
+    outputs: [{ internalType: "contract IWormhole", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },

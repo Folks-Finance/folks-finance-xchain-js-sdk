@@ -4,7 +4,7 @@ import { getBridgeRouterSpokeContract, getSpokeCommonContract } from "../utils/c
 
 import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, SpokeChain } from "../../../../common/types/chain.js";
-import type { AccountId } from "../../../../common/types/lending.js";
+import type { AccountId, Nonce } from "../../../../common/types/lending.js";
 import type { MessageToSend } from "../../../../common/types/message.js";
 import type {
   PrepareAcceptInviteAddressCall,
@@ -20,6 +20,7 @@ export const prepare = {
     sender: EvmAddress,
     messageToSend: MessageToSend,
     accountId: AccountId,
+    nonce: Nonce,
     refAccountId: AccountId,
     spokeChain: SpokeChain,
     transactionOptions: EstimateGasParameters = { account: sender },
@@ -33,15 +34,19 @@ export const prepare = {
     const msgValue = await bridgeRouter.read.getSendFee([messageToSend]);
 
     // get gas limits
-    const gasLimit = await spokeCommon.estimateGas.createAccount([messageToSend.params, accountId, refAccountId], {
-      value: msgValue,
-      ...transactionOptions,
-    });
+    const gasLimit = await spokeCommon.estimateGas.createAccount(
+      [messageToSend.params, accountId, nonce, refAccountId],
+      {
+        value: msgValue,
+        ...transactionOptions,
+      },
+    );
 
     return {
       msgValue,
       gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       messageParams: messageToSend.params,
+      accountId,
       spokeCommonAddress,
     };
   },
@@ -150,15 +155,15 @@ export const write = {
   async createAccount(
     provider: Client,
     signer: WalletClient,
-    accountId: AccountId,
+    nonce: Nonce,
     refAccountId: AccountId,
     prepareCall: PrepareCreateAccountCall,
   ) {
-    const { msgValue, gasLimit, messageParams, spokeCommonAddress } = prepareCall;
+    const { msgValue, gasLimit, messageParams, accountId, spokeCommonAddress } = prepareCall;
 
     const spokeCommon = getSpokeCommonContract(provider, spokeCommonAddress, signer);
 
-    return await spokeCommon.write.createAccount([messageParams, accountId, refAccountId], {
+    return await spokeCommon.write.createAccount([messageParams, accountId, nonce, refAccountId], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,

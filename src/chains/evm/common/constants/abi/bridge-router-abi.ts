@@ -1,9 +1,4 @@
-export const BridgeRouterSpokeAbi = [
-  {
-    inputs: [{ internalType: "address", name: "admin", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "constructor",
-  },
+export const BridgeRouterAbi = [
   { inputs: [], name: "AccessControlBadConfirmation", type: "error" },
   {
     inputs: [{ internalType: "uint48", name: "schedule", type: "uint48" }],
@@ -787,13 +782,6 @@ export const BridgeRouterSpokeAbi = [
     name: "supportsInterface",
     outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdraw",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ] as const;

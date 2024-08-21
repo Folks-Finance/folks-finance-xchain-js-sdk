@@ -3,11 +3,12 @@ import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
-import type { MessageId, ReverseMessageExtraAgrs } from "../../../../common/types/gmp.js";
+import type { MessageId } from "../../../../common/types/gmp.js";
 import type { AdapterType } from "../../../../common/types/message.js";
+import type { MessageReceived } from "../../common/types/gmp.js";
 import type { PrepareRetryMessageCall, PrepareReverseMessageCall } from "../../common/types/module.js";
 import type { HubChain } from "../types/chain.js";
-import type { Client, EstimateGasParameters, WalletClient } from "viem";
+import type { Client, EstimateGasParameters, Hex, WalletClient } from "viem";
 
 export const prepare = {
   async retryMessage(
@@ -15,6 +16,8 @@ export const prepare = {
     sender: EvmAddress,
     adapterId: AdapterType,
     messageId: MessageId,
+    message: MessageReceived,
+    extraArgs: Hex,
     value: bigint,
     hubChain: HubChain,
     transactionOptions: EstimateGasParameters = {
@@ -23,7 +26,7 @@ export const prepare = {
   ): Promise<PrepareRetryMessageCall> {
     const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
 
-    const gasLimit = await bridgeRouter.estimateGas.retryMessage([adapterId, messageId], {
+    const gasLimit = await bridgeRouter.estimateGas.retryMessage([adapterId, messageId, message, extraArgs], {
       ...transactionOptions,
       value,
     });
@@ -32,6 +35,8 @@ export const prepare = {
       gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: true,
+      message,
+      extraArgs,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
     };
   },
@@ -41,7 +46,8 @@ export const prepare = {
     sender: EvmAddress,
     adapterId: AdapterType,
     messageId: MessageId,
-    extraArgs: ReverseMessageExtraAgrs,
+    message: MessageReceived,
+    extraArgs: Hex,
     value: bigint,
     hubChain: HubChain,
     transactionOptions: EstimateGasParameters = {
@@ -50,7 +56,7 @@ export const prepare = {
   ): Promise<PrepareRetryMessageCall> {
     const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
 
-    const gasLimit = await bridgeRouter.estimateGas.reverseMessage([adapterId, messageId, extraArgs], {
+    const gasLimit = await bridgeRouter.estimateGas.reverseMessage([adapterId, messageId, message, extraArgs], {
       ...transactionOptions,
       value,
     });
@@ -59,6 +65,8 @@ export const prepare = {
       gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
       msgValue: value,
       isHub: true,
+      message,
+      extraArgs,
       bridgeRouterAddress: hubChain.bridgeRouterAddress,
     };
   },
@@ -72,11 +80,11 @@ export const write = {
     messageId: MessageId,
     prepareCall: PrepareRetryMessageCall,
   ) {
-    const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
+    const { gasLimit, msgValue, message, extraArgs, bridgeRouterAddress } = prepareCall;
 
     const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
 
-    return await bridgeRouter.write.retryMessage([adapterId, messageId], {
+    return await bridgeRouter.write.retryMessage([adapterId, messageId, message, extraArgs], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
@@ -89,14 +97,13 @@ export const write = {
     signer: WalletClient,
     adapterId: AdapterType,
     messageId: MessageId,
-    extraArgs: ReverseMessageExtraAgrs,
     prepareCall: PrepareReverseMessageCall,
   ) {
-    const { gasLimit, msgValue, bridgeRouterAddress } = prepareCall;
+    const { gasLimit, msgValue, message, extraArgs, bridgeRouterAddress } = prepareCall;
 
     const bridgeRouter = getBridgeRouterHubContract(provider, bridgeRouterAddress, signer);
 
-    return await bridgeRouter.write.reverseMessage([adapterId, messageId, extraArgs], {
+    return await bridgeRouter.write.reverseMessage([adapterId, messageId, message, extraArgs], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,

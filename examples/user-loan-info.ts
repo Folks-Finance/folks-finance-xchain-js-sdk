@@ -35,7 +35,9 @@ async function main() {
     [FolksTokenId.AVAX]: await FolksPool.read.poolInfo(FolksTokenId.AVAX),
     [FolksTokenId.ETH_eth_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_eth_sep),
     [FolksTokenId.ETH_base_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_base_sep),
+    [FolksTokenId.ETH_arb_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_arb_sep),
     [FolksTokenId.LINK_eth_sep]: await FolksPool.read.poolInfo(FolksTokenId.LINK_eth_sep),
+    [FolksTokenId.BNB]: await FolksPool.read.poolInfo(FolksTokenId.BNB),
   };
   const loanTypeInfo = {
     [LoanTypeId.GENERAL]: await FolksLoan.read.loanTypeInfo(LoanTypeId.GENERAL),
@@ -54,7 +56,6 @@ async function main() {
 
   const userGeneralLoans = await FolksLoan.read.userLoans(generalLoansIds);
   const userGeneralLoansInfo = FolksLoan.util.userLoansInfo(userGeneralLoans, poolsInfo, loanTypeInfo, oraclePrices);
-
   console.log(userGeneralLoansInfo);
 }
 

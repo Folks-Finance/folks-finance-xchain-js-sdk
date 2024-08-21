@@ -369,6 +369,13 @@ export const LoanManagerAbi = [
   },
   {
     inputs: [],
+    name: "REBALANCER_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "acceptDefaultAdminTransfer",
     outputs: [],
     stateMutability: "nonpayable",
@@ -450,13 +457,13 @@ export const LoanManagerAbi = [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "loanId", type: "bytes32" },
+      { internalType: "bytes4", name: "nonce", type: "bytes4" },
       { internalType: "bytes32", name: "accountId", type: "bytes32" },
       { internalType: "uint16", name: "loanTypeId", type: "uint16" },
       { internalType: "bytes32", name: "loanName", type: "bytes32" },
     ],
     name: "createUserLoan",
-    outputs: [],
+    outputs: [{ internalType: "bytes32", name: "loanId", type: "bytes32" }],
     stateMutability: "nonpayable",
     type: "function",
   },
