@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.19
+
+### Patch Changes
+
+- [#128](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/128) [`c50a338`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/c50a338cedc2ff0c3b7278604e36cd28fbcfae63) Thanks [@gidonkatten](https://github.com/gidonkatten)! - boost borrow receive gas limit temporarily
+
 ## 0.0.18
 
 ### Patch Changes
