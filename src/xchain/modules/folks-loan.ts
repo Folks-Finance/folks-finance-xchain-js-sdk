@@ -447,6 +447,7 @@ export const prepare = {
       folksChain.network,
       MessageDirection.SpokeToHub,
       messageBuilderParams,
+      feeParams.receiverValue,
     );
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
@@ -568,6 +569,7 @@ export const prepare = {
       folksChain.network,
       MessageDirection.SpokeToHub,
       messageBuilderParams,
+      feeParams.receiverValue,
     );
 
     const messageToSend = buildMessageToSend(folksChain.chainType, messageBuilderParams, feeParams);
