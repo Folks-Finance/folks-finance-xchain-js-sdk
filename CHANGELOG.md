@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.20
+
+### Patch Changes
+
+- [#133](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/133) [`2103ea1`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2103ea15e069b1f40cbaf639568f4028083dcb83) Thanks [@palace22](https://github.com/palace22)! - Reduced gas limit estimate increase
+
+- [#132](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/132) [`6f0acf6`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6f0acf6b2f950424546e7c9df57885af9c689e1d) Thanks [@palace22](https://github.com/palace22)! - fix borrow and withdraw gas limit estimation
+
 ## 0.0.19
 
 ### Patch Changes
