@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.21
+
+### Patch Changes
+
+- [#135](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/135) [`6cd9ea2`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6cd9ea2e52684a72b6add658dd0f584d9bcc8040) Thanks [@gidonkatten](https://github.com/gidonkatten)! - read on chain rewards
+
 ## 0.0.20
 
 ### Patch Changes
