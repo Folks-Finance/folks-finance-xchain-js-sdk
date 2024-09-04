@@ -118,7 +118,7 @@ export async function getUserRewards(
       if (!loanPool) throw new Error(`Unknown loan pool for token ${folksTokenId}`);
       const { collateralRewardIndex } = loanPool.reward;
 
-      const [accrued] = calcAccruedRewards(balance, collateralRewardIndex, [rewardIndex, 18]);
+      const accrued = calcAccruedRewards(balance, collateralRewardIndex, [rewardIndex, 18]);
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       accountRewards[folksTokenId]!.collateral += accrued;
@@ -132,7 +132,7 @@ export async function getUserRewards(
       if (!loanPool) throw new Error(`Unknown loan pool for token ${folksTokenId}`);
       const { borrowRewardIndex } = loanPool.reward;
 
-      const [accrued] = calcAccruedRewards(amount, borrowRewardIndex, [rewardIndex, 18]);
+      const accrued = calcAccruedRewards(amount, borrowRewardIndex, [rewardIndex, 18]);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       accountRewards[folksTokenId]!.borrow += accrued;
     }

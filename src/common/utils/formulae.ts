@@ -46,8 +46,9 @@ export function calcRewardIndex(used: bigint, ma: bigint, rit1: Dnum, rs: Dnum, 
   );
 }
 
-export function calcAccruedRewards(amount: bigint, rit: Dnum, ritn1: Dnum) {
-  return dn.mul(amount, dn.sub(rit, ritn1), { decimals: 0 });
+export function calcAccruedRewards(amount: bigint, rit: Dnum, ritn1: Dnum): bigint {
+  const [accruedRewards] = dn.mul([amount, 0], dn.sub(rit, ritn1), { rounding: "ROUND_DOWN" });
+  return accruedRewards;
 }
 
 export function toFAmount(underlyingAmount: bigint, diit: Dnum): bigint {
