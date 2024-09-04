@@ -107,7 +107,8 @@ export async function getUserRewards(
     const loanTypeInfo = loanTypesInfo[loanTypeId];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
 
-    const accountRewards = accountId === userLoanAccountId ? userRewards.rewards : userRewards.referrals[accountId];
+    const accountRewards =
+      accountId === userLoanAccountId ? userRewards.rewards : userRewards.referrals[userLoanAccountId];
     for (const [i, poolId] of colPools.entries()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const folksTokenId = seen.get(poolId)!;
