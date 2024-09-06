@@ -9,16 +9,14 @@ import type { LoanTypeId } from "../../common/types/module.js";
 export const read = {
   async rewards(
     accountId: AccountId,
-    referredAccountIds: Array<AccountId>,
-    allLoanIds: Array<LoanId>,
+    loanIds: Array<LoanId>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
   ): Promise<UserRewards> {
     return FolksHubRewards.getUserRewards(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       accountId,
-      referredAccountIds,
-      allLoanIds,
+      loanIds,
       loanTypesInfo,
     );
   },

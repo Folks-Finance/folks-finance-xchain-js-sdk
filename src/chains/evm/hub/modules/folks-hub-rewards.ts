@@ -11,29 +11,14 @@ import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { LoanTypeInfo } from "../types/loan.js";
-import type { AccountPoolRewards, AccountRewards, UserRewards } from "../types/rewards.js";
+import type { AccountPoolRewards, UserRewards } from "../types/rewards.js";
 import type { Client, ContractFunctionParameters } from "viem";
-
-const emptyAccountRewards = (folksTokenIds: Array<FolksTokenId>): AccountRewards => {
-  const accountRewards: AccountRewards = {};
-  for (const folksTokenId of folksTokenIds) {
-    accountRewards[folksTokenId] = { collateral: 0n, borrow: 0n, interestPaid: 0n };
-  }
-  return accountRewards;
-};
-
-const addToAccountRewards = (existing: AccountPoolRewards, add: AccountPoolRewards) => {
-  existing.collateral += add.collateral;
-  existing.borrow += add.borrow;
-  existing.interestPaid += add.interestPaid;
-};
 
 export async function getUserRewards(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
-  referredAccountIds: Array<AccountId>,
-  allLoanIds: Array<LoanId>,
+  loanIds: Array<LoanId>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
 ): Promise<UserRewards> {
   const hubChain = getHubChain(network);
@@ -53,45 +38,33 @@ export async function getUserRewards(
     }
   }
 
-  // fetch the accounts rewards which are updated
+  // fetch the account rewards which are updated
   const getUsersPoolRewards: Array<ContractFunctionParameters> = [];
-  for (const aId of [accountId, ...referredAccountIds]) {
-    for (const pId of poolIds) {
-      getUsersPoolRewards.push({
-        address: loanManager.address,
-        abi: loanManager.abi,
-        functionName: "getUserPoolRewards",
-        args: [aId, pId],
-      });
-    }
+  for (const poolId of poolIds) {
+    getUsersPoolRewards.push({
+      address: loanManager.address,
+      abi: loanManager.abi,
+      functionName: "getUserPoolRewards",
+      args: [accountId, poolId],
+    });
   }
 
-  const accountsPoolRewards: Array<AccountPoolRewards> = (await multicall(provider, {
+  const accountPoolRewards: Array<AccountPoolRewards> = (await multicall(provider, {
     contracts: getUsersPoolRewards,
     allowFailure: false,
   })) as Array<AccountPoolRewards>;
 
-  // initialise the rewards
-  const userRewards: UserRewards = {
-    accountId,
-    rewards: emptyAccountRewards(folksTokenIds),
-    referrals: {},
-  };
-  for (const aId of referredAccountIds) userRewards.referrals[aId] = emptyAccountRewards(folksTokenIds);
-
-  // add all the rewards which are updated
-  for (const [i, accountPoolReward] of accountsPoolRewards.entries()) {
-    const accountIndex = Math.floor(i / folksTokenIds.length) - 1;
-    const folksTokenId = folksTokenIds[Math.floor(i / folksTokenIds.length)];
-    const accountRewards =
-      accountIndex === -1 ? userRewards.rewards : userRewards.referrals[referredAccountIds[accountIndex]];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    addToAccountRewards(accountRewards[folksTokenId]!, accountPoolReward);
+  // initialise with all the rewards which are updated
+  const rewards: Partial<Record<FolksTokenId, AccountPoolRewards>> = {};
+  for (const [i, accountPoolReward] of accountPoolRewards.entries()) {
+    const folksTokenId = folksTokenIds[i];
+    rewards[folksTokenId] = accountPoolReward;
   }
+  const userRewards: UserRewards = { accountId, rewards };
 
   // add all the rewards which are not updated
-  const userLoans = await getUserLoans(provider, network, allLoanIds);
-  for (const loanId of allLoanIds) {
+  const userLoans = await getUserLoans(provider, network, loanIds);
+  for (const loanId of loanIds) {
     const userLoan = userLoans.get(loanId);
     if (userLoan === undefined) throw Error("Unknown user loan");
 
@@ -106,9 +79,8 @@ export async function getUserRewards(
 
     const loanTypeInfo = loanTypesInfo[loanTypeId];
     if (!loanTypeInfo) throw new Error(`Unknown loan type id ${loanTypeId}`);
+    if (accountId !== userLoanAccountId) throw new Error(`Loan ${loanId} belongs to account ${userLoanAccountId}`);
 
-    const accountRewards =
-      accountId === userLoanAccountId ? userRewards.rewards : userRewards.referrals[userLoanAccountId];
     for (const [i, poolId] of colPools.entries()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const folksTokenId = seen.get(poolId)!;
@@ -119,10 +91,10 @@ export async function getUserRewards(
       const { collateralRewardIndex } = loanPool.reward;
 
       const accrued = calcAccruedRewards(balance, collateralRewardIndex, [rewardIndex, 18]);
-
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      accountRewards[folksTokenId]!.collateral += accrued;
+      userRewards.rewards[folksTokenId]!.collateral += accrued;
     }
+
     for (const [i, poolId] of borPools.entries()) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const folksTokenId = seen.get(poolId)!;
@@ -134,7 +106,7 @@ export async function getUserRewards(
 
       const accrued = calcAccruedRewards(amount, borrowRewardIndex, [rewardIndex, 18]);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      accountRewards[folksTokenId]!.borrow += accrued;
+      userRewards.rewards[folksTokenId]!.collateral += accrued;
     }
   }
 
