@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.22
+
+### Patch Changes
+
+- [#138](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/138) [`63c6dc3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/63c6dc3f9bd871f2a6287902521921f1ccfb1ffa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - remove referrals from rewards
+
 ## 0.0.21
 
 ### Patch Changes
