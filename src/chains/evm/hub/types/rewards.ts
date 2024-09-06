@@ -12,5 +12,4 @@ export type AccountRewards = Partial<Record<FolksTokenId, AccountPoolRewards>>;
 export type UserRewards = {
   accountId: AccountId;
   rewards: AccountRewards;
-  referrals: Record<AccountId, AccountRewards>;
 };
