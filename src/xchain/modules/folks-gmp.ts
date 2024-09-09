@@ -11,11 +11,15 @@ import type {
   RetryMessageExtraArgs,
   ReverseMessageExtraArgs,
 } from "../../chains/evm/common/types/gmp.js";
-import type { PrepareReverseMessageCall } from "../../chains/evm/common/types/module.js";
-import type { ChainType } from "../../common/types/chain.js";
+import type { GenericAddress } from "../../common/types/address.js";
+import type { ChainType, FolksChainId } from "../../common/types/chain.js";
 import type { MessageId } from "../../common/types/gmp.js";
 import type { AdapterType } from "../../common/types/message.js";
-import type { PrepareRetryMessageCall } from "../../common/types/module.js";
+import type {
+  PrepareRetryMessageCall,
+  PrepareReverseMessageCall,
+  PrepareResendWormholeMessageCall,
+} from "../../common/types/module.js";
 
 export const prepare = {
   async retryMessage(
@@ -91,6 +95,28 @@ export const prepare = {
       );
     }
   },
+
+  async resendWormholeMessage(
+    sourceFolksChainId: FolksChainId,
+    emitterAddress: GenericAddress,
+    sequence: bigint,
+    targetFolksChainId: FolksChainId,
+    receiverValue: bigint,
+    receiverGasLimit: bigint,
+  ) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+
+    return await FolksEvmGmp.prepare.resendWormholeMessage(
+      FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+      getEvmSignerAddress(FolksCore.getSigner()),
+      sourceFolksChainId,
+      emitterAddress,
+      sequence,
+      targetFolksChainId,
+      receiverValue,
+      receiverGasLimit,
+    );
+  },
 };
 
 export const write = {
@@ -140,5 +166,13 @@ export const write = {
         prepareCall,
       );
     }
+  },
+
+  async resendWormholeMessage(prepareCall: PrepareResendWormholeMessageCall) {
+    return await FolksEvmGmp.write.resendMessage(
+      FolksCore.getHubProvider(),
+      FolksCore.getSigner<ChainType.EVM>(),
+      prepareCall,
+    );
   },
 };

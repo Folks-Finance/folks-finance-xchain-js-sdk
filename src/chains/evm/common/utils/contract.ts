@@ -5,12 +5,13 @@ import { convertFromGenericAddress } from "../../../../common/utils/address.js";
 import { CCIPDataAdapterAbi } from "../constants/abi/ccip-data-adapter-abi.js";
 import { ERC20Abi } from "../constants/abi/erc-20-abi.js";
 import { WormholeDataAdapterAbi } from "../constants/abi/wormhole-data-adapter-abi.js";
+import { IWormholeRelayerAbi } from "../constants/abi/wormhole-relayer-abi.js";
 
 import { getEvmSignerAccount, getEvmSignerAddress } from "./chain.js";
 
 import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { GetReadContractReturnType } from "../types/contract.js";
-import type { Client, Hex, WalletClient } from "viem";
+import type { Client, GetContractReturnType, Hex, WalletClient } from "viem";
 
 export function getERC20Contract(provider: Client, address: GenericAddress, signer: WalletClient) {
   return getContract({
@@ -37,6 +38,27 @@ export async function sendERC20Approve(
       chain: signer.chain,
     });
   return null;
+}
+
+export function getWormholeRelayerContract(
+  provider: Client,
+  address: GenericAddress,
+): GetReadContractReturnType<typeof IWormholeRelayerAbi>;
+export function getWormholeRelayerContract(
+  provider: Client,
+  address: GenericAddress,
+  signer: WalletClient,
+): GetContractReturnType<typeof IWormholeRelayerAbi, Client>;
+export function getWormholeRelayerContract(
+  provider: Client,
+  address: GenericAddress,
+  signer?: WalletClient,
+): GetReadContractReturnType<typeof IWormholeRelayerAbi> | GetContractReturnType<typeof IWormholeRelayerAbi, Client> {
+  return getContract({
+    abi: IWormholeRelayerAbi,
+    address: convertFromGenericAddress<ChainType.EVM>(address, ChainType.EVM),
+    client: { wallet: signer, public: provider },
+  });
 }
 
 export function getWormholeDataAdapterContract(

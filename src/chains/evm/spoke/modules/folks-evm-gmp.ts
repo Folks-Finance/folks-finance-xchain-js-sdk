@@ -1,13 +1,21 @@
+import { ChainType } from "../../../../common/types/chain.js";
+import { convertFromGenericAddress, convertToGenericAddress } from "../../../../common/utils/address.js";
+import { getWormholeData } from "../../../../common/utils/gmp.js";
 import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
+import { getWormholeRelayerContract } from "../../common/utils/contract.js";
 import { getBridgeRouterSpokeContract } from "../utils/contract.js";
 
-import type { EvmAddress } from "../../../../common/types/address.js";
-import type { SpokeChain } from "../../../../common/types/chain.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
+import type { FolksChainId, SpokeChain } from "../../../../common/types/chain.js";
 import type { MessageId } from "../../../../common/types/gmp.js";
 import type { AdapterType } from "../../../../common/types/message.js";
 import type { MessageReceived } from "../../common/types/gmp.js";
-import type { PrepareRetryMessageCall, PrepareReverseMessageCall } from "../../common/types/module.js";
+import type {
+  PrepareResendWormholeMessageCall,
+  PrepareRetryMessageCall,
+  PrepareReverseMessageCall,
+} from "../../common/types/module.js";
 import type { Client, EstimateGasParameters, Hex, WalletClient } from "viem";
 
 export const prepare = {
@@ -70,6 +78,62 @@ export const prepare = {
       bridgeRouterAddress: spokeChain.bridgeRouterAddress,
     };
   },
+
+  async resendWormholeMessage(
+    provider: Client,
+    sender: EvmAddress,
+    sourceFolksChainId: FolksChainId,
+    emitterAddress: GenericAddress,
+    sequence: bigint,
+    targetFolksChainId: FolksChainId,
+    receiverValue: bigint,
+    receiverGasLimit: bigint,
+    transactionOptions: EstimateGasParameters = {
+      account: sender,
+    },
+  ): Promise<PrepareResendWormholeMessageCall> {
+    const { wormholeChainId: sourceWormholeChainId, wormholeRelayer: wormholeRelayerAddress } =
+      getWormholeData(sourceFolksChainId);
+    const wormholeRelayer = getWormholeRelayerContract(provider, wormholeRelayerAddress);
+    const { wormholeChainId: targetWormholeChainId } = getWormholeData(targetFolksChainId);
+
+    // get delivery provider address
+    const evmDeliveryProviderAddress = (await wormholeRelayer.read.getDefaultDeliveryProvider()) as EvmAddress;
+    const genericDeliveryProviderAddress = convertToGenericAddress(evmDeliveryProviderAddress, ChainType.EVM);
+
+    // get quote for delivery
+    const [value] = (await wormholeRelayer.read.quoteEVMDeliveryPrice([
+      targetWormholeChainId,
+      receiverValue,
+      receiverGasLimit,
+      evmDeliveryProviderAddress,
+    ])) as [bigint, bigint];
+
+    // estimate gas limit
+    const vaaKey = {
+      chainId: sourceWormholeChainId,
+      emitterAddress,
+      sequence,
+    };
+    const gasLimit = await wormholeRelayer.estimateGas.resendToEvm(
+      [vaaKey, targetWormholeChainId, receiverValue, receiverGasLimit, evmDeliveryProviderAddress],
+      {
+        ...transactionOptions,
+        value,
+      },
+    );
+
+    return {
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      msgValue: value,
+      vaaKey,
+      targetWormholeChainId,
+      receiverValue,
+      receiverGasLimit,
+      deliveryProviderAddress: genericDeliveryProviderAddress,
+      wormholeRelayerAddress,
+    };
+  },
 };
 
 export const write = {
@@ -88,7 +152,7 @@ export const write = {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
-      msgValue,
+      value: msgValue,
     });
   },
 
@@ -107,7 +171,33 @@ export const write = {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
-      msgValue,
+      value: msgValue,
     });
+  },
+
+  async resendMessage(provider: Client, signer: WalletClient, prepareCall: PrepareResendWormholeMessageCall) {
+    const {
+      gasLimit,
+      msgValue,
+      vaaKey,
+      targetWormholeChainId,
+      receiverValue,
+      receiverGasLimit,
+      deliveryProviderAddress,
+      wormholeRelayerAddress,
+    } = prepareCall;
+
+    const evmDeliveryProviderAddress = convertFromGenericAddress(deliveryProviderAddress, ChainType.EVM);
+    const wormholeRelayer = getWormholeRelayerContract(provider, wormholeRelayerAddress, signer);
+
+    return await wormholeRelayer.write.resendToEvm(
+      [vaaKey, targetWormholeChainId, receiverValue, receiverGasLimit, evmDeliveryProviderAddress],
+      {
+        account: getEvmSignerAccount(signer),
+        chain: signer.chain,
+        gas: gasLimit,
+        value: msgValue,
+      },
+    );
   },
 };
