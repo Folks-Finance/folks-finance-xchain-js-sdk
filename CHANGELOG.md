@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.23
+
+### Patch Changes
+
+- [#143](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/143) [`0b9da33`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0b9da33c09c1a5b51e26aba66ab457450a268c0c) Thanks [@gidonkatten](https://github.com/gidonkatten)! - resend wormhole message
+
 ## 0.0.22
 
 ### Patch Changes
