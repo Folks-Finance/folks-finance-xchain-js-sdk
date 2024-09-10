@@ -77,7 +77,7 @@ export async function getPoolInfo(
     allowFailure: false,
   });
 
-  const { flashLoanFee, retentionRate } = feeData;
+  const { flashLoanFee, retentionRate, totalRetainedAmount } = feeData;
   const {
     optimalUtilisationRatio,
     totalAmount: depositTotalAmount,
@@ -116,6 +116,7 @@ export async function getPoolInfo(
     feeData: {
       flashLoanFee: [BigInt(flashLoanFee), 6],
       retentionRate: [BigInt(retentionRate), 6],
+      totalRetainedAmount,
     },
     depositData: {
       optimalUtilisationRatio: [BigInt(optimalUtilisationRatio), 4],
