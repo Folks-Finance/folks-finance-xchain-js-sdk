@@ -90,3 +90,16 @@ export type PrepareReverseMessageCall = {
   extraArgs: Hex;
   bridgeRouterAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams">;
+
+export type PrepareResendWormholeMessageCall = {
+  vaaKey: {
+    chainId: number;
+    emitterAddress: GenericAddress;
+    sequence: bigint;
+  };
+  targetWormholeChainId: number;
+  receiverValue: bigint;
+  receiverGasLimit: bigint;
+  deliveryProviderAddress: GenericAddress;
+  wormholeRelayerAddress: GenericAddress;
+} & Omit<PrepareCall, "messageParams">;
