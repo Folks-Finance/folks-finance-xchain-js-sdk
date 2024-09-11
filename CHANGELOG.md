@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.24
+
+### Patch Changes
+
+- [#145](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/145) [`a06cebb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/a06cebbefb163c46251b4dd864be7d382a692736) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add total retained amount to pool info
+
 ## 0.0.23
 
 ### Patch Changes
