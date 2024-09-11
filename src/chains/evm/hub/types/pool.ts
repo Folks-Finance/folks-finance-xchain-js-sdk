@@ -4,6 +4,7 @@ import type { Dnum } from "dnum";
 type FeeData = {
   flashLoanFee: Dnum;
   retentionRate: Dnum;
+  totalRetainedAmount: bigint;
 };
 
 type DepositData = {
