@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.25
+
+### Patch Changes
+
+- [#147](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/147) [`4c440af`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/4c440afb8a78d8050ec8ab85bee7a4e4ebf229aa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - redeploy smart contracts
+
 ## 0.0.24
 
 ### Patch Changes
