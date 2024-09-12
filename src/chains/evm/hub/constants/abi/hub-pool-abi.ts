@@ -139,19 +139,6 @@ export const HubPoolAbi = [
   },
   {
     anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "ClearTokenFees",
-    type: "event",
-  },
-  {
-    anonymous: false,
     inputs: [],
     name: "DefaultAdminDelayChangeCanceled",
     type: "event",
@@ -1176,7 +1163,14 @@ export const HubPoolAbi = [
   },
   {
     inputs: [
-      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "uint256", name: "oldBorrowAmount", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "additionalBorrowAmount",
+        type: "uint256",
+      },
+      { internalType: "uint256", name: "oldBorrowStableRate", type: "uint256" },
+      { internalType: "uint256", name: "newBorrowStableRate", type: "uint256" },
       { internalType: "bool", name: "isStable", type: "bool" },
     ],
     name: "updatePoolWithBorrow",
@@ -1215,7 +1209,29 @@ export const HubPoolAbi = [
     type: "function",
   },
   {
-    inputs: [],
+    inputs: [
+      { internalType: "uint256", name: "repaidBorrowAmount", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "violatorLoanStableRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "liquidatorOldBorrowAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "liquidatorOldLoanStableRate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "liquidatorNewLoanStableRate",
+        type: "uint256",
+      },
+    ],
     name: "updatePoolWithLiquidation",
     outputs: [],
     stateMutability: "nonpayable",
@@ -1230,21 +1246,7 @@ export const HubPoolAbi = [
         type: "uint256",
       },
     ],
-    name: "updatePoolWithRebalanceDown",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "amount", type: "uint256" },
-      {
-        internalType: "uint256",
-        name: "oldLoanStableInterestRate",
-        type: "uint256",
-      },
-    ],
-    name: "updatePoolWithRebalanceUp",
+    name: "updatePoolWithRebalance",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
