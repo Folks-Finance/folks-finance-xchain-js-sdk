@@ -88,7 +88,7 @@ export const write = {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
-      msgValue,
+      value: msgValue,
     });
   },
 
@@ -107,7 +107,7 @@ export const write = {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,
-      msgValue,
+      value: msgValue,
     });
   },
 };
