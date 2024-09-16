@@ -1,3 +1,3 @@
-import { FolksTokenId } from "../types/token.js";
+import { MainnetFolksTokenId, TestnetFolksTokenId } from "../types/token.js";
 
-export const CIRCLE_FOLKS_TOKEN_ID = [FolksTokenId.USDC];
+export const CIRCLE_FOLKS_TOKEN_ID = [MainnetFolksTokenId.USDC, TestnetFolksTokenId.USDC];
