@@ -25,9 +25,9 @@ export const prepare = {
   async retryMessage(
     adapterId: AdapterType,
     messageId: MessageId,
-    value: bigint,
     message: MessageReceived,
     extraArgs: RetryMessageExtraArgs | undefined,
+    value: bigint,
     isHub = true,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
