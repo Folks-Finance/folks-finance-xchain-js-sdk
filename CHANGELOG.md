@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.26
+
+### Patch Changes
+
+- [#149](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/149) [`7460a3d`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7460a3da195ea5502bdea60c8a7acef5b82a16e7) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix hub retry and reverse msg value and change order of params
+
 ## 0.0.25
 
 ### Patch Changes
