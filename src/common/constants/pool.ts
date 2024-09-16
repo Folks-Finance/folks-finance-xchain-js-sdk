@@ -1,5 +1,7 @@
 import { MainnetFolksTokenId, TestnetFolksTokenId } from "../types/token.js";
 
+import type { FolksTokenId } from "../types/token.js";
+
 export const MAINNET_POOLS = {
   [MainnetFolksTokenId.USDC]: 1,
   [MainnetFolksTokenId.AVAX]: 2,
@@ -9,7 +11,7 @@ export const MAINNET_POOLS = {
   [MainnetFolksTokenId.wETH_ava]: 6,
   [MainnetFolksTokenId.wBTC_eth]: 7,
   [MainnetFolksTokenId.BTCb_ava]: 8,
-} as const satisfies Partial<Record<MainnetFolksTokenId, number>>;
+} as const satisfies Partial<Record<FolksTokenId, number>>;
 
 export const TESTNET_POOLS = {
   [TestnetFolksTokenId.USDC]: 128,
@@ -19,4 +21,4 @@ export const TESTNET_POOLS = {
   [TestnetFolksTokenId.ETH_arb_sep]: 132,
   [TestnetFolksTokenId.LINK_eth_sep]: 133,
   [TestnetFolksTokenId.BNB]: 134,
-} as const satisfies Partial<Record<TestnetFolksTokenId, number>>;
+} as const satisfies Partial<Record<FolksTokenId, number>>;

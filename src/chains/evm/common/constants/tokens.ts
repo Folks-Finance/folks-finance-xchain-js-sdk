@@ -37,7 +37,7 @@ export const CONTRACT_SLOT: Partial<
       },
       [MainnetFolksTokenId.wBTC_eth]: {
         balanceOf: 0n,
-        allowance: 1n,
+        allowance: 2n,
       },
     },
   },

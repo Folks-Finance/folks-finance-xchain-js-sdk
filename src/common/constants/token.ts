@@ -1,3 +1,5 @@
 import { MainnetFolksTokenId, TestnetFolksTokenId } from "../types/token.js";
 
-export const CIRCLE_FOLKS_TOKEN_ID = [MainnetFolksTokenId.USDC, TestnetFolksTokenId.USDC];
+import type { FolksTokenId } from "../types/token.js";
+
+export const CIRCLE_FOLKS_TOKEN_ID: Array<FolksTokenId> = [MainnetFolksTokenId.USDC, TestnetFolksTokenId.USDC];
