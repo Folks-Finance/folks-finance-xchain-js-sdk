@@ -1,6 +1,6 @@
 import type { GenericAddress } from "./address.js";
 
-export const MainnetFolksTokenId = {
+export const MAINNET_FOLKS_TOKEN_ID = {
   USDC: "USDC",
   AVAX: "AVAX",
   sAVAX: "sAVAX",
@@ -10,9 +10,9 @@ export const MainnetFolksTokenId = {
   wBTC_eth: "wBTC_eth",
   BTCb_ava: "BTCb_ava",
 } as const;
-type MainnetFolksTokenId = (typeof MainnetFolksTokenId)[keyof typeof MainnetFolksTokenId];
+type MainnetFolksTokenId = (typeof MAINNET_FOLKS_TOKEN_ID)[keyof typeof MAINNET_FOLKS_TOKEN_ID];
 
-export const TestnetFolksTokenId = {
+export const TESTNET_FOLKS_TOKEN_ID = {
   USDC: "USDC",
   AVAX: "AVAX",
   ETH_eth_sep: "ETH_eth_sep",
@@ -21,7 +21,7 @@ export const TestnetFolksTokenId = {
   LINK_eth_sep: "LINK_eth_sep",
   BNB: "BNB",
 } as const;
-type TestnetFolksTokenId = (typeof TestnetFolksTokenId)[keyof typeof TestnetFolksTokenId];
+type TestnetFolksTokenId = (typeof TESTNET_FOLKS_TOKEN_ID)[keyof typeof TESTNET_FOLKS_TOKEN_ID];
 
 export type FolksTokenId = MainnetFolksTokenId | TestnetFolksTokenId;
 

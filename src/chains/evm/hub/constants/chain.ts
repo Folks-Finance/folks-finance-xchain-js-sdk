@@ -3,7 +3,7 @@ import { MAINNET_POOLS, TESTNET_POOLS } from "../../../../common/constants/pool.
 import { NetworkType, ChainType } from "../../../../common/types/chain.js";
 import { AdapterType } from "../../../../common/types/message.js";
 import { LoanTypeId } from "../../../../common/types/module.js";
-import { MainnetFolksTokenId, TestnetFolksTokenId, TokenType } from "../../../../common/types/token.js";
+import { MAINNET_FOLKS_TOKEN_ID, TESTNET_FOLKS_TOKEN_ID, TokenType } from "../../../../common/types/token.js";
 import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
@@ -56,84 +56,84 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       ChainType.EVM,
     ),
     tokens: {
-      [MainnetFolksTokenId.USDC]: {
+      [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
           type: TokenType.CIRCLE,
           address: convertToGenericAddress("0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
-        folksTokenId: MainnetFolksTokenId.USDC,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.USDC],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.USDC,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.USDC],
         poolAddress: convertToGenericAddress("0x88f15e36308ED060d8543DA8E2a5dA0810Efded2" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.AVAX]: {
+      [MAINNET_FOLKS_TOKEN_ID.AVAX]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: MainnetFolksTokenId.AVAX,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.AVAX],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.AVAX,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.AVAX],
         poolAddress: convertToGenericAddress("0x0259617bE41aDA4D97deD60dAf848Caa6db3F228" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.sAVAX]: {
+      [MAINNET_FOLKS_TOKEN_ID.sAVAX]: {
         token: {
           type: TokenType.ERC20,
           decimals: 18,
         },
-        folksTokenId: MainnetFolksTokenId.sAVAX,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.sAVAX],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.sAVAX,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.sAVAX],
         poolAddress: convertToGenericAddress("0x7033105d1a527d342bE618ab1F222BB310C8d70b" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.ETH_eth]: {
+      [MAINNET_FOLKS_TOKEN_ID.ETH_eth]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: MainnetFolksTokenId.ETH_eth,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.ETH_eth],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETH_eth,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETH_eth],
         poolAddress: convertToGenericAddress("0xB6DF8914C084242A19A4C7fb15368be244Da3c75" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.ETH_base]: {
+      [MAINNET_FOLKS_TOKEN_ID.ETH_base]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: MainnetFolksTokenId.ETH_base,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.ETH_base],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETH_base,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETH_base],
         poolAddress: convertToGenericAddress("0x51958ed7B96F57142CE63BB223bbd9ce23DA7125" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.wETH_ava]: {
+      [MAINNET_FOLKS_TOKEN_ID.wETH_ava]: {
         token: {
           type: TokenType.ERC20,
           decimals: 18,
         },
-        folksTokenId: MainnetFolksTokenId.wETH_ava,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.wETH_ava],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.wETH_ava,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.wETH_ava],
         poolAddress: convertToGenericAddress("0x795CcF6f7601edb41E4b3123c778C56F0F19389A" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.wBTC_eth]: {
+      [MAINNET_FOLKS_TOKEN_ID.wBTC_eth]: {
         token: {
           type: TokenType.ERC20,
           decimals: 8,
         },
-        folksTokenId: MainnetFolksTokenId.wBTC_eth,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.wBTC_eth],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.wBTC_eth,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.wBTC_eth],
         poolAddress: convertToGenericAddress("0x9936812835476504D6Cf495F4F0C718Ec19B3Aff" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MainnetFolksTokenId.BTCb_ava]: {
+      [MAINNET_FOLKS_TOKEN_ID.BTCb_ava]: {
         token: {
           type: TokenType.ERC20,
           decimals: 8,
         },
-        folksTokenId: MainnetFolksTokenId.BTCb_ava,
-        poolId: MAINNET_POOLS[MainnetFolksTokenId.BTCb_ava],
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.BTCb_ava,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BTCb_ava],
         poolAddress: convertToGenericAddress("0x1C51AA1516e1156d98075F2F64e259906051ABa9" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
@@ -185,74 +185,74 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       ChainType.EVM,
     ),
     tokens: {
-      [TestnetFolksTokenId.USDC]: {
+      [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
           type: TokenType.CIRCLE,
           address: convertToGenericAddress("0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
-        folksTokenId: TestnetFolksTokenId.USDC,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.USDC],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.USDC,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.USDC],
         poolAddress: convertToGenericAddress("0xabDB5bf380C9612A963c6281aaf2B32e5700AabD" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.AVAX]: {
+      [TESTNET_FOLKS_TOKEN_ID.AVAX]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.AVAX,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.AVAX],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.AVAX,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.AVAX],
         poolAddress: convertToGenericAddress("0x8fBC1A733C194feA513de2B84BFd44A515EB7367" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.ETH_eth_sep]: {
+      [TESTNET_FOLKS_TOKEN_ID.ETH_eth_sep]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.ETH_eth_sep,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.ETH_eth_sep],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.ETH_eth_sep,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.ETH_eth_sep],
         poolAddress: convertToGenericAddress("0x38e23bb3Bc24EC29c5cF605e332Dba50E5681cA5" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.ETH_base_sep]: {
+      [TESTNET_FOLKS_TOKEN_ID.ETH_base_sep]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.ETH_base_sep,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.ETH_base_sep],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.ETH_base_sep,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.ETH_base_sep],
         poolAddress: convertToGenericAddress("0x54Fc7d6f8e7A102b3e68F87db3A7f0402CC7CA13" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.ETH_arb_sep]: {
+      [TESTNET_FOLKS_TOKEN_ID.ETH_arb_sep]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.ETH_arb_sep,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.ETH_arb_sep],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.ETH_arb_sep,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.ETH_arb_sep],
         poolAddress: convertToGenericAddress("0x7Df6D239F6D5B85BBd82014C9076f0DbcaBc4b3A" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.LINK_eth_sep]: {
+      [TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep]: {
         token: {
           type: TokenType.ERC20,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.LINK_eth_sep,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.LINK_eth_sep],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep],
         poolAddress: convertToGenericAddress("0xCc11Ef749baB6a1FD10fEE0a2502C3aF6b38E9BC" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [TestnetFolksTokenId.BNB]: {
+      [TESTNET_FOLKS_TOKEN_ID.BNB]: {
         token: {
           type: TokenType.NATIVE,
           decimals: 18,
         },
-        folksTokenId: TestnetFolksTokenId.BNB,
-        poolId: TESTNET_POOLS[TestnetFolksTokenId.BNB],
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.BNB,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.BNB],
         poolAddress: convertToGenericAddress("0x424E02262874AD74562B08487628093b0456Ac9E" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },

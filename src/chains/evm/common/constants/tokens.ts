@@ -1,4 +1,4 @@
-import { MainnetFolksTokenId, TestnetFolksTokenId } from "../../../../common/types/token.js";
+import { MAINNET_FOLKS_TOKEN_ID, TESTNET_FOLKS_TOKEN_ID } from "../../../../common/types/token.js";
 
 import { EVM_FOLKS_CHAIN_ID } from "./chain.js";
 
@@ -11,19 +11,19 @@ export const CONTRACT_SLOT: Partial<
 > = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE]: {
     erc20: {
-      [MainnetFolksTokenId.USDC]: {
+      [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
-      [MainnetFolksTokenId.sAVAX]: {
+      [MAINNET_FOLKS_TOKEN_ID.sAVAX]: {
         balanceOf: 203n,
         allowance: 204n,
       },
-      [MainnetFolksTokenId.wETH_ava]: {
+      [MAINNET_FOLKS_TOKEN_ID.wETH_ava]: {
         balanceOf: 0n,
         allowance: 1n,
       },
-      [MainnetFolksTokenId.BTCb_ava]: {
+      [MAINNET_FOLKS_TOKEN_ID.BTCb_ava]: {
         balanceOf: 0n,
         allowance: 1n,
       },
@@ -31,11 +31,11 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.ETHEREUM]: {
     erc20: {
-      [MainnetFolksTokenId.USDC]: {
+      [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
-      [MainnetFolksTokenId.wBTC_eth]: {
+      [MAINNET_FOLKS_TOKEN_ID.wBTC_eth]: {
         balanceOf: 0n,
         allowance: 2n,
       },
@@ -43,7 +43,7 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.BASE]: {
     erc20: {
-      [MainnetFolksTokenId.USDC]: {
+      [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
@@ -51,7 +51,7 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     erc20: {
-      [TestnetFolksTokenId.USDC]: {
+      [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
@@ -59,7 +59,7 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
     erc20: {
-      [TestnetFolksTokenId.USDC]: {
+      [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
@@ -67,7 +67,7 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.ARBITRUM_SEPOLIA]: {
     erc20: {
-      [TestnetFolksTokenId.USDC]: {
+      [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
@@ -75,11 +75,11 @@ export const CONTRACT_SLOT: Partial<
   },
   [EVM_FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
     erc20: {
-      [TestnetFolksTokenId.USDC]: {
+      [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
       },
-      [TestnetFolksTokenId.LINK_eth_sep]: {
+      [TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep]: {
         balanceOf: 0n,
         allowance: 1n,
       },
