@@ -188,9 +188,9 @@ export const util = {
   async spokeToHubMessageFee(
     adapterId: AdapterType,
     fromFolksChainId: FolksChainId,
+    sendFolksTokenId?: FolksTokenId,
     receiverValue = 0n,
     gasLimit = 1_500_000n,
-    sendFolksTokenId?: FolksTokenId,
   ): Promise<bigint> {
     const network = FolksCore.getSelectedNetwork();
     const spokeChain = getSpokeChain(fromFolksChainId, network);
@@ -219,8 +219,8 @@ export const util = {
   async hubToSpokeMessageFee(
     adapterId: AdapterType,
     toFolksChainId: FolksChainId,
-    gasLimit = 500_000n,
     receiveFolksTokenId: FolksTokenId,
+    gasLimit = 500_000n,
   ): Promise<bigint> {
     const network = FolksCore.getSelectedNetwork();
     const hubChain = getHubChain(network);
@@ -246,17 +246,17 @@ export const util = {
     adapters: MessageAdapters,
     startFolksChainId: FolksChainId,
     endFolksChainId: FolksChainId,
+    receiveFolksTokenId: FolksTokenId,
     gasLimit = 1_500_000n,
     returnGasLimit = 500_000n,
-    receiveFolksTokenId: FolksTokenId,
   ): Promise<bigint> {
     const { adapterId, returnAdapterId } = adapters;
     const receiverValue = await this.hubToSpokeMessageFee(
       returnAdapterId,
       endFolksChainId,
-      returnGasLimit,
       receiveFolksTokenId,
+      returnGasLimit,
     );
-    return await this.spokeToHubMessageFee(adapterId, startFolksChainId, receiverValue, gasLimit);
+    return await this.spokeToHubMessageFee(adapterId, startFolksChainId, undefined, receiverValue, gasLimit);
   },
 };
