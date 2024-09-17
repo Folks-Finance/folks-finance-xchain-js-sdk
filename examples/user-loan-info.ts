@@ -9,7 +9,7 @@ import {
   FolksPool,
   LoanTypeId,
   NetworkType,
-  TESTNET_FOLKS_CHAIN_ID,
+  TESTNET_FOLKS_TOKEN_ID,
 } from "../src/index.js";
 
 import type { AccountId, FolksCoreConfig, PoolInfo, FolksTokenId } from "../src/index.js";
@@ -32,7 +32,7 @@ async function main() {
 
   const poolsInfo: Partial<Record<FolksTokenId, PoolInfo>> = {};
   await Promise.all(
-    Object.values(TESTNET_FOLKS_CHAIN_ID).map(async (folksTokenId) => {
+    Object.values(TESTNET_FOLKS_TOKEN_ID).map(async (folksTokenId) => {
       const poolInfo = await FolksPool.read.poolInfo(folksTokenId);
       poolsInfo[folksTokenId] = poolInfo;
     }),
