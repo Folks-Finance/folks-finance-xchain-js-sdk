@@ -36,6 +36,19 @@ export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, ad
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
 }
 
+export function doesAdapterSupportReceiverValue(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
+  const isHub = isHubChain(folksChainId, FolksCore.getSelectedNetwork());
+  return (
+    (isHub && adapterId === AdapterType.HUB) ||
+    (!isHub && (adapterId === AdapterType.WORMHOLE_DATA || adapterId === AdapterType.WORMHOLE_CCTP))
+  );
+}
+
+export function assertAdapterSupportsReceiverValue(folksChainId: FolksChainId, adapterId: AdapterType): void {
+  if (!doesAdapterSupportReceiverValue(folksChainId, adapterId))
+    throw Error(`Adapter ${adapterId} does not support receiver value for folksChainId: ${folksChainId}`);
+}
+
 function getAdapterIds(messageAdapterParams: MessageAdapterParams) {
   const { sourceFolksChainId, network, messageAdapterParamType } = messageAdapterParams;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
