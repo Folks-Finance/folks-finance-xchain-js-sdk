@@ -1,21 +1,30 @@
+import { FINALITY } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
-import { convertFromGenericAddress, convertToGenericAddress } from "../../../../common/utils/address.js";
+import {
+  convertFromGenericAddress,
+  convertToGenericAddress,
+  getRandomGenericAddress,
+} from "../../../../common/utils/address.js";
+import { getRandomBytes } from "../../../../common/utils/bytes.js";
 import { getWormholeData } from "../../../../common/utils/gmp.js";
 import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getWormholeRelayerContract } from "../../common/utils/contract.js";
+import { buildMessageParams, buildSendTokenExtraArgsWhenAdding } from "../../common/utils/message.js";
 import { getBridgeRouterSpokeContract } from "../utils/contract.js";
 
 import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { FolksChainId, SpokeChain } from "../../../../common/types/chain.js";
 import type { MessageId } from "../../../../common/types/gmp.js";
-import type { AdapterType } from "../../../../common/types/message.js";
+import type { AdapterType, MessageToSend } from "../../../../common/types/message.js";
+import type { SpokeTokenData } from "../../../../common/types/token.js";
 import type { MessageReceived } from "../../common/types/gmp.js";
 import type {
   PrepareResendWormholeMessageCall,
   PrepareRetryMessageCall,
   PrepareReverseMessageCall,
 } from "../../common/types/module.js";
+import type { HubChain } from "../../hub/types/chain.js";
 import type { Client, EstimateGasParameters, Hex, WalletClient } from "viem";
 
 export const prepare = {
@@ -201,3 +210,38 @@ export const write = {
     );
   },
 };
+
+export async function getSendMessageFee(
+  provider: Client,
+  adapterId: AdapterType,
+  receiverValue: bigint,
+  gasLimit: bigint,
+  hubChain: HubChain,
+  spokeChain: SpokeChain,
+  spokeTokenData?: SpokeTokenData,
+): Promise<bigint> {
+  const bridgeRouter = getBridgeRouterSpokeContract(provider, spokeChain.bridgeRouterAddress);
+
+  // construct return message
+  const message: MessageToSend = {
+    params: buildMessageParams({
+      adapters: {
+        adapterId,
+        returnAdapterId: 0 as AdapterType,
+      },
+      gasLimit,
+      receiverValue,
+    }),
+    sender: spokeChain.spokeCommonAddress,
+    destinationChainId: hubChain.folksChainId,
+    handler: getRandomGenericAddress(),
+    payload: getRandomBytes(256),
+    finalityLevel: FINALITY.FINALISED,
+    extraArgs: spokeTokenData
+      ? buildSendTokenExtraArgsWhenAdding(getRandomGenericAddress(), spokeTokenData.token, 1n)
+      : "0x",
+  };
+
+  // get return adapter fee
+  return await bridgeRouter.read.getSendFee([message]);
+}

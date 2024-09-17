@@ -1,9 +1,15 @@
 import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { encodeRetryMessageExtraArgs, encodeReverseMessageExtraArgs } from "../../chains/evm/common/utils/gmp.js";
 import { FolksHubGmp } from "../../chains/evm/hub/modules/index.js";
-import { getHubChain } from "../../chains/evm/hub/utils/chain.js";
+import { getHubChain, getHubTokenData } from "../../chains/evm/hub/utils/chain.js";
 import { FolksEvmGmp } from "../../chains/evm/spoke/modules/index.js";
-import { assertHubChainSelected, getSpokeChain } from "../../common/utils/chain.js";
+import {
+  assertAdapterSupportsDataMessage,
+  assertAdapterSupportsReceiverValue,
+  assertAdapterSupportsTokenMessage,
+} from "../../common/utils/adapter.js";
+import { assertHubChainSelected, getSpokeChain, getSpokeTokenData } from "../../common/utils/chain.js";
+import { isCircleToken } from "../../common/utils/token.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type {
@@ -14,12 +20,13 @@ import type {
 import type { GenericAddress } from "../../common/types/address.js";
 import type { ChainType, FolksChainId } from "../../common/types/chain.js";
 import type { MessageId } from "../../common/types/gmp.js";
-import type { AdapterType } from "../../common/types/message.js";
+import type { AdapterType, MessageAdapters } from "../../common/types/message.js";
 import type {
   PrepareRetryMessageCall,
   PrepareReverseMessageCall,
   PrepareResendWormholeMessageCall,
 } from "../../common/types/module.js";
+import type { FolksTokenId } from "../../common/types/token.js";
 
 export const prepare = {
   async retryMessage(
@@ -174,5 +181,82 @@ export const write = {
       FolksCore.getSigner<ChainType.EVM>(),
       prepareCall,
     );
+  },
+};
+
+export const util = {
+  async spokeToHubMessageFee(
+    adapterId: AdapterType,
+    fromFolksChainId: FolksChainId,
+    sendFolksTokenId?: FolksTokenId,
+    receiverValue = 0n,
+    gasLimit = 1_500_000n,
+  ): Promise<bigint> {
+    const network = FolksCore.getSelectedNetwork();
+    const spokeChain = getSpokeChain(fromFolksChainId, network);
+    const hubChain = getHubChain(network);
+
+    // check receiver value is support
+    if (receiverValue > 0n) assertAdapterSupportsReceiverValue(fromFolksChainId, adapterId);
+
+    // check adapter id is supported
+    sendFolksTokenId && isCircleToken(sendFolksTokenId)
+      ? assertAdapterSupportsTokenMessage(fromFolksChainId, adapterId)
+      : assertAdapterSupportsDataMessage(fromFolksChainId, adapterId);
+    const spokeTokenData = sendFolksTokenId ? getSpokeTokenData(spokeChain, sendFolksTokenId) : undefined;
+
+    return FolksEvmGmp.getSendMessageFee(
+      FolksCore.getProvider<ChainType.EVM>(fromFolksChainId),
+      adapterId,
+      receiverValue,
+      gasLimit,
+      hubChain,
+      spokeChain,
+      spokeTokenData,
+    );
+  },
+
+  async hubToSpokeMessageFee(
+    adapterId: AdapterType,
+    toFolksChainId: FolksChainId,
+    receiveFolksTokenId: FolksTokenId,
+    gasLimit = 500_000n,
+  ): Promise<bigint> {
+    const network = FolksCore.getSelectedNetwork();
+    const hubChain = getHubChain(network);
+
+    // check adapter id is supported
+    isCircleToken(receiveFolksTokenId)
+      ? assertAdapterSupportsTokenMessage(toFolksChainId, adapterId)
+      : assertAdapterSupportsDataMessage(toFolksChainId, adapterId);
+
+    const hubTokenData = getHubTokenData(receiveFolksTokenId, network);
+
+    return await FolksHubGmp.getSendMessageFee(
+      FolksCore.getHubProvider(),
+      toFolksChainId,
+      adapterId,
+      gasLimit,
+      hubChain,
+      hubTokenData,
+    );
+  },
+
+  async roundTripMessageFee(
+    adapters: MessageAdapters,
+    startFolksChainId: FolksChainId,
+    endFolksChainId: FolksChainId,
+    receiveFolksTokenId: FolksTokenId,
+    gasLimit = 1_500_000n,
+    returnGasLimit = 500_000n,
+  ): Promise<bigint> {
+    const { adapterId, returnAdapterId } = adapters;
+    const receiverValue = await this.hubToSpokeMessageFee(
+      returnAdapterId,
+      endFolksChainId,
+      receiveFolksTokenId,
+      returnGasLimit,
+    );
+    return await this.spokeToHubMessageFee(adapterId, startFolksChainId, undefined, receiverValue, gasLimit);
   },
 };
