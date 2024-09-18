@@ -21,7 +21,11 @@ import {
 } from "../../../../common/utils/formulae.js";
 import { bigIntMin, compoundEverySecond, increaseByPercent } from "../../../../common/utils/math-lib.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
-import { defaultEventParams, GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
+import {
+  defaultEventParams,
+  GAS_LIMIT_ESTIMATE_INCREASE,
+  RECEIVER_VALUE_SLIPPAGE,
+} from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import {
   buildEvmMessageData,
@@ -162,7 +166,7 @@ export async function getSendTokenAdapterFees(
   };
 
   // get return adapter fee increased by 1%
-  return increaseByPercent(await hubBridgeRouter.read.getSendFee([returnMessage]), 0.01);
+  return increaseByPercent(await hubBridgeRouter.read.getSendFee([returnMessage]), RECEIVER_VALUE_SLIPPAGE);
 }
 
 export async function getLoanTypeInfo(
