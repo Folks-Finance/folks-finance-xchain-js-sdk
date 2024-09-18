@@ -19,7 +19,7 @@ import {
   toFAmount,
   toUnderlyingAmount,
 } from "../../../../common/utils/formulae.js";
-import { bigIntMin, compoundEverySecond } from "../../../../common/utils/math-lib.js";
+import { bigIntMin, compoundEverySecond, increaseByPercent } from "../../../../common/utils/math-lib.js";
 import { exhaustiveCheck } from "../../../../utils/exhaustive-check.js";
 import { defaultEventParams, GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
@@ -161,8 +161,8 @@ export async function getSendTokenAdapterFees(
     extraArgs: buildSendTokenExtraArgsWhenRemoving(spokeTokenData.spokeAddress, hubTokenData.token, amount),
   };
 
-  // get return adapter fee
-  return await hubBridgeRouter.read.getSendFee([returnMessage]);
+  // get return adapter fee increased by 1%
+  return increaseByPercent(await hubBridgeRouter.read.getSendFee([returnMessage]), 0.01);
 }
 
 export async function getLoanTypeInfo(
