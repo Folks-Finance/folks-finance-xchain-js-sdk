@@ -172,8 +172,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             address: convertToGenericAddress("0x152b9d0FdC40C096757F570A51E494bd4b943E50" as EvmAddress, ChainType.EVM),
             decimals: 8,
           },
-          folksTokenId: MAINNET_FOLKS_TOKEN_ID.sAVAX,
-          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.sAVAX],
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.BTCb_ava,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BTCb_ava],
           spokeAddress: convertToGenericAddress(
             "0xef7a6EBEDe2ad558DB8c36Df65365b209E5d57dC" as EvmAddress,
             ChainType.EVM,
