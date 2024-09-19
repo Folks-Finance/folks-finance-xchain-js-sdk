@@ -29,7 +29,7 @@ import type {
   OptionalFeeParams,
   SendTokenExtraArgs,
 } from "../../../../common/types/message.js";
-import type { FolksTokenId, FolksSpokeTokenType, FolksHubTokenType } from "../../../../common/types/token.js";
+import type { FolksHubTokenType, FolksSpokeTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
 import type { Client, Hex, StateOverride } from "viem";
 
@@ -470,12 +470,8 @@ export async function estimateEvmCcipDataGasLimit(
   });
 }
 
-export function getSendTokenStateOverride(
-  folksChainId: FolksChainId,
-  folksTokenId: FolksTokenId,
-  extraArgs: SendTokenExtraArgs,
-) {
-  const { amount, recipient, token } = extraArgs;
+export function getSendTokenStateOverride(folksChainId: FolksChainId, extraArgs: SendTokenExtraArgs) {
+  const { folksTokenId, amount, recipient, token } = extraArgs;
   if (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20) {
     const erc20Address = convertFromGenericAddress(token.address, ChainType.EVM);
     return getBalanceOfStateOverride([

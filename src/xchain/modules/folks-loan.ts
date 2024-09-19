@@ -384,10 +384,10 @@ export const prepare = {
     const feeParams: OptionalFeeParams = {};
 
     const returnData: SendTokenMessageData = {
-      folksTokenId,
       amount,
     };
     const returnExtraArgs: SendTokenExtraArgs = {
+      folksTokenId,
       token: receiverSpokeTokenData.token,
       recipient: receiverSpokeTokenData.spokeAddress,
       amount,
@@ -506,10 +506,10 @@ export const prepare = {
     const feeParams: OptionalFeeParams = {};
 
     const returnData: SendTokenMessageData = {
-      folksTokenId,
       amount,
     };
     const returnExtraArgs: SendTokenExtraArgs = {
+      folksTokenId,
       token: receiverSpokeTokenData.token,
       recipient: receiverSpokeTokenData.spokeAddress,
       amount,

@@ -2,14 +2,25 @@ import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { encodeRetryMessageExtraArgs, encodeReverseMessageExtraArgs } from "../../chains/evm/common/utils/gmp.js";
 import { FolksHubGmp } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain, getHubTokenData } from "../../chains/evm/hub/utils/chain.js";
+import { getHubReverseMessageExtraArgs } from "../../chains/evm/hub/utils/message.js";
 import { FolksEvmGmp } from "../../chains/evm/spoke/modules/index.js";
+import { ChainType } from "../../common/types/chain.js";
+import { MessageDirection } from "../../common/types/gmp.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsReceiverValue,
   assertAdapterSupportsTokenMessage,
 } from "../../common/utils/adapter.js";
-import { assertHubChainSelected, getSpokeChain, getSpokeTokenData } from "../../common/utils/chain.js";
+import { convertFromGenericAddress } from "../../common/utils/address.js";
+import {
+  assertHubChainSelected,
+  getSignerGenericAddress,
+  getSpokeChain,
+  getSpokeTokenData,
+} from "../../common/utils/chain.js";
+import { assertReversibleAction, decodeMessagePayload } from "../../common/utils/messages.js";
 import { isCircleToken } from "../../common/utils/token.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type {
@@ -18,7 +29,7 @@ import type {
   ReverseMessageExtraArgs,
 } from "../../chains/evm/common/types/gmp.js";
 import type { GenericAddress } from "../../common/types/address.js";
-import type { ChainType, FolksChainId } from "../../common/types/chain.js";
+import type { FolksChainId } from "../../common/types/chain.js";
 import type { MessageId } from "../../common/types/gmp.js";
 import type { AdapterType, MessageAdapters } from "../../common/types/message.js";
 import type {
@@ -70,36 +81,62 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     message: MessageReceived,
-    extraArgs: ReverseMessageExtraArgs | undefined,
+    extraArgs: Partial<ReverseMessageExtraArgs> | undefined,
     value: bigint,
     isHub = true,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
-    const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
+    const payload = decodeMessagePayload(message.payload);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
 
     if (isHub) {
       assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+      assertReversibleAction(payload.action, MessageDirection.HubToSpoke);
+
+      const hubChain = getHubChain(folksChain.network);
+      const reverseMessageExtraArgs = await getHubReverseMessageExtraArgs(
+        hubChain,
+        folksChain.network,
+        userAddress,
+        message,
+        extraArgs,
+        payload,
+      );
+      const encodedExtraArgs = encodeReverseMessageExtraArgs(reverseMessageExtraArgs);
+
       return await FolksHubGmp.prepare.reverseMessage(
         FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-        getEvmSignerAddress(FolksCore.getSigner()),
+        convertFromGenericAddress(userAddress, ChainType.EVM),
         adapterId,
         messageId,
         message,
         encodedExtraArgs,
         value,
-        getHubChain(folksChain.network),
+        hubChain,
       );
     } else {
-      return await FolksEvmGmp.prepare.reverseMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-        getEvmSignerAddress(FolksCore.getSigner()),
-        adapterId,
-        messageId,
-        message,
-        encodedExtraArgs,
-        value,
-        getSpokeChain(folksChain.folksChainId, folksChain.network),
-      );
+      switch (folksChain.chainType) {
+        case ChainType.EVM: {
+          assertReversibleAction(payload.action, MessageDirection.SpokeToHub);
+
+          return await FolksEvmGmp.prepare.reverseMessage(
+            FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+            getEvmSignerAddress(FolksCore.getSigner()),
+            adapterId,
+            messageId,
+            message,
+            "0x",
+            value,
+            getSpokeChain(folksChain.folksChainId, folksChain.network),
+          );
+        }
+        default:
+          return exhaustiveCheck(folksChain.chainType);
+      }
     }
   },
 
