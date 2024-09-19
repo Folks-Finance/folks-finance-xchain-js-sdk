@@ -14,7 +14,11 @@ import type {
   SendTokenExtraArgs,
   SendTokenMessageData,
 } from "../../../../common/types/message.js";
-import type { MessageReceived, ReverseMessageExtraArgs } from "../../common/types/gmp.js";
+import type {
+  MessageReceived,
+  ReverseMessageExtraArgs,
+  ReverseMessageExtraArgsParams,
+} from "../../common/types/gmp.js";
 import type { HubChain } from "../types/chain.js";
 
 export async function getHubReverseMessageExtraArgs(
@@ -22,7 +26,7 @@ export async function getHubReverseMessageExtraArgs(
   network: NetworkType,
   userAddress: GenericAddress,
   message: MessageReceived,
-  extraArgs: Partial<ReverseMessageExtraArgs> | undefined,
+  extraArgs: ReverseMessageExtraArgsParams,
   payload: Payload,
 ): Promise<ReverseMessageExtraArgs | undefined> {
   if (!extraArgs) return undefined;
@@ -31,47 +35,45 @@ export async function getHubReverseMessageExtraArgs(
   return {
     returnAdapterId: extraArgs.returnAdapterId ?? message.returnAdapterId,
     accountId: extraArgs.accountId ?? accountId,
-    returnGasLimit:
-      extraArgs.returnGasLimit ??
-      (await (async () => {
-        const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
+    returnGasLimit: await (async () => {
+      const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
 
-        const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
+      const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
 
-        const spokeChain = getSpokeChain(message.sourceChainId, network);
-        const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+      const spokeChain = getSpokeChain(message.sourceChainId, network);
+      const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
 
-        const returnData: SendTokenMessageData = {
-          amount: payloadData.amount,
-        };
-        const returnExtraArgs: SendTokenExtraArgs = {
-          folksTokenId,
-          token: spokeTokenData.token,
-          recipient: spokeTokenData.spokeAddress,
-          amount: payloadData.amount,
-        };
-        const returnMessageBuilderParams: MessageBuilderParams = {
-          userAddress,
-          accountId,
-          adapters: {
-            adapterId: AdapterType.HUB,
-            returnAdapterId: extraArgs.returnAdapterId ?? message.returnAdapterId,
-          },
-          action: Action.SendToken,
-          sender: hubChain.hubAddress,
-          destinationChainId: message.sourceChainId,
-          handler: spokeTokenData.spokeAddress,
-          data: returnData,
-          extraArgs: returnExtraArgs,
-        };
-        return await estimateAdapterReceiveGasLimit(
-          hubChain.folksChainId,
-          message.sourceChainId,
-          FolksCore.getEVMProvider(message.sourceChainId),
-          network,
-          MessageDirection.HubToSpoke,
-          returnMessageBuilderParams,
-        );
-      })()),
+      const returnData: SendTokenMessageData = {
+        amount: payloadData.amount,
+      };
+      const returnExtraArgs: SendTokenExtraArgs = {
+        folksTokenId,
+        token: spokeTokenData.token,
+        recipient: spokeTokenData.spokeAddress,
+        amount: payloadData.amount,
+      };
+      const returnMessageBuilderParams: MessageBuilderParams = {
+        userAddress,
+        accountId,
+        adapters: {
+          adapterId: AdapterType.HUB,
+          returnAdapterId: extraArgs.returnAdapterId ?? message.returnAdapterId,
+        },
+        action: Action.SendToken,
+        sender: hubChain.hubAddress,
+        destinationChainId: message.sourceChainId,
+        handler: spokeTokenData.spokeAddress,
+        data: returnData,
+        extraArgs: returnExtraArgs,
+      };
+      return await estimateAdapterReceiveGasLimit(
+        hubChain.folksChainId,
+        message.sourceChainId,
+        FolksCore.getEVMProvider(message.sourceChainId),
+        network,
+        MessageDirection.HubToSpoke,
+        returnMessageBuilderParams,
+      );
+    })(),
   };
 }

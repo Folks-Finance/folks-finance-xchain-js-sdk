@@ -26,7 +26,7 @@ import { FolksCore } from "../core/folks-core.js";
 import type {
   MessageReceived,
   RetryMessageExtraArgs,
-  ReverseMessageExtraArgs,
+  ReverseMessageExtraArgsParams,
 } from "../../chains/evm/common/types/gmp.js";
 import type { GenericAddress } from "../../common/types/address.js";
 import type { FolksChainId } from "../../common/types/chain.js";
@@ -81,7 +81,7 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     message: MessageReceived,
-    extraArgs: Partial<ReverseMessageExtraArgs> | undefined,
+    extraArgs: ReverseMessageExtraArgsParams,
     value: bigint,
     isHub = true,
   ) {

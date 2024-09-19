@@ -28,6 +28,8 @@ export type ReverseMessageExtraArgs = {
   returnGasLimit: bigint;
 };
 
+export type ReverseMessageExtraArgsParams = Partial<Omit<ReverseMessageExtraArgs, "returnGasLimit">> | undefined;
+
 export type MessageReceived = {
   messageId: Hex;
   sourceChainId: FolksChainId;
