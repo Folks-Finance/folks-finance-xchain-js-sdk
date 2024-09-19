@@ -1,10 +1,14 @@
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { Dnum } from "dnum";
 
 type FeeData = {
   flashLoanFee: Dnum;
   retentionRate: Dnum;
+  fTokenFeeRecipient: EvmAddress;
+  tokenFeeClaimer: EvmAddress;
   totalRetainedAmount: bigint;
+  tokenFeeRecipient: GenericAddress;
 };
 
 type DepositData = {
