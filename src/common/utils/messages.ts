@@ -254,6 +254,7 @@ export async function waitOperationIds(
 }
 
 export function isReversibleAction(action: Action, messageDirection: MessageDirection) {
+  // @ts-expect-error: ts(2345)
   if (messageDirection === MessageDirection.HubToSpoke) return REVERSIBLE_HUB_ACTIONS.includes(action);
   return false;
 }
