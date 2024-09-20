@@ -255,8 +255,7 @@ export async function waitOperationIds(
 
 export function isReversibleAction(action: Action, messageDirection: MessageDirection) {
   // @ts-expect-error: ts(2345)
-  if (messageDirection === MessageDirection.HubToSpoke) return REVERSIBLE_HUB_ACTIONS.includes(action);
-  return false;
+  return messageDirection === MessageDirection.HubToSpoke && REVERSIBLE_HUB_ACTIONS.includes(action);
 }
 
 export function assertReversibleAction(action: Action, messageDirection: MessageDirection) {
@@ -265,9 +264,8 @@ export function assertReversibleAction(action: Action, messageDirection: Message
 }
 
 export function isRetryableAction(action: Action, messageDirection: MessageDirection) {
-  if (messageDirection === MessageDirection.HubToSpoke) return true;
   // @ts-expect-error: ts(2345)
-  return SEND_TOKEN_ACTIONS.includes(action);
+  return messageDirection === MessageDirection.HubToSpoke || SEND_TOKEN_ACTIONS.includes(action);
 }
 
 export function assertRetryableAction(action: Action, messageDirection: MessageDirection) {
