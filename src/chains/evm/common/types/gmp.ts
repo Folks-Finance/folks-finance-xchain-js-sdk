@@ -22,11 +22,15 @@ export type RetryMessageExtraArgs = {
   returnGasLimit: bigint;
 };
 
+export type RetryMessageExtraArgsParams = Partial<Omit<RetryMessageExtraArgs, "returnGasLimit">> | undefined;
+
 export type ReverseMessageExtraArgs = {
   accountId: AccountId;
   returnAdapterId: AdapterType;
   returnGasLimit: bigint;
 };
+
+export type ReverseMessageExtraArgsParams = Partial<Omit<ReverseMessageExtraArgs, "returnGasLimit">> | undefined;
 
 export type MessageReceived = {
   messageId: Hex;

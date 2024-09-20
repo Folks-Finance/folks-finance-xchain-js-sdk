@@ -2,29 +2,48 @@ import { getEvmSignerAddress } from "../../chains/evm/common/utils/chain.js";
 import { encodeRetryMessageExtraArgs, encodeReverseMessageExtraArgs } from "../../chains/evm/common/utils/gmp.js";
 import { FolksHubGmp } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain, getHubTokenData } from "../../chains/evm/hub/utils/chain.js";
+import { getBridgeRouterHubContract } from "../../chains/evm/hub/utils/contract.js";
+import {
+  getHubRetryMessageExtraArgsAndAdapterFees,
+  getHubReverseMessageExtraArgsAndAdapterFees,
+} from "../../chains/evm/hub/utils/message.js";
 import { FolksEvmGmp } from "../../chains/evm/spoke/modules/index.js";
+import { getBridgeRouterSpokeContract } from "../../chains/evm/spoke/utils/contract.js";
+import { ChainType } from "../../common/types/chain.js";
+import { MessageDirection } from "../../common/types/gmp.js";
 import {
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsReceiverValue,
   assertAdapterSupportsTokenMessage,
 } from "../../common/utils/adapter.js";
-import { assertHubChainSelected, getSpokeChain, getSpokeTokenData } from "../../common/utils/chain.js";
+import { convertFromGenericAddress } from "../../common/utils/address.js";
+import {
+  assertHubChainSelected,
+  getFolksChain,
+  getSignerGenericAddress,
+  getSpokeChain,
+  getSpokeTokenData,
+} from "../../common/utils/chain.js";
+import { bigIntMax } from "../../common/utils/math-lib.js";
+import { assertRetryableAction, assertReversibleAction, decodeMessagePayload } from "../../common/utils/messages.js";
 import { isCircleToken } from "../../common/utils/token.js";
+import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type {
   MessageReceived,
-  RetryMessageExtraArgs,
-  ReverseMessageExtraArgs,
+  RetryMessageExtraArgsParams,
+  ReverseMessageExtraArgsParams,
 } from "../../chains/evm/common/types/gmp.js";
 import type { GenericAddress } from "../../common/types/address.js";
-import type { ChainType, FolksChainId } from "../../common/types/chain.js";
+import type { FolksChainId } from "../../common/types/chain.js";
 import type { MessageId } from "../../common/types/gmp.js";
+import type { AccountId } from "../../common/types/lending.js";
 import type { AdapterType, MessageAdapters } from "../../common/types/message.js";
 import type {
+  PrepareResendWormholeMessageCall,
   PrepareRetryMessageCall,
   PrepareReverseMessageCall,
-  PrepareResendWormholeMessageCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
 
@@ -33,17 +52,39 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     message: MessageReceived,
-    extraArgs: RetryMessageExtraArgs | undefined,
-    value: bigint,
+    extraArgsParams: RetryMessageExtraArgsParams,
     isHub = true,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
-    const encodedExtraArgs = encodeRetryMessageExtraArgs(extraArgs);
+    const payload = decodeMessagePayload(message.payload);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
 
     if (isHub) {
       assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+      assertRetryableAction(payload.action, MessageDirection.HubToSpoke);
+
+      const hubChain = getHubChain(folksChain.network);
+      const provider = FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId);
+
+      const { adapterFees, extraArgs } = await getHubRetryMessageExtraArgsAndAdapterFees(
+        provider,
+        hubChain,
+        folksChain.network,
+        userAddress,
+        message,
+        extraArgsParams,
+        payload,
+      );
+      const encodedExtraArgs = encodeRetryMessageExtraArgs(extraArgs);
+      const bridgeRouterBalance = await util.bridgeRouterHubBalance(payload.accountId);
+      const value = bigIntMax(adapterFees - bridgeRouterBalance, 0n);
+
       return await FolksHubGmp.prepare.retryMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+        provider,
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
@@ -53,16 +94,24 @@ export const prepare = {
         getHubChain(folksChain.network),
       );
     } else {
-      return await FolksEvmGmp.prepare.retryMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-        getEvmSignerAddress(FolksCore.getSigner()),
-        adapterId,
-        messageId,
-        message,
-        encodedExtraArgs,
-        value,
-        getSpokeChain(folksChain.folksChainId, folksChain.network),
-      );
+      assertRetryableAction(payload.action, MessageDirection.SpokeToHub);
+
+      switch (folksChain.chainType) {
+        case ChainType.EVM: {
+          return await FolksEvmGmp.prepare.retryMessage(
+            FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+            getEvmSignerAddress(FolksCore.getSigner()),
+            adapterId,
+            messageId,
+            message,
+            "0x",
+            0n,
+            getSpokeChain(folksChain.folksChainId, folksChain.network),
+          );
+        }
+        default:
+          return exhaustiveCheck(folksChain.chainType);
+      }
     }
   },
 
@@ -70,36 +119,66 @@ export const prepare = {
     adapterId: AdapterType,
     messageId: MessageId,
     message: MessageReceived,
-    extraArgs: ReverseMessageExtraArgs | undefined,
-    value: bigint,
+    extraArgsParams: ReverseMessageExtraArgsParams,
     isHub = true,
   ) {
     const folksChain = FolksCore.getSelectedFolksChain();
-    const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
+    const payload = decodeMessagePayload(message.payload);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
 
     if (isHub) {
       assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+      assertReversibleAction(payload.action, MessageDirection.HubToSpoke);
+
+      const hubChain = getHubChain(folksChain.network);
+      const provider = FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId);
+
+      const { adapterFees, extraArgs } = await getHubReverseMessageExtraArgsAndAdapterFees(
+        provider,
+        hubChain,
+        folksChain.network,
+        userAddress,
+        message,
+        extraArgsParams,
+        payload,
+      );
+      const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
+      const bridgeRouterBalance = await util.bridgeRouterHubBalance(payload.accountId);
+      const value = bigIntMax(adapterFees - bridgeRouterBalance, 0n);
+
       return await FolksHubGmp.prepare.reverseMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-        getEvmSignerAddress(FolksCore.getSigner()),
+        provider,
+        convertFromGenericAddress(userAddress, ChainType.EVM),
         adapterId,
         messageId,
         message,
         encodedExtraArgs,
         value,
-        getHubChain(folksChain.network),
+        hubChain,
       );
     } else {
-      return await FolksEvmGmp.prepare.reverseMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
-        getEvmSignerAddress(FolksCore.getSigner()),
-        adapterId,
-        messageId,
-        message,
-        encodedExtraArgs,
-        value,
-        getSpokeChain(folksChain.folksChainId, folksChain.network),
-      );
+      switch (folksChain.chainType) {
+        case ChainType.EVM: {
+          assertReversibleAction(payload.action, MessageDirection.SpokeToHub);
+
+          return await FolksEvmGmp.prepare.reverseMessage(
+            FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+            getEvmSignerAddress(FolksCore.getSigner()),
+            adapterId,
+            messageId,
+            message,
+            "0x",
+            0n,
+            getSpokeChain(folksChain.folksChainId, folksChain.network),
+          );
+        }
+        default:
+          return exhaustiveCheck(folksChain.chainType);
+      }
     }
   },
 
@@ -185,6 +264,29 @@ export const write = {
 };
 
 export const util = {
+  async bridgeRouterHubBalance(accountId: AccountId): Promise<bigint> {
+    const hubChain = getHubChain(FolksCore.getSelectedNetwork());
+    const bridgeRouter = getBridgeRouterHubContract(FolksCore.getHubProvider(), hubChain.bridgeRouterAddress);
+
+    return await bridgeRouter.read.balances([accountId]);
+  },
+
+  async bridgeRouterSpokeBalance(userAddress: GenericAddress, folksChainId: FolksChainId): Promise<bigint> {
+    const folksChain = getFolksChain(folksChainId, FolksCore.getSelectedNetwork());
+    const spokeChain = getSpokeChain(folksChainId, FolksCore.getSelectedNetwork());
+    switch (folksChain.chainType) {
+      case ChainType.EVM: {
+        const bridgeRouter = getBridgeRouterSpokeContract(
+          FolksCore.getEVMProvider(folksChainId),
+          spokeChain.bridgeRouterAddress,
+        );
+        return await bridgeRouter.read.balances([userAddress]);
+      }
+      default:
+        return exhaustiveCheck(folksChain.chainType);
+    }
+  },
+
   async spokeToHubMessageFee(
     adapterId: AdapterType,
     fromFolksChainId: FolksChainId,

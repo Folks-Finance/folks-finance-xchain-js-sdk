@@ -22,3 +22,7 @@ export const TESTNET_POOLS = {
   [TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep]: 133,
   [TESTNET_FOLKS_TOKEN_ID.BNB]: 134,
 } as const satisfies Partial<Record<FolksTokenId, number>>;
+
+export const FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
+  Object.entries(TESTNET_POOLS).map(([token, poolId]) => [poolId, token]),
+) as Partial<Record<number, FolksTokenId>>;
