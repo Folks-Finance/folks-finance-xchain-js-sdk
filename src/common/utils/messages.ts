@@ -21,7 +21,7 @@ import {
 import { getHubChainAdapterAddress } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { BYTES32_LENGTH, BYTES4_LENGTH, UINT16_LENGTH, UINT256_LENGTH, UINT8_LENGTH } from "../constants/bytes.js";
-import { REVERSIBLE_HUB_ACTIONS } from "../constants/message.js";
+import { REVERSIBLE_HUB_ACTIONS, SEND_TOKEN_ACTIONS } from "../constants/message.js";
 import { ChainType } from "../types/chain.js";
 import { MessageDirection } from "../types/gmp.js";
 import { Action, AdapterType } from "../types/message.js";
@@ -255,13 +255,22 @@ export async function waitOperationIds(
 
 export function isReversibleAction(action: Action, messageDirection: MessageDirection) {
   // @ts-expect-error: ts(2345)
-  if (messageDirection === MessageDirection.HubToSpoke) return REVERSIBLE_HUB_ACTIONS.includes(action);
-  return false;
+  return messageDirection === MessageDirection.HubToSpoke && REVERSIBLE_HUB_ACTIONS.includes(action);
 }
 
 export function assertReversibleAction(action: Action, messageDirection: MessageDirection) {
   if (!isReversibleAction(action, messageDirection))
     throw new Error(`Action ${action} is not reversible for message direction ${messageDirection}`);
+}
+
+export function isRetryableAction(action: Action, messageDirection: MessageDirection) {
+  // @ts-expect-error: ts(2345)
+  return messageDirection === MessageDirection.HubToSpoke || SEND_TOKEN_ACTIONS.includes(action);
+}
+
+export function assertRetryableAction(action: Action, messageDirection: MessageDirection) {
+  if (!isRetryableAction(action, messageDirection))
+    throw new Error(`Action ${action} is not retryable for message direction ${messageDirection}`);
 }
 
 export function decodeMessagePayload(payload: Hex): Payload {
