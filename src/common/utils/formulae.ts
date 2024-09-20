@@ -62,7 +62,7 @@ export function toUnderlyingAmount(fAmount: bigint, diit: Dnum): bigint {
 }
 
 function calcAssetDollarValue(amount: bigint, tokenPrice: Dnum, tokenDecimals: number): Dnum {
-  return dn.mul([amount, tokenDecimals], tokenPrice, {
+  return dn.mul(tokenPrice, [amount, tokenDecimals], {
     rounding: "ROUND_DOWN",
   });
 }
@@ -73,7 +73,10 @@ export function calcCollateralAssetLoanValue(
   tokenDecimals: number,
   collateralFactor: Dnum,
 ): Dnum {
-  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), collateralFactor, { rounding: "ROUND_DOWN" });
+  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), collateralFactor, {
+    rounding: "ROUND_DOWN",
+    decimals: 8,
+  });
 }
 
 export function calcBorrowAssetLoanValue(
@@ -82,7 +85,10 @@ export function calcBorrowAssetLoanValue(
   tokenDecimals: number,
   borrowFactor: Dnum,
 ): Dnum {
-  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), borrowFactor, { rounding: "ROUND_UP" });
+  return dn.mul(calcAssetDollarValue(amount, tokenPrice, tokenDecimals), borrowFactor, {
+    rounding: "ROUND_UP",
+    decimals: 8,
+  });
 }
 
 export function calcBorrowBalance(bbtn1: bigint, biit: Dnum, biitn1: Dnum): bigint {
