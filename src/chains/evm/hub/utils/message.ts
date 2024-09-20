@@ -91,7 +91,9 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   );
 
   const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
-  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams);
+  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams, {
+    gasLimit: returnGasLimit,
+  });
   const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
 
   return {
