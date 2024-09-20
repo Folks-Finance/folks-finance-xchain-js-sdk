@@ -1,5 +1,19 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.28
+
+### Patch Changes
+
+- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - Fixed BTCb ava spoke token
+
+- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deploy mainnet
+
+- [#159](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/159) [`8854ef7`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/8854ef773fa4cc33bd2b045c01f598baeafe51ee) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add addresses to fee data
+
+- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix precision of price formulae
+
+- [#154](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/154) [`32b44f5`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/32b44f524aa6238daf274e700bd381911c65fd19) Thanks [@palace22](https://github.com/palace22)! - increased send token adapter fees by 1%
+
 ## 0.0.27
 
 ### Patch Changes

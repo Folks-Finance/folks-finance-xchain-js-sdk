@@ -7,12 +7,12 @@ import {
   FolksLoan,
   FolksOracle,
   FolksPool,
-  FolksTokenId,
   LoanTypeId,
   NetworkType,
+  TESTNET_FOLKS_TOKEN_ID,
 } from "../src/index.js";
 
-import type { AccountId, FolksCoreConfig } from "../src/index.js";
+import type { AccountId, FolksCoreConfig, PoolInfo, FolksTokenId } from "../src/index.js";
 
 async function main() {
   const folksConfig: FolksCoreConfig = {
@@ -30,15 +30,13 @@ async function main() {
   FolksCore.init(folksConfig);
   FolksCore.setNetwork(NetworkType.TESTNET);
 
-  const poolsInfo = {
-    [FolksTokenId.USDC]: await FolksPool.read.poolInfo(FolksTokenId.USDC),
-    [FolksTokenId.AVAX]: await FolksPool.read.poolInfo(FolksTokenId.AVAX),
-    [FolksTokenId.ETH_eth_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_eth_sep),
-    [FolksTokenId.ETH_base_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_base_sep),
-    [FolksTokenId.ETH_arb_sep]: await FolksPool.read.poolInfo(FolksTokenId.ETH_arb_sep),
-    [FolksTokenId.LINK_eth_sep]: await FolksPool.read.poolInfo(FolksTokenId.LINK_eth_sep),
-    [FolksTokenId.BNB]: await FolksPool.read.poolInfo(FolksTokenId.BNB),
-  };
+  const poolsInfo: Partial<Record<FolksTokenId, PoolInfo>> = {};
+  await Promise.all(
+    Object.values(TESTNET_FOLKS_TOKEN_ID).map(async (folksTokenId) => {
+      const poolInfo = await FolksPool.read.poolInfo(folksTokenId);
+      poolsInfo[folksTokenId] = poolInfo;
+    }),
+  );
   const loanTypeInfo = {
     [LoanTypeId.GENERAL]: await FolksLoan.read.loanTypeInfo(LoanTypeId.GENERAL),
   };

@@ -5,6 +5,7 @@ import { compoundEveryHour, compoundEverySecond } from "../../../../common/utils
 import { getHubTokenData } from "../utils/chain.js";
 import { getHubPoolContract } from "../utils/contract.js";
 
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { NetworkType } from "../../../../common/types/chain.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
 import type { PoolInfo } from "../types/pool.js";
@@ -77,7 +78,8 @@ export async function getPoolInfo(
     allowFailure: false,
   });
 
-  const { flashLoanFee, retentionRate, totalRetainedAmount } = feeData;
+  const { flashLoanFee, retentionRate, fTokenFeeRecipient, tokenFeeClaimer, totalRetainedAmount, tokenFeeRecipient } =
+    feeData;
   const {
     optimalUtilisationRatio,
     totalAmount: depositTotalAmount,
@@ -117,6 +119,9 @@ export async function getPoolInfo(
       flashLoanFee: [BigInt(flashLoanFee), 6],
       retentionRate: [BigInt(retentionRate), 6],
       totalRetainedAmount,
+      fTokenFeeRecipient: fTokenFeeRecipient as EvmAddress,
+      tokenFeeClaimer: tokenFeeClaimer as EvmAddress,
+      tokenFeeRecipient: tokenFeeRecipient as GenericAddress,
     },
     depositData: {
       optimalUtilisationRatio: [BigInt(optimalUtilisationRatio), 4],

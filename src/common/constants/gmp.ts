@@ -8,6 +8,18 @@ import type { FolksChainId } from "../types/chain.js";
 import type { CCIPData, WormholeData } from "../types/gmp.js";
 
 export const WORMHOLE_DATA: Partial<Record<FolksChainId, WormholeData>> = {
+  [FOLKS_CHAIN_ID.AVALANCHE]: {
+    wormholeChainId: 6,
+    wormholeRelayer: convertToGenericAddress("0x27428DD2d3DD32A4D7f7C497eAaa23130d894911" as EvmAddress, ChainType.EVM),
+  },
+  [FOLKS_CHAIN_ID.ETHEREUM]: {
+    wormholeChainId: 2,
+    wormholeRelayer: convertToGenericAddress("0x27428DD2d3DD32A4D7f7C497eAaa23130d894911" as EvmAddress, ChainType.EVM),
+  },
+  [FOLKS_CHAIN_ID.BASE]: {
+    wormholeChainId: 30,
+    wormholeRelayer: convertToGenericAddress("0x706f82e9bb5b0813501714ab5974216704980e31" as EvmAddress, ChainType.EVM),
+  },
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     wormholeChainId: 6,
     wormholeRelayer: convertToGenericAddress("0xA3cF45939bD6260bcFe3D66bc73d60f19e49a8BB" as EvmAddress, ChainType.EVM),
@@ -31,6 +43,18 @@ export const WORMHOLE_DATA: Partial<Record<FolksChainId, WormholeData>> = {
 };
 
 export const CCIP_DATA: Partial<Record<FolksChainId, CCIPData>> = {
+  [FOLKS_CHAIN_ID.AVALANCHE]: {
+    ccipChainId: BigInt("6433500567565415381"),
+    ccipRouter: convertToGenericAddress("0xF4c7E640EdA248ef95972845a62bdC74237805dB" as EvmAddress, ChainType.EVM),
+  },
+  [FOLKS_CHAIN_ID.ETHEREUM]: {
+    ccipChainId: BigInt("5009297550715157269"),
+    ccipRouter: convertToGenericAddress("0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D" as EvmAddress, ChainType.EVM),
+  },
+  [FOLKS_CHAIN_ID.BASE]: {
+    ccipChainId: BigInt("15971525489660198786"),
+    ccipRouter: convertToGenericAddress("0x881e3A65B4d4a04dD529061dd0071cf975F58bCD" as EvmAddress, ChainType.EVM),
+  },
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     ccipChainId: BigInt("14767482510784806043"),
     ccipRouter: convertToGenericAddress("0xF694E193200268f9a4868e4Aa017A0118C9a8177" as EvmAddress, ChainType.EVM),
