@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.30
+
+### Patch Changes
+
+- [#164](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/164) [`7a57c85`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7a57c85c1280e6660319f66342597a94e4da3844) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export token rate limit
+
 ## 0.0.29
 
 ### Patch Changes
