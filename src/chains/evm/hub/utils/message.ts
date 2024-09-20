@@ -49,7 +49,8 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   const { accountId, action, data } = payload;
 
   // @ts-expect-error: ts(2345)
-  if (!RECEIVE_TOKEN_ACTIONS.includes(action)) return { value: 0n, extraArgs: { returnAdapterId, returnGasLimit: 0n } };
+  if (!RECEIVE_TOKEN_ACTIONS.includes(action))
+    return { adapterFees: 0n, extraArgs: { returnAdapterId, returnGasLimit: 0n } };
   const payloadData = decodeMessagePayloadData(action as ReceiveTokenAction, data);
 
   const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
