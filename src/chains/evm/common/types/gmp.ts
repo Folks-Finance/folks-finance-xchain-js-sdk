@@ -22,6 +22,8 @@ export type RetryMessageExtraArgs = {
   returnGasLimit: bigint;
 };
 
+export type RetryMessageExtraArgsParams = Partial<Omit<RetryMessageExtraArgs, "returnGasLimit">> | undefined;
+
 export type ReverseMessageExtraArgs = {
   accountId: AccountId;
   returnAdapterId: AdapterType;
@@ -36,6 +38,14 @@ export type MessageReceived = {
   sourceAddress: GenericAddress;
   handler: GenericAddress;
   payload: Hex;
+  returnAdapterId: AdapterType;
+  returnGasLimit: bigint;
+};
+
+export type MsgValueEstimationArgs = {
+  folksChainId: FolksChainId;
+  accountId: AccountId;
+  poolId: number;
   returnAdapterId: AdapterType;
   returnGasLimit: bigint;
 };

@@ -3,7 +3,13 @@ import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId, LoanName, Nonce } from "./lending.js";
 import type { LoanTypeId } from "./module.js";
 import type { FolksTokenId, FolksSpokeTokenType } from "./token.js";
-import type { FINALITY, REVERSIBLE_HUB_ACTIONS } from "../constants/message.js";
+import type {
+  FINALITY,
+  HUB_ACTIONS,
+  RECEIVE_TOKEN_ACTIONS,
+  REVERSIBLE_HUB_ACTIONS,
+  SEND_TOKEN_ACTIONS,
+} from "../constants/message.js";
 import type { Hex } from "viem";
 
 export enum AdapterType {
@@ -38,12 +44,9 @@ export enum Action {
   SendToken,
 }
 
-export type SendTokenAction = Extract<Action, Action.CreateLoanAndDeposit | Action.Deposit | Action.Repay>;
-export type ReceiveTokenAction = Extract<Action, Action.Withdraw | Action.Borrow>;
-export type HubAction = Extract<
-  Action,
-  Action.DepositFToken | Action.WithdrawFToken | Action.Liquidate | Action.SendToken
->;
+export type SendTokenAction = Extract<Action, (typeof SEND_TOKEN_ACTIONS)[number]>;
+export type ReceiveTokenAction = Extract<Action, (typeof RECEIVE_TOKEN_ACTIONS)[number]>;
+export type HubAction = Extract<Action, (typeof HUB_ACTIONS)[number]>;
 
 export type ReversibleHubAction = Extract<Action, (typeof REVERSIBLE_HUB_ACTIONS)[number]>;
 
