@@ -1,5 +1,19 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.29
+
+### Patch Changes
+
+- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry and reverse msg value estimation considering bridge router balance
+
+- [#163](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/163) [`468f2d6`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/468f2d6284e3fc6f3e5e6b9721251280878e7a2a) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse message to send
+
+- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added reverse extra args completion with gas limit estimation
+
+- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Updated SendTokenMessageData to not have the extraneous value folksTokenId
+
+- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry extra args completion with gas limit estimation
+
 ## 0.0.28
 
 ### Patch Changes
