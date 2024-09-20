@@ -51,3 +51,6 @@ export * from "./chains/evm/hub/types/oracle.js";
 export * from "./chains/evm/hub/types/pool.js";
 export * from "./chains/evm/hub/types/rewards.js";
 export * from "./chains/evm/hub/types/token.js";
+
+// - EVM: SPOKE
+export * from "./chains/evm/spoke/types/pool.js";
