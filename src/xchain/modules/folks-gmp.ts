@@ -4,8 +4,8 @@ import { FolksHubGmp } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain, getHubTokenData } from "../../chains/evm/hub/utils/chain.js";
 import { getBridgeRouterHubContract } from "../../chains/evm/hub/utils/contract.js";
 import {
-  getHubRetryMessageExtraArgsAndValue,
-  getHubReverseMessageExtraArgsAndValue,
+  getHubRetryMessageExtraArgsAndAdapterFees,
+  getHubReverseMessageExtraArgsAndAdapterFees,
 } from "../../chains/evm/hub/utils/message.js";
 import { FolksEvmGmp } from "../../chains/evm/spoke/modules/index.js";
 import { getBridgeRouterSpokeContract } from "../../chains/evm/spoke/utils/contract.js";
@@ -26,13 +26,12 @@ import {
 } from "../../common/utils/chain.js";
 import { bigIntMax } from "../../common/utils/math-lib.js";
 import { assertRetryableAction, assertReversibleAction, decodeMessagePayload } from "../../common/utils/messages.js";
-import { getFolksTokenIdFromPool, isCircleToken } from "../../common/utils/token.js";
+import { isCircleToken } from "../../common/utils/token.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type {
   MessageReceived,
-  MsgValueEstimationArgs,
   RetryMessageExtraArgsParams,
   ReverseMessageExtraArgsParams,
 } from "../../chains/evm/common/types/gmp.js";
@@ -69,8 +68,10 @@ export const prepare = {
       assertRetryableAction(payload.action, MessageDirection.HubToSpoke);
 
       const hubChain = getHubChain(folksChain.network);
+      const provider = FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId);
 
-      const { msgValueEstimationArgs, extraArgs } = await getHubRetryMessageExtraArgsAndValue(
+      const { adapterFees, extraArgs } = await getHubRetryMessageExtraArgsAndAdapterFees(
+        provider,
         hubChain,
         folksChain.network,
         userAddress,
@@ -79,10 +80,11 @@ export const prepare = {
         payload,
       );
       const encodedExtraArgs = encodeRetryMessageExtraArgs(extraArgs);
-      const value = await util.calcHubToSpokeMsgValue(msgValueEstimationArgs);
+      const bridgeRouterBalance = await util.bridgeRouterHubBalance(payload.accountId);
+      const value = bigIntMax(adapterFees - bridgeRouterBalance, 0n);
 
       return await FolksHubGmp.prepare.retryMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+        provider,
         getEvmSignerAddress(FolksCore.getSigner()),
         adapterId,
         messageId,
@@ -133,7 +135,10 @@ export const prepare = {
       assertReversibleAction(payload.action, MessageDirection.HubToSpoke);
 
       const hubChain = getHubChain(folksChain.network);
-      const { msgValueEstimationArgs, extraArgs } = await getHubReverseMessageExtraArgsAndValue(
+      const provider = FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId);
+
+      const { adapterFees, extraArgs } = await getHubReverseMessageExtraArgsAndAdapterFees(
+        provider,
         hubChain,
         folksChain.network,
         userAddress,
@@ -142,10 +147,11 @@ export const prepare = {
         payload,
       );
       const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
-      const value = await util.calcHubToSpokeMsgValue(msgValueEstimationArgs);
+      const bridgeRouterBalance = await util.bridgeRouterHubBalance(payload.accountId);
+      const value = bigIntMax(adapterFees - bridgeRouterBalance, 0n);
 
       return await FolksHubGmp.prepare.reverseMessage(
-        FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+        provider,
         convertFromGenericAddress(userAddress, ChainType.EVM),
         adapterId,
         messageId,
@@ -354,14 +360,5 @@ export const util = {
       returnGasLimit,
     );
     return await this.spokeToHubMessageFee(adapterId, startFolksChainId, undefined, receiverValue, gasLimit);
-  },
-
-  async calcHubToSpokeMsgValue(msgValueEstimationArgs: MsgValueEstimationArgs): Promise<bigint> {
-    const { folksChainId, accountId, poolId, returnAdapterId, returnGasLimit } = msgValueEstimationArgs;
-    const folksTokenId = getFolksTokenIdFromPool(poolId);
-    const bridgeRouterValue = await util.bridgeRouterHubBalance(accountId);
-    const estimatedValue = await util.hubToSpokeMessageFee(returnAdapterId, folksChainId, folksTokenId, returnGasLimit);
-
-    return bigIntMax(estimatedValue - bridgeRouterValue, 0n);
   },
 };

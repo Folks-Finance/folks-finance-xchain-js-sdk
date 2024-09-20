@@ -41,11 +41,3 @@ export type MessageReceived = {
   returnAdapterId: AdapterType;
   returnGasLimit: bigint;
 };
-
-export type MsgValueEstimationArgs = {
-  folksChainId: FolksChainId;
-  accountId: AccountId;
-  poolId: number;
-  returnAdapterId: AdapterType;
-  returnGasLimit: bigint;
-};

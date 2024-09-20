@@ -1,10 +1,17 @@
 import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
+import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action, AdapterType } from "../../../../common/types/message.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
-import { decodeMessagePayloadData, estimateAdapterReceiveGasLimit } from "../../../../common/utils/messages.js";
+import {
+  buildMessageToSend,
+  decodeMessagePayloadData,
+  estimateAdapterReceiveGasLimit,
+} from "../../../../common/utils/messages.js";
 import { getFolksTokenIdFromPool } from "../../../../common/utils/token.js";
 import { FolksCore } from "../../../../xchain/core/folks-core.js";
+
+import { getBridgeRouterHubContract } from "./contract.js";
 
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type { NetworkType } from "../../../../common/types/chain.js";
@@ -18,15 +25,16 @@ import type {
 } from "../../../../common/types/message.js";
 import type {
   MessageReceived,
-  MsgValueEstimationArgs,
   RetryMessageExtraArgs,
   RetryMessageExtraArgsParams,
   ReverseMessageExtraArgs,
   ReverseMessageExtraArgsParams,
 } from "../../common/types/gmp.js";
 import type { HubChain } from "../types/chain.js";
+import type { Client as EVMProvider } from "viem";
 
-export async function getHubRetryMessageExtraArgsAndValue(
+export async function getHubRetryMessageExtraArgsAndAdapterFees(
+  provider: EVMProvider,
   hubChain: HubChain,
   network: NetworkType,
   userAddress: GenericAddress,
@@ -34,7 +42,7 @@ export async function getHubRetryMessageExtraArgsAndValue(
   extraArgsParams: RetryMessageExtraArgsParams,
   payload: Payload,
 ): Promise<{
-  msgValueEstimationArgs: MsgValueEstimationArgs;
+  adapterFees: bigint;
   extraArgs: RetryMessageExtraArgs;
 }> {
   const returnAdapterId = extraArgsParams?.returnAdapterId ?? message.returnAdapterId;
@@ -81,19 +89,18 @@ export async function getHubRetryMessageExtraArgsAndValue(
     returnMessageBuilderParams,
   );
 
+  const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
+  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams);
+  const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
+
   return {
-    msgValueEstimationArgs: {
-      folksChainId: payloadData.receiverFolksChainId,
-      accountId,
-      poolId: payloadData.poolId,
-      returnAdapterId,
-      returnGasLimit,
-    },
+    adapterFees,
     extraArgs: { returnAdapterId, returnGasLimit },
   };
 }
 
-export async function getHubReverseMessageExtraArgsAndValue(
+export async function getHubReverseMessageExtraArgsAndAdapterFees(
+  provider: EVMProvider,
   hubChain: HubChain,
   network: NetworkType,
   userAddress: GenericAddress,
@@ -101,7 +108,7 @@ export async function getHubReverseMessageExtraArgsAndValue(
   extraArgsParams: ReverseMessageExtraArgsParams,
   payload: Payload,
 ): Promise<{
-  msgValueEstimationArgs: MsgValueEstimationArgs;
+  adapterFees: bigint;
   extraArgs: ReverseMessageExtraArgs;
 }> {
   const { action, data } = payload;
@@ -147,14 +154,12 @@ export async function getHubReverseMessageExtraArgsAndValue(
     returnMessageBuilderParams,
   );
 
+  const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
+  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams);
+  const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
+
   return {
-    msgValueEstimationArgs: {
-      folksChainId: message.sourceChainId,
-      accountId,
-      poolId: payloadData.poolId,
-      returnAdapterId,
-      returnGasLimit,
-    },
+    adapterFees,
     extraArgs: {
       accountId,
       returnAdapterId,
