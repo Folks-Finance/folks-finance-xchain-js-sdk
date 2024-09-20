@@ -1,7 +1,7 @@
 import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
-import { Action, AdapterType } from "../../../../common/types/message.js";
+import { Action } from "../../../../common/types/message.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -71,8 +71,8 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
     userAddress,
     accountId,
     adapters: {
-      adapterId: AdapterType.HUB,
-      returnAdapterId: extraArgsParams?.returnAdapterId ?? message.returnAdapterId,
+      adapterId: returnAdapterId,
+      returnAdapterId,
     },
     action: Action.SendToken,
     sender: hubChain.hubAddress,
@@ -136,7 +136,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
     userAddress,
     accountId,
     adapters: {
-      adapterId: AdapterType.HUB,
+      adapterId: returnAdapterId,
       returnAdapterId,
     },
     action: Action.SendToken,
@@ -156,7 +156,11 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   );
 
   const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
-  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams);
+  const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams, {
+    gasLimit: returnGasLimit,
+    receiverValue: 0n,
+    returnGasLimit: 0n,
+  });
   const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
 
   return {

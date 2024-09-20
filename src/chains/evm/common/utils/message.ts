@@ -387,7 +387,16 @@ export function buildEvmMessageToSend(
       return message;
     }
     case Action.SendToken: {
-      throw new Error("Not implemented yet: Action.SendToken case");
+      const message: MessageToSend = {
+        params,
+        sender,
+        destinationChainId,
+        handler,
+        payload: buildMessagePayload(Action.SendToken, accountId, userAddress, data),
+        finalityLevel: FINALITY.FINALISED,
+        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.recipient, extraArgs.token, extraArgs.amount),
+      };
+      return message;
     }
     default:
       return exhaustiveCheck(action);
