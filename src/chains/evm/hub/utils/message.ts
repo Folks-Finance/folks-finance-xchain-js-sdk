@@ -1,7 +1,9 @@
 import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
+import { MessageAdapterParamsType } from "../../../../common/types/adapter.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action } from "../../../../common/types/message.js";
+import { getSupportedMessageAdapters } from "../../../../common/utils/adapter.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -9,6 +11,7 @@ import {
   estimateAdapterReceiveGasLimit,
 } from "../../../../common/utils/messages.js";
 import { getFolksTokenIdFromPool } from "../../../../common/utils/token.js";
+import { getRandomElement } from "../../../../utils/random.js";
 import { FolksCore } from "../../../../xchain/core/folks-core.js";
 
 import { getBridgeRouterHubContract } from "./contract.js";
@@ -57,13 +60,15 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
 
   const spokeChain = getSpokeChain(payloadData.receiverFolksChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
+  const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubSpokeTokenData.token,
     recipient: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
@@ -114,21 +119,32 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
 }> {
   const { action, data } = payload;
   const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
-
-  const returnAdapterId = extraArgsParams?.returnAdapterId ?? message.returnAdapterId;
-  const accountId = extraArgsParams?.accountId ?? payload.accountId;
-
   const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
+
+  const returnAdapterId =
+    extraArgsParams?.returnAdapterId ??
+    getRandomElement(
+      getSupportedMessageAdapters({
+        messageAdapterParamType: MessageAdapterParamsType.SendToken,
+        action: action as ReversibleHubAction,
+        network,
+        folksTokenId,
+        sourceFolksChainId: message.sourceChainId,
+      }).adapterIds,
+    );
+  const accountId = extraArgsParams?.accountId ?? payload.accountId;
 
   const spokeChain = getSpokeChain(message.sourceChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
+  const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubSpokeTokenData.token,
     recipient: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
