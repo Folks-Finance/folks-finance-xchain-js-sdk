@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.31
+
+### Patch Changes
+
+- [#166](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/166) [`5ef123e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5ef123e238c8afed42cb34275ce41de71ec0664b) Thanks [@palace22](https://github.com/palace22)! - Fixed gasLimit in retry estimation
+
+- [#167](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/167) [`1f9badb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/1f9badb59166a5b9dcc1d6ef54cf24868c5754a9) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse extra args token
+
 ## 0.0.30
 
 ### Patch Changes
