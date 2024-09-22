@@ -16,7 +16,6 @@ import { getBridgeRouterHubContract } from "./contract.js";
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type { NetworkType } from "../../../../common/types/chain.js";
 import type {
-  AdapterType,
   MessageBuilderParams,
   Payload,
   ReceiveTokenAction,
@@ -111,7 +110,6 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   message: MessageReceived,
   extraArgsParams: ReverseMessageExtraArgsParams,
   payload: Payload,
-  adapterId: AdapterType,
 ): Promise<{
   adapterFees: bigint;
   extraArgs: ReverseMessageExtraArgs;
@@ -120,7 +118,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
   const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
 
-  const returnAdapterId = extraArgsParams?.returnAdapterId ?? adapterId;
+  const returnAdapterId = extraArgsParams?.returnAdapterId ?? message.returnAdapterId;
   const accountId = extraArgsParams?.accountId ?? payload.accountId;
 
   const spokeChain = getSpokeChain(message.sourceChainId, network);

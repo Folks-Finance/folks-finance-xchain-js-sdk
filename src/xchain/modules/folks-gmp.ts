@@ -145,7 +145,6 @@ export const prepare = {
         message,
         extraArgsParams,
         payload,
-        adapterId,
       );
       const encodedExtraArgs = encodeReverseMessageExtraArgs(extraArgs);
       const bridgeRouterBalance = await util.bridgeRouterHubBalance(payload.accountId);
