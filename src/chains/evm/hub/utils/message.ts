@@ -1,9 +1,7 @@
 import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
-import { MessageAdapterParamsType } from "../../../../common/types/adapter.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action } from "../../../../common/types/message.js";
-import { getSupportedMessageAdapters } from "../../../../common/utils/adapter.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -11,7 +9,6 @@ import {
   estimateAdapterReceiveGasLimit,
 } from "../../../../common/utils/messages.js";
 import { getFolksTokenIdFromPool } from "../../../../common/utils/token.js";
-import { getRandomElement } from "../../../../utils/random.js";
 import { FolksCore } from "../../../../xchain/core/folks-core.js";
 
 import { getBridgeRouterHubContract } from "./contract.js";
@@ -19,6 +16,7 @@ import { getBridgeRouterHubContract } from "./contract.js";
 import type { GenericAddress } from "../../../../common/types/address.js";
 import type { NetworkType } from "../../../../common/types/chain.js";
 import type {
+  AdapterType,
   MessageBuilderParams,
   Payload,
   ReceiveTokenAction,
@@ -113,6 +111,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   message: MessageReceived,
   extraArgsParams: ReverseMessageExtraArgsParams,
   payload: Payload,
+  adapterId: AdapterType,
 ): Promise<{
   adapterFees: bigint;
   extraArgs: ReverseMessageExtraArgs;
@@ -121,17 +120,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
   const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
 
-  const returnAdapterId =
-    extraArgsParams?.returnAdapterId ??
-    getRandomElement(
-      getSupportedMessageAdapters({
-        messageAdapterParamType: MessageAdapterParamsType.SendToken,
-        action: action as ReversibleHubAction,
-        network,
-        folksTokenId,
-        sourceFolksChainId: message.sourceChainId,
-      }).adapterIds,
-    );
+  const returnAdapterId = extraArgsParams?.returnAdapterId ?? adapterId;
   const accountId = extraArgsParams?.accountId ?? payload.accountId;
 
   const spokeChain = getSpokeChain(message.sourceChainId, network);
