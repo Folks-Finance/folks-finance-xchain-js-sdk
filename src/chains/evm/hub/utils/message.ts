@@ -2,6 +2,11 @@ import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action } from "../../../../common/types/message.js";
+import { TokenType } from "../../../../common/types/token.js";
+import {
+  assertAdapterSupportsDataMessage,
+  assertAdapterSupportsTokenMessage,
+} from "../../../../common/utils/adapter.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -59,6 +64,10 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
   const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
+
+  if (hubSpokeTokenData.token.type === TokenType.CIRCLE)
+    assertAdapterSupportsTokenMessage(payloadData.receiverFolksChainId, returnAdapterId);
+  else assertAdapterSupportsDataMessage(payloadData.receiverFolksChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
@@ -125,6 +134,10 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
   const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
+
+  if (hubSpokeTokenData.token.type === TokenType.CIRCLE)
+    assertAdapterSupportsTokenMessage(message.sourceChainId, returnAdapterId);
+  else assertAdapterSupportsDataMessage(message.sourceChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
