@@ -2,6 +2,11 @@ import { RECEIVE_TOKEN_ACTIONS } from "../../../../common/constants/message.js";
 import { ChainType } from "../../../../common/types/chain.js";
 import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action } from "../../../../common/types/message.js";
+import { TokenType } from "../../../../common/types/token.js";
+import {
+  assertAdapterSupportsDataMessage,
+  assertAdapterSupportsTokenMessage,
+} from "../../../../common/utils/adapter.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
   buildMessageToSend,
@@ -57,13 +62,19 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
 
   const spokeChain = getSpokeChain(payloadData.receiverFolksChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
+  const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
+
+  if (hubSpokeTokenData.token.type === TokenType.CIRCLE)
+    assertAdapterSupportsTokenMessage(payloadData.receiverFolksChainId, returnAdapterId);
+  else assertAdapterSupportsDataMessage(payloadData.receiverFolksChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubSpokeTokenData.token,
     recipient: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
@@ -116,21 +127,26 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
 }> {
   const { action, data } = payload;
   const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
+  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
 
   const returnAdapterId = extraArgsParams?.returnAdapterId ?? message.returnAdapterId;
   const accountId = extraArgsParams?.accountId ?? payload.accountId;
 
-  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
-
   const spokeChain = getSpokeChain(message.sourceChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
+  const hubSpokeChain = getSpokeChain(hubChain.folksChainId, network);
+  const hubSpokeTokenData = getSpokeTokenData(hubSpokeChain, folksTokenId);
+
+  if (hubSpokeTokenData.token.type === TokenType.CIRCLE)
+    assertAdapterSupportsTokenMessage(message.sourceChainId, returnAdapterId);
+  else assertAdapterSupportsDataMessage(message.sourceChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
     amount: payloadData.amount,
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubSpokeTokenData.token,
     recipient: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
