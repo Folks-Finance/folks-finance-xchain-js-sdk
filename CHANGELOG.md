@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.32
+
+### Patch Changes
+
+- [#170](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/170) [`8c8738f`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/8c8738f849adc42d212cb5238859fd4d82fb80bb) Thanks [@palace22](https://github.com/palace22)! - Fixed override token data on send token action
+
 ## 0.0.31
 
 ### Patch Changes
