@@ -108,7 +108,7 @@ export async function estimateAdapterReceiveGasLimit(
       let stateOverride: StateOverride = [];
       if (messageBuilderParams.action === Action.SendToken) {
         stateOverride = stateOverride.concat(
-          getSendTokenStateOverride(destFolksChainId, messageBuilderParams.extraArgs),
+          getSendTokenStateOverride(destFolksChainId, messageBuilderParams.overrideData),
         );
       }
       switch (adapterId) {

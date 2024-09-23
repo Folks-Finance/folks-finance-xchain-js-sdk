@@ -2,7 +2,7 @@ import type { GenericAddress } from "./address.js";
 import type { FolksChainId } from "./chain.js";
 import type { AccountId, LoanId, LoanName, Nonce } from "./lending.js";
 import type { LoanTypeId } from "./module.js";
-import type { FolksTokenId, FolksSpokeTokenType } from "./token.js";
+import type { FolksTokenId, FolksSpokeTokenType, FolksHubTokenType } from "./token.js";
 import type {
   FINALITY,
   HUB_ACTIONS,
@@ -214,8 +214,15 @@ export type RepayExtraArgs = {
 
 export type SendTokenExtraArgs = {
   folksTokenId: FolksTokenId;
-  token: FolksSpokeTokenType;
+  token: FolksHubTokenType;
   recipient: GenericAddress;
+  amount: bigint;
+};
+
+export type OverrideTokenData = {
+  folksTokenId: FolksTokenId;
+  token: FolksSpokeTokenType;
+  address: GenericAddress;
   amount: bigint;
 };
 
@@ -337,6 +344,7 @@ export type SendTokenMessageDataParams = {
   action: Action.SendToken;
   data: SendTokenMessageData;
   extraArgs: SendTokenExtraArgs;
+  overrideData: OverrideTokenData;
 };
 
 export type MessageDataParams =
