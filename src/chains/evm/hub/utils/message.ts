@@ -24,6 +24,7 @@ import type { GenericAddress } from "../../../../common/types/address.js";
 import type { NetworkType } from "../../../../common/types/chain.js";
 import type {
   MessageBuilderParams,
+  OverrideTokenData,
   Payload,
   ReceiveTokenAction,
   ReversibleHubAction,
@@ -66,7 +67,7 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubTokenData = getHubTokenData(folksTokenId, network);
 
-  if (spokeTokenData.token.type === TokenType.CIRCLE)
+  if (hubTokenData.token.type === TokenType.CIRCLE)
     assertAdapterSupportsTokenMessage(payloadData.receiverFolksChainId, returnAdapterId);
   else assertAdapterSupportsDataMessage(payloadData.receiverFolksChainId, returnAdapterId);
 
@@ -75,8 +76,14 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubTokenData.token,
     recipient: spokeTokenData.spokeAddress,
+    amount: payloadData.amount,
+  };
+  const overrideTokenData: OverrideTokenData = {
+    folksTokenId,
+    token: spokeTokenData.token,
+    address: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
   const returnMessageBuilderParams: MessageBuilderParams = {
@@ -92,6 +99,7 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
     handler: spokeTokenData.spokeAddress,
     data: returnData,
     extraArgs: returnExtraArgs,
+    overrideData: overrideTokenData,
   };
   const returnGasLimit = await estimateAdapterReceiveGasLimit(
     hubChain.folksChainId,
@@ -107,16 +115,7 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
     gasLimit: returnGasLimit,
   });
 
-  const adapterFees = await bridgeRouter.read.getSendFee([
-    {
-      ...messageToSend,
-      extraArgs: buildSendTokenExtraArgsWhenRemoving(
-        spokeTokenData.spokeAddress,
-        hubTokenData.token,
-        payloadData.amount,
-      ),
-    },
-  ]);
+  const adapterFees = await bridgeRouter.read.getSendFee([messageToSend]);
 
   return {
     adapterFees,
@@ -147,7 +146,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubTokenData = getHubTokenData(folksTokenId, network);
 
-  if (spokeTokenData.token.type === TokenType.CIRCLE)
+  if (hubTokenData.token.type === TokenType.CIRCLE)
     assertAdapterSupportsTokenMessage(message.sourceChainId, returnAdapterId);
   else assertAdapterSupportsDataMessage(message.sourceChainId, returnAdapterId);
 
@@ -156,8 +155,14 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   };
   const returnExtraArgs: SendTokenExtraArgs = {
     folksTokenId,
-    token: spokeTokenData.token,
+    token: hubTokenData.token,
     recipient: spokeTokenData.spokeAddress,
+    amount: payloadData.amount,
+  };
+  const overrideTokenData: OverrideTokenData = {
+    folksTokenId,
+    token: spokeTokenData.token,
+    address: spokeTokenData.spokeAddress,
     amount: payloadData.amount,
   };
   const returnMessageBuilderParams: MessageBuilderParams = {
@@ -173,6 +178,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
     handler: spokeTokenData.spokeAddress,
     data: returnData,
     extraArgs: returnExtraArgs,
+    overrideData: overrideTokenData,
   };
   const returnGasLimit = await estimateAdapterReceiveGasLimit(
     hubChain.folksChainId,
@@ -186,8 +192,6 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const bridgeRouter = getBridgeRouterHubContract(provider, hubChain.bridgeRouterAddress);
   const messageToSend = buildMessageToSend(ChainType.EVM, returnMessageBuilderParams, {
     gasLimit: returnGasLimit,
-    receiverValue: 0n,
-    returnGasLimit: 0n,
   });
   const adapterFees = await bridgeRouter.read.getSendFee([
     {

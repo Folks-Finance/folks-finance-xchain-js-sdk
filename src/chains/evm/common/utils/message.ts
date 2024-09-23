@@ -27,7 +27,7 @@ import type {
   MessageParams,
   MessageToSend,
   OptionalFeeParams,
-  SendTokenExtraArgs,
+  OverrideTokenData,
 } from "../../../../common/types/message.js";
 import type { FolksHubTokenType, FolksSpokeTokenType } from "../../../../common/types/token.js";
 import type { CCIPAny2EvmMessage } from "../types/gmp.js";
@@ -394,7 +394,7 @@ export function buildEvmMessageToSend(
         handler,
         payload: buildMessagePayload(Action.SendToken, accountId, userAddress, data),
         finalityLevel: FINALITY.FINALISED,
-        extraArgs: buildSendTokenExtraArgsWhenAdding(extraArgs.recipient, extraArgs.token, extraArgs.amount),
+        extraArgs: buildSendTokenExtraArgsWhenRemoving(extraArgs.recipient, extraArgs.token, extraArgs.amount),
       };
       return message;
     }
@@ -479,8 +479,8 @@ export async function estimateEvmCcipDataGasLimit(
   });
 }
 
-export function getSendTokenStateOverride(folksChainId: FolksChainId, extraArgs: SendTokenExtraArgs) {
-  const { folksTokenId, amount, recipient, token } = extraArgs;
+export function getSendTokenStateOverride(folksChainId: FolksChainId, extraArgs: OverrideTokenData) {
+  const { folksTokenId, amount, address, token } = extraArgs;
   if (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20) {
     const erc20Address = convertFromGenericAddress(token.address, ChainType.EVM);
     return getBalanceOfStateOverride([
@@ -488,7 +488,7 @@ export function getSendTokenStateOverride(folksChainId: FolksChainId, extraArgs:
         erc20Address,
         stateDiff: [
           {
-            owner: convertFromGenericAddress(recipient, ChainType.EVM),
+            owner: convertFromGenericAddress(address, ChainType.EVM),
             folksChainId,
             folksTokenId,
             tokenType: token.type,

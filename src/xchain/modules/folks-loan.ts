@@ -43,6 +43,7 @@ import type {
   MessageAdapters,
   MessageBuilderParams,
   OptionalFeeParams,
+  OverrideTokenData,
   RepayExtraArgs,
   RepayMessageData,
   RepayWithCollateralMessageData,
@@ -388,8 +389,14 @@ export const prepare = {
     };
     const returnExtraArgs: SendTokenExtraArgs = {
       folksTokenId,
-      token: receiverSpokeTokenData.token,
+      token: hubTokenData.token,
       recipient: receiverSpokeTokenData.spokeAddress,
+      amount,
+    };
+    const overrideData: OverrideTokenData = {
+      folksTokenId,
+      token: receiverSpokeTokenData.token,
+      address: receiverSpokeTokenData.spokeAddress,
       amount,
     };
     const returnMessageBuilderParams: MessageBuilderParams = {
@@ -402,6 +409,7 @@ export const prepare = {
       handler: receiverSpokeTokenData.spokeAddress,
       data: returnData,
       extraArgs: returnExtraArgs,
+      overrideData,
     };
     feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
       hubChain.folksChainId,
@@ -510,8 +518,14 @@ export const prepare = {
     };
     const returnExtraArgs: SendTokenExtraArgs = {
       folksTokenId,
-      token: receiverSpokeTokenData.token,
+      token: hubTokenData.token,
       recipient: receiverSpokeTokenData.spokeAddress,
+      amount,
+    };
+    const overrideData: OverrideTokenData = {
+      folksTokenId,
+      token: receiverSpokeTokenData.token,
+      address: receiverSpokeTokenData.spokeAddress,
       amount,
     };
     const returnMessageBuilderParams: MessageBuilderParams = {
@@ -524,6 +538,7 @@ export const prepare = {
       handler: receiverSpokeTokenData.spokeAddress,
       data: returnData,
       extraArgs: returnExtraArgs,
+      overrideData,
     };
     feeParams.returnGasLimit = await estimateAdapterReceiveGasLimit(
       hubChain.folksChainId,
