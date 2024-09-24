@@ -12,6 +12,25 @@ export function calcNextPeriodReset(periodNumber: bigint, offset: bigint, length
   return (periodNumber + BigInt(1)) * length - offset;
 }
 
+export function calcOverallBorrowInterestRate(
+  totalVarDebt: bigint,
+  totalStableDebt: bigint,
+  variableBorInterestRate: Dnum,
+  avgStableBorInterestRate: Dnum,
+): Dnum {
+  const totalDebt = totalVarDebt + totalStableDebt;
+  if (totalDebt === 0n) return dn.from(0, 18);
+
+  return dn.div(
+    dn.add(
+      dn.mul(totalVarDebt, variableBorInterestRate, { rounding: "ROUND_DOWN", decimals: 0 }),
+      dn.mul(totalStableDebt, avgStableBorInterestRate, { rounding: "ROUND_DOWN", decimals: 0 }),
+    ),
+    totalDebt,
+    { rounding: "ROUND_DOWN", decimals: 18 },
+  );
+}
+
 export function calcDepositInterestIndex(dirt1: Dnum, diit1: Dnum, latestUpdate: bigint): Dnum {
   const dt = BigInt(unixTime()) - latestUpdate;
   return dn.mul(
@@ -33,6 +52,32 @@ export function calcBorrowInterestIndex(birt1: Dnum, biit1: Dnum, latestUpdate: 
     expBySquaring(dn.add(dn.from(1, 18), dn.div(birt1, SECONDS_IN_YEAR, { rounding: "ROUND_DOWN" })), dt),
     { rounding: "ROUND_DOWN" },
   );
+}
+
+export function calcRetention(
+  actualRetained: bigint,
+  totalDebt: bigint,
+  overallBorrowInterestRate: Dnum,
+  retentionRate: Dnum,
+  latestUpdate: bigint,
+): bigint {
+  const dt = BigInt(unixTime()) - latestUpdate;
+
+  const [retainedDelta] = dn.div(
+    dn.mul(
+      dn.mul(dn.mul(totalDebt, overallBorrowInterestRate, { rounding: "ROUND_DOWN", decimals: 0 }), retentionRate, {
+        rounding: "ROUND_DOWN",
+        decimals: 0,
+      }),
+      dt,
+      { rounding: "ROUND_DOWN" },
+    ),
+    SECONDS_IN_YEAR,
+    {
+      rounding: "ROUND_DOWN",
+    },
+  );
+  return actualRetained + retainedDelta;
 }
 
 export function calcRewardIndex(used: bigint, ma: bigint, rit1: Dnum, rs: Dnum, latestUpdate: bigint): Dnum {
