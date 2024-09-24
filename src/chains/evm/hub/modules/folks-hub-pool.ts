@@ -1,6 +1,11 @@
 import { multicall } from "viem/actions";
 
-import { calcBorrowInterestIndex, calcDepositInterestIndex } from "../../../../common/utils/formulae.js";
+import {
+  calcBorrowInterestIndex,
+  calcDepositInterestIndex,
+  calcOverallBorrowInterestRate,
+  calcRetention,
+} from "../../../../common/utils/formulae.js";
 import { compoundEveryHour, compoundEverySecond } from "../../../../common/utils/math-lib.js";
 import { getHubTokenData } from "../utils/chain.js";
 import { getHubPoolContract } from "../utils/contract.js";
@@ -32,6 +37,7 @@ export async function getPoolInfo(
     stableBorrowData,
     capsData,
     configData,
+    fTokenCirculatingSupply,
   ] = await multicall(provider, {
     contracts: [
       {
@@ -74,12 +80,23 @@ export async function getPoolInfo(
         abi: hubPool.abi,
         functionName: "getConfigData",
       },
+      {
+        address: hubPool.address,
+        abi: hubPool.abi,
+        functionName: "totalSupply",
+      },
     ],
     allowFailure: false,
   });
 
-  const { flashLoanFee, retentionRate, fTokenFeeRecipient, tokenFeeClaimer, totalRetainedAmount, tokenFeeRecipient } =
-    feeData;
+  const {
+    flashLoanFee,
+    retentionRate,
+    fTokenFeeRecipient,
+    tokenFeeClaimer,
+    totalRetainedAmount: actualRetained,
+    tokenFeeRecipient,
+  } = feeData;
   const {
     optimalUtilisationRatio,
     totalAmount: depositTotalAmount,
@@ -118,7 +135,18 @@ export async function getPoolInfo(
     feeData: {
       flashLoanFee: [BigInt(flashLoanFee), 6],
       retentionRate: [BigInt(retentionRate), 6],
-      totalRetainedAmount,
+      totalRetainedAmount: calcRetention(
+        actualRetained,
+        variableBorrowTotalAmount + stableBorrowTotalAmount,
+        calcOverallBorrowInterestRate(
+          variableBorrowTotalAmount,
+          stableBorrowTotalAmount,
+          [variableBorrowInterestRate, 18],
+          [stableBorrowAverageInterestRate, 18],
+        ),
+        [BigInt(retentionRate), 6],
+        lastUpdateTimestamp,
+      ),
       fTokenFeeRecipient: fTokenFeeRecipient as EvmAddress,
       tokenFeeClaimer: tokenFeeClaimer as EvmAddress,
       tokenFeeRecipient: tokenFeeRecipient as GenericAddress,
@@ -173,5 +201,6 @@ export async function getPoolInfo(
       canMintFToken,
       flashLoanSupported,
     },
+    fTokenCirculatingSupply,
   };
 }

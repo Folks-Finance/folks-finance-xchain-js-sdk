@@ -68,4 +68,5 @@ export type PoolInfo = {
   stableBorrowData: StableBorrowData;
   capsData: CapsData;
   configData: ConfigData;
+  fTokenCirculatingSupply: bigint;
 };
