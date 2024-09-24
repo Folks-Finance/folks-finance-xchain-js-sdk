@@ -1,7 +1,8 @@
 import { FINALITY } from "../../../../common/constants/message.js";
 import { getRandomGenericAddress } from "../../../../common/utils/address.js";
 import { getRandomBytes } from "../../../../common/utils/bytes.js";
-import { GAS_LIMIT_ESTIMATE_INCREASE } from "../../common/constants/contract.js";
+import { increaseByPercent } from "../../../../common/utils/math-lib.js";
+import { RETRY_REVERSE_GAS_LIMIT_SLIPPAGE } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { buildMessageParams, buildSendTokenExtraArgsWhenRemoving } from "../../common/utils/message.js";
 import { getBridgeRouterHubContract } from "../utils/contract.js";
@@ -38,7 +39,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gasLimit: increaseByPercent(gasLimit, RETRY_REVERSE_GAS_LIMIT_SLIPPAGE),
       msgValue: value,
       isHub: true,
       message,
@@ -68,7 +69,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gasLimit: increaseByPercent(gasLimit, RETRY_REVERSE_GAS_LIMIT_SLIPPAGE),
       msgValue: value,
       isHub: true,
       message,
