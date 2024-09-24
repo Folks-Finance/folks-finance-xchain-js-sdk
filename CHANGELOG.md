@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.33
+
+### Patch Changes
+
+- [#172](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/172) [`f76fe5e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f76fe5ebf0d7d8ff27a394d77f13d38be50e7f51) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add f token supply and updated retained amount
+
 ## 0.0.32
 
 ### Patch Changes
