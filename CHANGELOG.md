@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.34
+
+### Patch Changes
+
+- [#174](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/174) [`2ed67dd`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2ed67dd33312621cd31088e2ee893c28b8e97e54) Thanks [@palace22](https://github.com/palace22)! - Added increase by 5% in retry and reverse gas limit estimation
+
 ## 0.0.33
 
 ### Patch Changes
