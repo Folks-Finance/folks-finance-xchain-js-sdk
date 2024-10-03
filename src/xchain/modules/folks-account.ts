@@ -382,4 +382,8 @@ export const read = {
       folksChainId,
     );
   },
+
+  async isAccountCreated(accountId: AccountId) {
+    return FolksHubAccount.isAccountCreated(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), accountId);
+  },
 };

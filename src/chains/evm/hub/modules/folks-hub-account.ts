@@ -135,3 +135,10 @@ export async function getInvitationByAddress(
     eventParams: defaultEventParams,
   });
 }
+
+export async function isAccountCreated(provider: Client, network: NetworkType, accountId: AccountId): Promise<boolean> {
+  const hubChain = getHubChain(network);
+  const accountManager = getAccountManagerContract(provider, hubChain.accountManagerAddress);
+
+  return await accountManager.read.isAccountCreated([accountId]);
+}
