@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.35
+
+### Patch Changes
+
+- [#176](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/176) [`296a713`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/296a713ee89591407fd8f11f835663a5ecb84a52) Thanks [@palace22](https://github.com/palace22)! - Added isAccountCreated
+
 ## 0.0.34
 
 ### Patch Changes
