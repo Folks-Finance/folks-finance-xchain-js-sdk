@@ -9,8 +9,9 @@ export const MAINNET_FOLKS_TOKEN_ID = {
   wETH_ava: "wETH_ava",
   wBTC_eth: "wBTC_eth",
   BTCb_ava: "BTCb_ava",
+  cbBTC_base: "cbBTC_base",
 } as const;
-type MainnetFolksTokenId = (typeof MAINNET_FOLKS_TOKEN_ID)[keyof typeof MAINNET_FOLKS_TOKEN_ID];
+export type MainnetFolksTokenId = (typeof MAINNET_FOLKS_TOKEN_ID)[keyof typeof MAINNET_FOLKS_TOKEN_ID];
 
 export const TESTNET_FOLKS_TOKEN_ID = {
   USDC: "USDC",
@@ -21,7 +22,7 @@ export const TESTNET_FOLKS_TOKEN_ID = {
   LINK_eth_sep: "LINK_eth_sep",
   BNB: "BNB",
 } as const;
-type TestnetFolksTokenId = (typeof TESTNET_FOLKS_TOKEN_ID)[keyof typeof TESTNET_FOLKS_TOKEN_ID];
+export type TestnetFolksTokenId = (typeof TESTNET_FOLKS_TOKEN_ID)[keyof typeof TESTNET_FOLKS_TOKEN_ID];
 
 export type FolksTokenId = MainnetFolksTokenId | TestnetFolksTokenId;
 

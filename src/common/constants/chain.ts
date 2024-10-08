@@ -304,6 +304,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             ChainType.EVM,
           ),
         },
+        [MAINNET_FOLKS_TOKEN_ID.cbBTC_base]: {
+          token: {
+            type: TokenType.ERC20,
+            address: convertToGenericAddress("0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf" as EvmAddress, ChainType.EVM),
+            decimals: 8,
+          },
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.cbBTC_base,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.cbBTC_base],
+          spokeAddress: convertToGenericAddress(
+            "0x50d5Bb3Cf57D2fB003b602A6fD10F90baa8567EA" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
       },
     },
   },

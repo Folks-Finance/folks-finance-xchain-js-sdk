@@ -1,6 +1,6 @@
 import { MAINNET_FOLKS_TOKEN_ID, TESTNET_FOLKS_TOKEN_ID } from "../types/token.js";
 
-import type { FolksTokenId } from "../types/token.js";
+import type { FolksTokenId, MainnetFolksTokenId, TestnetFolksTokenId } from "../types/token.js";
 
 export const MAINNET_POOLS = {
   [MAINNET_FOLKS_TOKEN_ID.USDC]: 1,
@@ -11,7 +11,8 @@ export const MAINNET_POOLS = {
   [MAINNET_FOLKS_TOKEN_ID.wETH_ava]: 6,
   [MAINNET_FOLKS_TOKEN_ID.wBTC_eth]: 7,
   [MAINNET_FOLKS_TOKEN_ID.BTCb_ava]: 8,
-} as const satisfies Partial<Record<FolksTokenId, number>>;
+  [MAINNET_FOLKS_TOKEN_ID.cbBTC_base]: 9,
+} as const satisfies Record<MainnetFolksTokenId, number>;
 
 export const TESTNET_POOLS = {
   [TESTNET_FOLKS_TOKEN_ID.USDC]: 128,
@@ -21,7 +22,7 @@ export const TESTNET_POOLS = {
   [TESTNET_FOLKS_TOKEN_ID.ETH_arb_sep]: 132,
   [TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep]: 133,
   [TESTNET_FOLKS_TOKEN_ID.BNB]: 134,
-} as const satisfies Partial<Record<FolksTokenId, number>>;
+} as const satisfies Record<TestnetFolksTokenId, number>;
 
 export const FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
   Object.entries(TESTNET_POOLS).map(([token, poolId]) => [poolId, token]),

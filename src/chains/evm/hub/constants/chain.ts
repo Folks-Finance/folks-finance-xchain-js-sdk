@@ -7,7 +7,9 @@ import { MAINNET_FOLKS_TOKEN_ID, TESTNET_FOLKS_TOKEN_ID, TokenType } from "../..
 import { convertToGenericAddress } from "../../../../common/utils/address.js";
 
 import type { EvmAddress } from "../../../../common/types/address.js";
+import type { MainnetFolksTokenId, TestnetFolksTokenId } from "../../../../common/types/token.js";
 import type { HubChain } from "../types/chain.js";
+import type { HubTokenData } from "../types/token.js";
 
 export const HUB_CHAIN: Record<NetworkType, HubChain> = {
   [NetworkType.MAINNET]: {
@@ -137,7 +139,17 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0x1C51AA1516e1156d98075F2F64e259906051ABa9" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-    },
+      [MAINNET_FOLKS_TOKEN_ID.cbBTC_base]: {
+        token: {
+          type: TokenType.ERC20,
+          decimals: 8,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.cbBTC_base,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.cbBTC_base],
+        poolAddress: convertToGenericAddress("0x9eD81F0b5b0E9b6dE00F374fFc7f270902576EF7" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
+    } satisfies Record<MainnetFolksTokenId, HubTokenData>,
   },
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
@@ -256,6 +268,6 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0x424E02262874AD74562B08487628093b0456Ac9E" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-    },
+    } satisfies Record<TestnetFolksTokenId, HubTokenData>,
   },
 };
