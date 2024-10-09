@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.36
+
+### Patch Changes
+
+- [#178](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Refactored pools and hub chain tokens types
+
+- [#178](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC Base spoke and pool consts
+
 ## 0.0.35
 
 ### Patch Changes
