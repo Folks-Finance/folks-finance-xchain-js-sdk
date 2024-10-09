@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.37
+
+### Patch Changes
+
+- [#180](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/180) [`9b54a04`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/9b54a04eda5106d0322c73f97476338d161f6481) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC slots
+
 ## 0.0.36
 
 ### Patch Changes
