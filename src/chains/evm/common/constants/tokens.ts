@@ -47,6 +47,10 @@ export const CONTRACT_SLOT: Partial<
         balanceOf: 9n,
         allowance: 10n,
       },
+      [MAINNET_FOLKS_TOKEN_ID.cbBTC_base]: {
+        balanceOf: 9n,
+        allowance: 10n,
+      },
     },
   },
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
