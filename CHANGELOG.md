@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.38
+
+### Patch Changes
+
+- [#182](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/182) [`467a5ba`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/467a5ba048e18d870ae4b7c402bf7644cd1de38a) Thanks [@palace22](https://github.com/palace22)! - Added BSC chain and BNB, ETHB and BTCB tokens
+
 ## 0.0.37
 
 ### Patch Changes
