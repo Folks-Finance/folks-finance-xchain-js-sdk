@@ -48,6 +48,18 @@ export const CONTRACT_SLOT: Partial<
         allowance: 10n,
       },
       [MAINNET_FOLKS_TOKEN_ID.cbBTC_base]: {
+        balanceOf: 1n,
+        allowance: 2n,
+      },
+    },
+  },
+  [EVM_FOLKS_CHAIN_ID.BSC]: {
+    erc20: {
+      [MAINNET_FOLKS_TOKEN_ID.ETHB_bsc]: {
+        balanceOf: 1n,
+        allowance: 2n,
+      },
+      [MAINNET_FOLKS_TOKEN_ID.BTCB_bsc]: {
         balanceOf: 9n,
         allowance: 10n,
       },

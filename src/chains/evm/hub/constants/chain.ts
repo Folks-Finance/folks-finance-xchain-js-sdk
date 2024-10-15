@@ -149,6 +149,36 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0x9eD81F0b5b0E9b6dE00F374fFc7f270902576EF7" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
+      [MAINNET_FOLKS_TOKEN_ID.BNB]: {
+        token: {
+          type: TokenType.NATIVE,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.BNB,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BNB],
+        poolAddress: convertToGenericAddress("0x89970d3662614a5A4C9857Fcc9D9C3FA03824fe3" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
+      [MAINNET_FOLKS_TOKEN_ID.ETHB_bsc]: {
+        token: {
+          type: TokenType.ERC20,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETHB_bsc,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETHB_bsc],
+        poolAddress: convertToGenericAddress("0x18031B374a571F9e060de41De58Abb5957cD5258" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
+      [MAINNET_FOLKS_TOKEN_ID.BTCB_bsc]: {
+        token: {
+          type: TokenType.ERC20,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.BTCB_bsc,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BTCB_bsc],
+        poolAddress: convertToGenericAddress("0xC2FD40D9Ec4Ae7e71068652209EB75258809e131" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
     } satisfies Record<MainnetFolksTokenId, HubTokenData>,
   },
   [NetworkType.TESTNET]: {

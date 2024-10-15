@@ -4,6 +4,7 @@ import {
   avalancheFuji,
   base,
   baseSepolia,
+  bsc,
   bscTestnet,
   mainnet,
   sepolia,
@@ -18,7 +19,14 @@ import { convertToGenericAddress } from "../utils/address.js";
 import { MAINNET_POOLS, TESTNET_POOLS } from "./pool.js";
 
 import type { EvmAddress } from "../types/address.js";
-import type { FolksChainId, FolksChain, SpokeChain, FolksChainName } from "../types/chain.js";
+import type {
+  FolksChainId,
+  FolksChain,
+  SpokeChain,
+  FolksChainName,
+  MainnetFolksChainId,
+  TestnetFolksChainId,
+} from "../types/chain.js";
 
 export const MAINNET_FOLKS_CHAIN_ID = {
   ...MAINNET_EVM_FOLKS_CHAIN_ID,
@@ -56,7 +64,14 @@ export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Folks
       chainId: base.id,
       network: NetworkType.MAINNET,
     },
-  },
+    [FOLKS_CHAIN_ID.BSC]: {
+      chainType: ChainType.EVM,
+      folksChainId: FOLKS_CHAIN_ID.BSC,
+      chainName: bsc.name,
+      chainId: bsc.id,
+      network: NetworkType.MAINNET,
+    },
+  } satisfies Record<MainnetFolksChainId, FolksChain>,
   [NetworkType.TESTNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
       chainType: ChainType.EVM,
@@ -93,7 +108,7 @@ export const FOLKS_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Folks
       chainId: arbitrumSepolia.id,
       network: NetworkType.TESTNET,
     },
-  },
+  } satisfies Record<TestnetFolksChainId, FolksChain>,
 } as const;
 
 export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, SpokeChain>>> = {
@@ -319,7 +334,68 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
       },
     },
-  },
+    [FOLKS_CHAIN_ID.BSC]: {
+      folksChainId: FOLKS_CHAIN_ID.BSC,
+      spokeCommonAddress: convertToGenericAddress(
+        "0xc7bc4A43384f84B8FC937Ab58173Edab23a4c3cD" as EvmAddress,
+        ChainType.EVM,
+      ),
+      bridgeRouterAddress: convertToGenericAddress(
+        "0xCda75578328D0CB0e79dB7797289c44fa02a77ad" as EvmAddress,
+        ChainType.EVM,
+      ),
+      adapters: {
+        [AdapterType.WORMHOLE_DATA]: convertToGenericAddress(
+          "0xeB48a1eE43B91959A1686b70B7Cd482c65DE69c9" as EvmAddress,
+          ChainType.EVM,
+        ),
+        [AdapterType.CCIP_DATA]: convertToGenericAddress(
+          "0x5C60f12838b8E3EEB525F299cD7C454c989dd04e" as EvmAddress,
+          ChainType.EVM,
+        ),
+      },
+      tokens: {
+        [MAINNET_FOLKS_TOKEN_ID.BNB]: {
+          token: {
+            type: TokenType.NATIVE,
+            decimals: 18,
+          },
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.BNB,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BNB],
+          spokeAddress: convertToGenericAddress(
+            "0x5f2F4771B7dc7e2F7E9c1308B154E1e8957ecAB0" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+        [MAINNET_FOLKS_TOKEN_ID.ETHB_bsc]: {
+          token: {
+            type: TokenType.ERC20,
+            address: convertToGenericAddress("0x2170Ed0880ac9A755fd29B2688956BD959F933F8" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETHB_bsc,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETHB_bsc],
+          spokeAddress: convertToGenericAddress(
+            "0x4Db12F554623E4B0b3F5bAcF1c8490D4493380A5" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+        [MAINNET_FOLKS_TOKEN_ID.BTCB_bsc]: {
+          token: {
+            type: TokenType.ERC20,
+            address: convertToGenericAddress("0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.BTCB_bsc,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.BTCB_bsc],
+          spokeAddress: convertToGenericAddress(
+            "0x12Db9758c4D9902334C523b94e436258EB54156f" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+      },
+    },
+  } satisfies Record<MainnetFolksChainId, SpokeChain>,
   [NetworkType.TESTNET]: {
     [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
       folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
@@ -581,5 +657,5 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
       },
     },
-  },
+  } satisfies Record<TestnetFolksChainId, SpokeChain>,
 };
