@@ -10,6 +10,9 @@ export const MAINNET_FOLKS_TOKEN_ID = {
   wBTC_eth: "wBTC_eth",
   BTCb_ava: "BTCb_ava",
   cbBTC_base: "cbBTC_base",
+  BNB: "BNB",
+  ETHB_bsc: "ETHB_bsc",
+  BTCB_bsc: "BTCB_bsc",
 } as const;
 export type MainnetFolksTokenId = (typeof MAINNET_FOLKS_TOKEN_ID)[keyof typeof MAINNET_FOLKS_TOKEN_ID];
 

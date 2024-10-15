@@ -4,6 +4,7 @@ import {
   avalancheFuji,
   base,
   baseSepolia,
+  bsc,
   bscTestnet,
   mainnet,
   sepolia,
@@ -45,6 +46,7 @@ export const MAINNET_EVM_FOLKS_CHAIN_ID = {
   AVALANCHE: 100,
   ETHEREUM: 101,
   BASE: 102,
+  BSC: 103,
 } as const;
 
 export const TESTNET_EVM_FOLKS_CHAIN_ID = {
@@ -64,6 +66,7 @@ export const MAINNET_CHAIN_VIEM = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE]: avalanche,
   [EVM_FOLKS_CHAIN_ID.ETHEREUM]: mainnet,
   [EVM_FOLKS_CHAIN_ID.BASE]: base,
+  [EVM_FOLKS_CHAIN_ID.BSC]: bsc,
 } as const;
 export const TESTNET_CHAIN_VIEM = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: avalancheFuji,
@@ -81,6 +84,7 @@ export const MAINNET_CHAIN_NODE = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE]: [...avalanche.rpcUrls.default.http],
   [EVM_FOLKS_CHAIN_ID.ETHEREUM]: [...mainnet.rpcUrls.default.http],
   [EVM_FOLKS_CHAIN_ID.BASE]: [...base.rpcUrls.default.http],
+  [EVM_FOLKS_CHAIN_ID.BSC]: [...bsc.rpcUrls.default.http],
 };
 export const TESTNET_CHAIN_NODE = {
   [EVM_FOLKS_CHAIN_ID.AVALANCHE_FUJI]: [...avalancheFuji.rpcUrls.default.http],
