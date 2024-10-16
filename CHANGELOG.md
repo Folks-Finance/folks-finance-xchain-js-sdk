@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.39
+
+### Patch Changes
+
+- [#184](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/184) [`674f18c`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/674f18c7ed13913f285b327f78485a4ce05d50c0) Thanks [@stefanofa](https://github.com/stefanofa)! - Add missing BSC field on evm chain names and ids
+
 ## 0.0.38
 
 ### Patch Changes
