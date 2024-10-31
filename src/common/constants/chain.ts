@@ -624,6 +624,10 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           "0xE4C1cdE52ab51DD9495dbB938EA0BE332C37519A" as EvmAddress,
           ChainType.EVM,
         ),
+        [AdapterType.CCIP_TOKEN]: convertToGenericAddress(
+          "0x4B466063f81E1a4aD6D730ab836D92D709F9D7a6" as EvmAddress,
+          ChainType.EVM,
+        ),
       },
       tokens: {
         [TESTNET_FOLKS_TOKEN_ID.BNB]: {
