@@ -219,15 +219,15 @@ export const util = {
       }
       const [totalPointsInEpoch] = dn.mul(totalRewardSpeed, fullEpochTime, { decimals: 0 });
 
-      // consider points earned since last written to rewardsV1 contract
+      // consider points earned in active epoch
       const userLatestPoints = userPoints.poolsPoints[folksTokenId as FolksTokenId]?.collateral ?? 0n;
       const userLastWrittenPoints = lastUpdatedPointsForRewards[folksTokenId as FolksTokenId]?.lastWrittenPoints ?? 0n;
       const userWrittenEpochPoints =
         lastUpdatedPointsForRewards[folksTokenId as FolksTokenId]?.writtenEpochPoints ?? 0n;
-      const userDeltaPoints = userLatestPoints - userLastWrittenPoints + userWrittenEpochPoints;
+      const userEpochPoints = userLatestPoints - userLastWrittenPoints + userWrittenEpochPoints;
 
       // proportional to the percentage of points you already have of the total points (incl for rest of epoch)
-      pendingRewards[folksTokenId as FolksTokenId] = (userDeltaPoints * activeEpoch.totalRewards) / totalPointsInEpoch;
+      pendingRewards[folksTokenId as FolksTokenId] = (userEpochPoints * activeEpoch.totalRewards) / totalPointsInEpoch;
     }
 
     return pendingRewards;
