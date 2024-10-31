@@ -37,4 +37,12 @@ export type UserPoints = {
   poolsPoints: Partial<Record<FolksTokenId, PoolsPoints>>;
 };
 
-export type LastUpdatedPointsForRewards = Partial<Record<FolksTokenId, bigint>>;
+export type LastUpdatedPointsForRewards = Partial<
+  Record<
+    FolksTokenId,
+    {
+      lastWrittenPoints: bigint;
+      writtenEpochPoints: bigint;
+    }
+  >
+>;

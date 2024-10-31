@@ -342,9 +342,10 @@ export async function lastUpdatedPointsForRewards(
   const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
 
   const lastUpdatedPointsForRewards: LastUpdatedPointsForRewards = {};
-  for (const [folksTokenId, activeEpoch] of Object.entries(activeEpochs)) {
-    const points = await rewardsV1.read.accountLastUpdatedPoints([accountId, activeEpoch.poolId]);
-    lastUpdatedPointsForRewards[folksTokenId as FolksTokenId] = points;
+  for (const [folksTokenId, { poolId, epochIndex }] of Object.entries(activeEpochs)) {
+    const lastWrittenPoints = await rewardsV1.read.accountLastUpdatedPoints([accountId, poolId]);
+    const writtenEpochPoints = await rewardsV1.read.accountEpochPoints([accountId, poolId, epochIndex]);
+    lastUpdatedPointsForRewards[folksTokenId as FolksTokenId] = { lastWrittenPoints, writtenEpochPoints };
   }
   return lastUpdatedPointsForRewards;
 }
