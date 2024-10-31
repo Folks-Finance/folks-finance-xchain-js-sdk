@@ -26,7 +26,13 @@ import type {
 import type { RewardsV1Abi } from "../constants/abi/rewards-v1-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type { LoanTypeInfo } from "../types/loan.js";
-import type { PoolsPoints, ActiveEpochs, PoolEpoch, UserPoints } from "../types/rewards.js";
+import type {
+  PoolsPoints,
+  ActiveEpochs,
+  PoolEpoch,
+  UserPoints,
+  LastUpdatedPointsForRewards,
+} from "../types/rewards.js";
 import type { HubTokenData } from "../types/token.js";
 import type {
   Client,
@@ -324,4 +330,21 @@ export async function getUserPoints(
   }
 
   return userRewards;
+}
+
+export async function lastUpdatedPointsForRewards(
+  provider: Client,
+  network: NetworkType,
+  accountId: AccountId,
+  activeEpochs: ActiveEpochs,
+): Promise<LastUpdatedPointsForRewards> {
+  const hubChain = getHubChain(network);
+  const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
+
+  const lastUpdatedPointsForRewards: LastUpdatedPointsForRewards = {};
+  for (const [folksTokenId, activeEpoch] of Object.entries(activeEpochs)) {
+    const points = await rewardsV1.read.accountLastUpdatedPoints([accountId, activeEpoch.poolId]);
+    lastUpdatedPointsForRewards[folksTokenId as FolksTokenId] = points;
+  }
+  return lastUpdatedPointsForRewards;
 }
