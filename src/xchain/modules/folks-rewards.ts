@@ -98,7 +98,7 @@ export const read = {
     return getUnclaimedRewards(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), accountId, activeEpochs);
   },
 
-  async rewards(
+  async userPoints(
     accountId: AccountId,
     loanIds: Array<LoanId>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
