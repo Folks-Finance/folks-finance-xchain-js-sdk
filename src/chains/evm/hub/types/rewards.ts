@@ -16,15 +16,13 @@ export type PoolEpoch = {
 
 export type ActiveEpochs = Partial<Record<FolksTokenId, Epoch>>;
 
-export type AccountPoolPoints = {
+export type PoolsPoints = {
   collateral: bigint;
   borrow: bigint;
   interestPaid: bigint;
 };
 
-export type AccountPoints = Partial<Record<FolksTokenId, AccountPoolPoints>>;
-
-export type UserPoints = {
+export type UserPoolPoints = {
   accountId: AccountId;
-  rewards: AccountPoints;
+  poolsPoints: Partial<Record<FolksTokenId, PoolsPoints>>;
 };

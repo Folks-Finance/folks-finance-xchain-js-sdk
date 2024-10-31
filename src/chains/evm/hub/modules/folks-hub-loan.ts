@@ -52,7 +52,7 @@ import type {
 } from "../../../../common/types/message.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { PrepareLiquidateCall, PrepareUpdateUserLoanPoolPoints } from "../../common/types/module.js";
+import type { PrepareLiquidateCall } from "../../common/types/module.js";
 import type { LoanManagerAbi } from "../constants/abi/loan-manager-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type {
@@ -109,28 +109,6 @@ export const prepare = {
       messageData,
     };
   },
-
-  async updateUserLoanPoolPoints(
-    provider: Client,
-    sender: EvmAddress,
-    loanIds: Array<LoanId>,
-    hubChain: HubChain,
-    transactionOptions: EstimateGasParameters = {
-      account: sender,
-    },
-  ): Promise<PrepareUpdateUserLoanPoolPoints> {
-    const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
-
-    const gasLimit = await loanManager.estimateGas.updateUserLoansPoolsRewards([loanIds], {
-      ...transactionOptions,
-      value: undefined,
-    });
-
-    return {
-      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
-      loanManagerAddress: hubChain.loanManagerAddress,
-    };
-  },
 };
 
 export const write = {
@@ -140,23 +118,6 @@ export const write = {
     const hub = getHubContract(provider, hubAddress, signer);
 
     return await hub.write.directOperation([Action.Liquidate, accountId, messageData], {
-      account: getEvmSignerAccount(signer),
-      chain: signer.chain,
-      gas: gasLimit,
-    });
-  },
-
-  async updateUserLoanPoolPoints(
-    provider: Client,
-    signer: WalletClient,
-    loanIds: Array<LoanId>,
-    prepareCall: PrepareUpdateUserLoanPoolPoints,
-  ) {
-    const { gasLimit, loanManagerAddress } = prepareCall;
-
-    const loanManager = getLoanManagerContract(provider, loanManagerAddress, signer);
-
-    return await loanManager.write.updateUserLoansPoolsRewards([loanIds], {
       account: getEvmSignerAccount(signer),
       chain: signer.chain,
       gas: gasLimit,

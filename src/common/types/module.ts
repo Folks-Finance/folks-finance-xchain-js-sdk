@@ -17,7 +17,7 @@ import type {
   PrepareRetryMessageCall as PrepareRetryMessageEVMCall,
   PrepareReverseMessageCall as PrepareReverseMessageEVMCall,
   PrepareResendWormholeMessageCall as PrepareResendWormholeMessageEVMCall,
-  PrepareUpdateUserLoanPoolPoints as PrepareUpdateUserLoanPoolEVMPoints,
+  PrepareUpdateUserPointsInLoans as PrepareUpdateUserLoanPoolEVMPoints,
   PrepareUpdateAccountsPointsForRewardsCall as PrepareUpdateAccountsPointsForRewardsEVMCall,
   PrepareClaimRewardsCall as PrepareClaimRewardsEVMCall,
 } from "../../chains/evm/common/types/module.js";

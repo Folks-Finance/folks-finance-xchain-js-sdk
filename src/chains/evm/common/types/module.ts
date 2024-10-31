@@ -105,7 +105,7 @@ export type PrepareResendWormholeMessageCall = {
   wormholeRelayerAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams">;
 
-export type PrepareUpdateUserLoanPoolPoints = {
+export type PrepareUpdateUserPointsInLoans = {
   loanManagerAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams" | "msgValue">;
 

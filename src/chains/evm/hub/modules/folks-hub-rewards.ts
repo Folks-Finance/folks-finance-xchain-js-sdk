@@ -4,6 +4,7 @@ import { calcAccruedRewards } from "../../../../common/utils/formulae.js";
 import { increaseByPercent } from "../../../../common/utils/math-lib.js";
 import {
   CLAIM_REWARDS_GAS_LIMIT_SLIPPAGE,
+  GAS_LIMIT_ESTIMATE_INCREASE,
   UPDATE_ACCOUNT_POINTS_FOR_REWARDS_GAS_LIMIT_SLIPPAGE,
 } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
@@ -17,11 +18,15 @@ import type { NetworkType } from "../../../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../../../common/types/lending.js";
 import type { LoanTypeId } from "../../../../common/types/module.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
-import type { PrepareClaimRewardsCall, PrepareUpdateAccountsPointsForRewardsCall } from "../../common/types/module.js";
+import type {
+  PrepareClaimRewardsCall,
+  PrepareUpdateAccountsPointsForRewardsCall,
+  PrepareUpdateUserPointsInLoans,
+} from "../../common/types/module.js";
 import type { RewardsV1Abi } from "../constants/abi/rewards-v1-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type { LoanTypeInfo } from "../types/loan.js";
-import type { AccountPoolPoints, ActiveEpochs, PoolEpoch, UserPoints } from "../types/rewards.js";
+import type { PoolsPoints, ActiveEpochs, PoolEpoch, UserPoolPoints } from "../types/rewards.js";
 import type { HubTokenData } from "../types/token.js";
 import type {
   Client,
@@ -50,6 +55,28 @@ function getHistoricalPoolEpochs(activeEpochs: ActiveEpochs): Array<PoolEpoch> {
 }
 
 export const prepare = {
+  async updateUserPointsInLoans(
+    provider: Client,
+    sender: EvmAddress,
+    loanIds: Array<LoanId>,
+    hubChain: HubChain,
+    transactionOptions: EstimateGasParameters = {
+      account: sender,
+    },
+  ): Promise<PrepareUpdateUserPointsInLoans> {
+    const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
+
+    const gasLimit = await loanManager.estimateGas.updateUserLoansPoolsRewards([loanIds], {
+      ...transactionOptions,
+      value: undefined,
+    });
+
+    return {
+      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      loanManagerAddress: hubChain.loanManagerAddress,
+    };
+  },
+
   async updateAccountsPointsForRewards(
     provider: Client,
     sender: EvmAddress,
@@ -103,6 +130,23 @@ export const prepare = {
 };
 
 export const write = {
+  async updateUserPointsInLoans(
+    provider: Client,
+    signer: WalletClient,
+    loanIds: Array<LoanId>,
+    prepareCall: PrepareUpdateUserPointsInLoans,
+  ) {
+    const { gasLimit, loanManagerAddress } = prepareCall;
+
+    const loanManager = getLoanManagerContract(provider, loanManagerAddress, signer);
+
+    return await loanManager.write.updateUserLoansPoolsRewards([loanIds], {
+      account: getEvmSignerAccount(signer),
+      chain: signer.chain,
+      gas: gasLimit,
+    });
+  },
+
   async updateAccountsPointsForRewards(
     provider: Client,
     signer: WalletClient,
@@ -183,13 +227,13 @@ export async function getUnclaimedRewards(
   return await rewardsV1.read.getUnclaimedRewards([accountId, poolEpochs]);
 }
 
-export async function getUserPoints(
+export async function getUserPoolPoints(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
   loanIds: Array<LoanId>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
-): Promise<UserPoints> {
+): Promise<UserPoolPoints> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
@@ -218,18 +262,18 @@ export async function getUserPoints(
     });
   }
 
-  const accountPoolRewards: Array<AccountPoolPoints> = (await multicall(provider, {
+  const accountPoolRewards: Array<PoolsPoints> = (await multicall(provider, {
     contracts: getUsersPoolRewards,
     allowFailure: false,
-  })) as Array<AccountPoolPoints>;
+  })) as Array<PoolsPoints>;
 
   // initialise with all the rewards which are updated
-  const rewards: Partial<Record<FolksTokenId, AccountPoolPoints>> = {};
+  const rewards: Partial<Record<FolksTokenId, PoolsPoints>> = {};
   for (const [i, accountPoolReward] of accountPoolRewards.entries()) {
     const folksTokenId = folksTokenIds[i];
     rewards[folksTokenId] = accountPoolReward;
   }
-  const userRewards: UserPoints = { accountId, rewards };
+  const userRewards: UserPoolPoints = { accountId, poolsPoints: rewards };
 
   // add all the rewards which are not updated
   const userLoans = await getUserLoans(provider, network, loanIds);
@@ -261,7 +305,7 @@ export async function getUserPoints(
 
       const accrued = calcAccruedRewards(balance, collateralRewardIndex, [rewardIndex, 18]);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userRewards.rewards[folksTokenId]!.collateral += accrued;
+      userRewards.poolsPoints[folksTokenId]!.collateral += accrued;
     }
 
     for (const [i, poolId] of borPools.entries()) {
@@ -275,7 +319,7 @@ export async function getUserPoints(
 
       const accrued = calcAccruedRewards(amount, borrowRewardIndex, [rewardIndex, 18]);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userRewards.rewards[folksTokenId]!.collateral += accrued;
+      userRewards.poolsPoints[folksTokenId]!.collateral += accrued;
     }
   }
 
