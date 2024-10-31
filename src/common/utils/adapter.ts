@@ -5,7 +5,7 @@ import { DATA_ADAPTERS, HUB_ADAPTERS, TOKEN_ADAPTERS } from "../constants/adapte
 import { MessageAdapterParamsType } from "../types/adapter.js";
 import { AdapterType } from "../types/message.js";
 
-import { isCircleToken } from "./token.js";
+import { isCCIPToken, isCircleToken } from "./token.js";
 
 import type { MessageAdapterParams, ReceiveTokenMessageAdapterParams } from "../types/adapter.js";
 import type { FolksChainId } from "../types/chain.js";
@@ -52,14 +52,17 @@ export function assertAdapterSupportsReceiverValue(folksChainId: FolksChainId, a
 function getAdapterIds(messageAdapterParams: MessageAdapterParams) {
   const { sourceFolksChainId, network, messageAdapterParamType } = messageAdapterParams;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
-  if (messageAdapterParamType == MessageAdapterParamsType.SendToken && isCircleToken(messageAdapterParams.folksTokenId))
-    return TOKEN_ADAPTERS;
+  if (messageAdapterParamType == MessageAdapterParamsType.SendToken) {
+    if (isCircleToken(messageAdapterParams.folksTokenId)) return TOKEN_ADAPTERS;
+    if (isCCIPToken(messageAdapterParams.folksTokenId)) return [AdapterType.CCIP_TOKEN];
+  }
   return DATA_ADAPTERS;
 }
 
 function getReturnAdapterIds({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
   if (isHubChain(destFolksChainId, network)) return HUB_ADAPTERS;
   if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
+  if (isCCIPToken(folksTokenId)) return [AdapterType.CCIP_TOKEN];
   return DATA_ADAPTERS;
 }
 

@@ -439,6 +439,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             ChainType.EVM,
           ),
         },
+        [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress("0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+          poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+          spokeAddress: convertToGenericAddress(
+            "0xd22f35b7c441F09649D54d8fD53dc92DD3831f5E" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
       },
     },
     [FOLKS_CHAIN_ID.ETHEREUM_SEPOLIA]: {
@@ -508,6 +521,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             ChainType.EVM,
           ),
         },
+        [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress("0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+          poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+          spokeAddress: convertToGenericAddress(
+            "0xD941FC73D3ba27d5f2110bEA8E5208a4aAa036B2" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
       },
     },
     [FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
@@ -564,6 +590,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             ChainType.EVM,
           ),
         },
+        [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress("0x88A2d74F47a237a62e7A51cdDa67270CE381555e" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+          poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+          spokeAddress: convertToGenericAddress(
+            "0x810c0299ED1FB9a3e36583e0835a697766810dBa" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
       },
     },
     [FOLKS_CHAIN_ID.BSC_TESTNET]: {
@@ -596,6 +635,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.BNB],
           spokeAddress: convertToGenericAddress(
             "0x70edC49ADCe5d34Db58f57CAD2dC2D8728C5C9Be" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+        [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress("0xbFA2ACd33ED6EEc0ed3Cc06bF1ac38d22b36B9e9" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+          poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+          spokeAddress: convertToGenericAddress(
+            "0x2fD94F6B9A56879f31c14Ef1723F1315eff81d42" as EvmAddress,
             ChainType.EVM,
           ),
         },
@@ -652,6 +704,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
           poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.ETH_arb_sep],
           spokeAddress: convertToGenericAddress(
             "0xD3743aBf2D83725c06b12EC2C97c6b9dAC0D8a6F" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
+        [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+          token: {
+            type: TokenType.CIRCLE,
+            address: convertToGenericAddress("0xA8C0c11bf64AF62CDCA6f93D3769B88BdD7cb93D" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+          poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+          spokeAddress: convertToGenericAddress(
+            "0x5699D9efdF6F618e838E62db2C4A8d341C329EC8" as EvmAddress,
             ChainType.EVM,
           ),
         },
