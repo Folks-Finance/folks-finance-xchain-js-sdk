@@ -22,7 +22,7 @@ export type PoolsPoints = {
   interestPaid: bigint;
 };
 
-export type UserPoolPoints = {
+export type UserPoints = {
   accountId: AccountId;
   poolsPoints: Partial<Record<FolksTokenId, PoolsPoints>>;
 };

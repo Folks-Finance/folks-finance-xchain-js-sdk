@@ -7,7 +7,7 @@ import { FolksCore } from "../core/folks-core.js";
 
 import type { PrepareUpdateUserPointsInLoans } from "../../chains/evm/common/types/index.js";
 import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
-import type { ActiveEpochs, UserPoolPoints } from "../../chains/evm/hub/types/rewards.js";
+import type { ActiveEpochs, UserPoints } from "../../chains/evm/hub/types/rewards.js";
 import type { ChainType } from "../../common/types/chain.js";
 import type { AccountId, LoanId } from "../../common/types/lending.js";
 import type {
@@ -129,12 +129,12 @@ export const read = {
     return getUnclaimedRewards(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), accountId, activeEpochs);
   },
 
-  async userPoolPoints(
+  async userPoints(
     accountId: AccountId,
     loanIds: Array<LoanId>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
-  ): Promise<UserPoolPoints> {
-    return FolksHubRewards.getUserPoolPoints(
+  ): Promise<UserPoints> {
+    return FolksHubRewards.getUserPoints(
       FolksCore.getHubProvider(),
       FolksCore.getSelectedNetwork(),
       accountId,

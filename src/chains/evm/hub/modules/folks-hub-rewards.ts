@@ -26,7 +26,7 @@ import type {
 import type { RewardsV1Abi } from "../constants/abi/rewards-v1-abi.js";
 import type { HubChain } from "../types/chain.js";
 import type { LoanTypeInfo } from "../types/loan.js";
-import type { PoolsPoints, ActiveEpochs, PoolEpoch, UserPoolPoints } from "../types/rewards.js";
+import type { PoolsPoints, ActiveEpochs, PoolEpoch, UserPoints } from "../types/rewards.js";
 import type { HubTokenData } from "../types/token.js";
 import type {
   Client,
@@ -227,13 +227,13 @@ export async function getUnclaimedRewards(
   return await rewardsV1.read.getUnclaimedRewards([accountId, poolEpochs]);
 }
 
-export async function getUserPoolPoints(
+export async function getUserPoints(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
   loanIds: Array<LoanId>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
-): Promise<UserPoolPoints> {
+): Promise<UserPoints> {
   const hubChain = getHubChain(network);
   const loanManager = getLoanManagerContract(provider, hubChain.loanManagerAddress);
 
@@ -273,7 +273,7 @@ export async function getUserPoolPoints(
     const folksTokenId = folksTokenIds[i];
     rewards[folksTokenId] = accountPoolReward;
   }
-  const userRewards: UserPoolPoints = { accountId, poolsPoints: rewards };
+  const userRewards: UserPoints = { accountId, poolsPoints: rewards };
 
   // add all the rewards which are not updated
   const userLoans = await getUserLoans(provider, network, loanIds);
