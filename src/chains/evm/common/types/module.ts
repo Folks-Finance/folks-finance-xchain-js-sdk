@@ -1,8 +1,9 @@
 import type { MessageReceived } from "./gmp.js";
-import type { GenericAddress } from "../../../../common/types/address.js";
+import type { EvmAddress, GenericAddress } from "../../../../common/types/address.js";
 import type { AccountId } from "../../../../common/types/lending.js";
 import type { MessageParams } from "../../../../common/types/message.js";
 import type { SpokeTokenData } from "../../../../common/types/token.js";
+import type { PoolEpoch } from "../../hub/types/rewards.js";
 import type { Hex } from "viem";
 
 export type PrepareCall = {
@@ -103,3 +104,18 @@ export type PrepareResendWormholeMessageCall = {
   deliveryProviderAddress: GenericAddress;
   wormholeRelayerAddress: GenericAddress;
 } & Omit<PrepareCall, "messageParams">;
+
+export type PrepareUpdateUserLoanPoolPoints = {
+  loanManagerAddress: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;
+
+export type PrepareUpdateAccountsPointsForRewardsCall = {
+  poolEpochs: Array<PoolEpoch>;
+  rewardsV1Address: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;
+
+export type PrepareClaimRewardsCall = {
+  poolEpochs: Array<PoolEpoch>;
+  receiver: EvmAddress;
+  rewardsV1Address: GenericAddress;
+} & Omit<PrepareCall, "messageParams" | "msgValue">;

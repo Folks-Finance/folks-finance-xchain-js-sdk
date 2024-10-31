@@ -62,6 +62,7 @@ import type {
   PrepareRepayCall,
   PrepareRepayWithCollateralCall,
   PrepareSwitchBorrowTypeCall,
+  PrepareUpdateUserLoanPoolPoints,
   PrepareWithdrawCall,
 } from "../../common/types/module.js";
 import type { FolksTokenId } from "../../common/types/token.js";
@@ -867,6 +868,24 @@ export const prepare = {
       hubChain,
     );
   },
+
+  async updateUserLoanPoolPoints(loanIds: Array<LoanId>): Promise<PrepareUpdateUserLoanPoolPoints> {
+    const folksChain = FolksCore.getSelectedFolksChain();
+    assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+    const hubChain = getHubChain(folksChain.network);
+
+    const userAddress = getSignerGenericAddress({
+      signer: FolksCore.getFolksSigner().signer,
+      chainType: folksChain.chainType,
+    });
+
+    return await FolksHubLoan.prepare.updateUserLoanPoolPoints(
+      FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+      convertFromGenericAddress(userAddress, folksChain.chainType),
+      loanIds,
+      hubChain,
+    );
+  },
 };
 
 export const write = {
@@ -1121,13 +1140,24 @@ export const write = {
 
   async liquidate(accountId: AccountId, prepareCall: PrepareLiquidateCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
-
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
 
     return await FolksHubLoan.write.liquidate(
       FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
       FolksCore.getSigner<ChainType.EVM>(),
       accountId,
+      prepareCall,
+    );
+  },
+
+  async updateUserLoanPoolPoints(loanIds: Array<LoanId>, prepareCall: PrepareUpdateUserLoanPoolPoints) {
+    const folksChain = FolksCore.getSelectedFolksChain();
+    assertHubChainSelected(folksChain.folksChainId, folksChain.network);
+
+    return await FolksHubLoan.write.updateUserLoanPoolPoints(
+      FolksCore.getProvider<ChainType.EVM>(folksChain.folksChainId),
+      FolksCore.getSigner<ChainType.EVM>(),
+      loanIds,
       prepareCall,
     );
   },

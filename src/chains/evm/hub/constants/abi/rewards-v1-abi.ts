@@ -1,0 +1,638 @@
+export const RewardsV1Abi = [
+  {
+    inputs: [
+      { internalType: "address", name: "admin", type: "address" },
+      {
+        internalType: "contract IAccountManager",
+        name: "accountManager_",
+        type: "address",
+      },
+      {
+        internalType: "contract LoanManager",
+        name: "loanManager_",
+        type: "address",
+      },
+      { internalType: "uint16", name: "hubChainId_", type: "uint16" },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  { inputs: [], name: "AccessControlBadConfirmation", type: "error" },
+  {
+    inputs: [{ internalType: "uint48", name: "schedule", type: "uint48" }],
+    name: "AccessControlEnforcedDefaultAdminDelay",
+    type: "error",
+  },
+  { inputs: [], name: "AccessControlEnforcedDefaultAdminRules", type: "error" },
+  {
+    inputs: [{ internalType: "address", name: "defaultAdmin", type: "address" }],
+    name: "AccessControlInvalidDefaultAdmin",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "bytes32", name: "neededRole", type: "bytes32" },
+    ],
+    name: "AccessControlUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epoch", type: "uint16" },
+      { internalType: "uint256", name: "expired", type: "uint256" },
+    ],
+    name: "CannotUpdateExpiredEpoch",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epochIndex", type: "uint16" },
+    ],
+    name: "EpochNotActive",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epoch", type: "uint16" },
+      { internalType: "uint256", name: "end", type: "uint256" },
+    ],
+    name: "EpochNotEnded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
+    ],
+    name: "FailedToClaimRewards",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "length", type: "uint256" },
+      { internalType: "uint256", name: "minimum", type: "uint256" },
+    ],
+    name: "InvalidEpochLength",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint256", name: "previousEpochEnd", type: "uint256" },
+      { internalType: "uint256", name: "newEpochStart", type: "uint256" },
+    ],
+    name: "InvalidEpochStart",
+    type: "error",
+  },
+  { inputs: [], name: "MathOverflowedMulDiv", type: "error" },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      { internalType: "address", name: "addr", type: "address" },
+    ],
+    name: "NoPermissionOnHub",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "bits", type: "uint8" },
+      { internalType: "uint256", name: "value", type: "uint256" },
+    ],
+    name: "SafeCastOverflowedUintDowncast",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: "DefaultAdminDelayChangeCanceled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint48",
+        name: "newDelay",
+        type: "uint48",
+      },
+      {
+        indexed: false,
+        internalType: "uint48",
+        name: "effectSchedule",
+        type: "uint48",
+      },
+    ],
+    name: "DefaultAdminDelayChangeScheduled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [],
+    name: "DefaultAdminTransferCanceled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newAdmin",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint48",
+        name: "acceptSchedule",
+        type: "uint48",
+      },
+    ],
+    name: "DefaultAdminTransferScheduled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: "uint8", name: "poolId", type: "uint8" },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "start",
+        type: "uint256",
+      },
+      { indexed: false, internalType: "uint256", name: "end", type: "uint256" },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalRewards",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "epochIndex",
+        type: "uint16",
+      },
+    ],
+    name: "EpochAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: false, internalType: "uint8", name: "poolId", type: "uint8" },
+      {
+        indexed: false,
+        internalType: "uint16",
+        name: "epochIndex",
+        type: "uint16",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalRewards",
+        type: "uint256",
+      },
+    ],
+    name: "EpochUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "Funded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "accountId",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "RewardsClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "previousAdminRole",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "newAdminRole",
+        type: "bytes32",
+      },
+    ],
+    name: "RoleAdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleGranted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleRevoked",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "DEFAULT_ADMIN_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "LISTING_ROLE",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "acceptDefaultAdminTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epochIndex", type: "uint16" },
+    ],
+    name: "accountEpochPoints",
+    outputs: [{ internalType: "uint256", name: "points", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+    ],
+    name: "accountLastUpdatedPoints",
+    outputs: [{ internalType: "uint256", name: "points", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "accountManager",
+    outputs: [{ internalType: "contract IAccountManager", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
+      { internalType: "uint256", name: "totalRewards", type: "uint256" },
+    ],
+    name: "addEpoch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "newAdmin", type: "address" }],
+    name: "beginDefaultAdminTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "cancelDefaultAdminTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint48", name: "newDelay", type: "uint48" }],
+    name: "changeDefaultAdminDelay",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      {
+        components: [
+          { internalType: "uint8", name: "poolId", type: "uint8" },
+          { internalType: "uint16", name: "epochIndex", type: "uint16" },
+        ],
+        internalType: "struct RewardsV1.PoolEpoch[]",
+        name: "poolEpochsToClaim",
+        type: "tuple[]",
+      },
+      { internalType: "address", name: "receiver", type: "address" },
+    ],
+    name: "claimRewards",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "defaultAdmin",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "defaultAdminDelay",
+    outputs: [{ internalType: "uint48", name: "", type: "uint48" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "defaultAdminDelayIncreaseWait",
+    outputs: [{ internalType: "uint48", name: "", type: "uint48" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "fund",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint8", name: "poolId", type: "uint8" }],
+    name: "getActiveEpoch",
+    outputs: [
+      { internalType: "uint16", name: "epochIndex", type: "uint16" },
+      {
+        components: [
+          { internalType: "uint256", name: "start", type: "uint256" },
+          { internalType: "uint256", name: "end", type: "uint256" },
+          { internalType: "uint256", name: "totalRewards", type: "uint256" },
+        ],
+        internalType: "struct RewardsV1.Epoch",
+        name: "epoch",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }],
+    name: "getRoleAdmin",
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "accountId", type: "bytes32" },
+      {
+        components: [
+          { internalType: "uint8", name: "poolId", type: "uint8" },
+          { internalType: "uint16", name: "epochIndex", type: "uint16" },
+        ],
+        internalType: "struct RewardsV1.PoolEpoch[]",
+        name: "poolEpochsToClaim",
+        type: "tuple[]",
+      },
+    ],
+    name: "getUnclaimedRewards",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "grantRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "hasRole",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "hubChainId",
+    outputs: [{ internalType: "uint16", name: "", type: "uint16" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "loanManager",
+    outputs: [{ internalType: "contract LoanManager", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pendingDefaultAdmin",
+    outputs: [
+      { internalType: "address", name: "newAdmin", type: "address" },
+      { internalType: "uint48", name: "schedule", type: "uint48" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pendingDefaultAdminDelay",
+    outputs: [
+      { internalType: "uint48", name: "newDelay", type: "uint48" },
+      { internalType: "uint48", name: "schedule", type: "uint48" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint8", name: "poolId", type: "uint8" }],
+    name: "poolEpochIndex",
+    outputs: [{ internalType: "uint16", name: "epochIndex", type: "uint16" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epochIndex", type: "uint16" },
+    ],
+    name: "poolEpochs",
+    outputs: [
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
+      { internalType: "uint256", name: "totalRewards", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "uint8", name: "poolId", type: "uint8" },
+      { internalType: "uint16", name: "epochIndex", type: "uint16" },
+    ],
+    name: "poolTotalEpochPoints",
+    outputs: [{ internalType: "uint256", name: "points", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "renounceRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "role", type: "bytes32" },
+      { internalType: "address", name: "account", type: "address" },
+    ],
+    name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "rollbackDefaultAdminDelay",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes4", name: "interfaceId", type: "bytes4" }],
+    name: "supportsInterface",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "bytes32[]", name: "accountIds", type: "bytes32[]" },
+      {
+        components: [
+          { internalType: "uint8", name: "poolId", type: "uint8" },
+          { internalType: "uint16", name: "epochIndex", type: "uint16" },
+        ],
+        internalType: "struct RewardsV1.PoolEpoch[]",
+        name: "poolEpochsToUpdate",
+        type: "tuple[]",
+      },
+    ],
+    name: "updateAccountPoints",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: "uint8", name: "poolId", type: "uint8" },
+          { internalType: "uint16", name: "epochIndex", type: "uint16" },
+        ],
+        internalType: "struct RewardsV1.PoolEpoch",
+        name: "poolEpoch",
+        type: "tuple",
+      },
+      { internalType: "uint256", name: "totalRewards", type: "uint256" },
+    ],
+    name: "updateEpochTotalRewards",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;
