@@ -341,11 +341,16 @@ export async function lastUpdatedPointsForRewards(
   const hubChain = getHubChain(network);
   const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
 
-  const lastUpdatedPointsForRewards: LastUpdatedPointsForRewards = {};
-  for (const [folksTokenId, { poolId, epochIndex }] of Object.entries(activeEpochs)) {
-    const lastWrittenPoints = await rewardsV1.read.accountLastUpdatedPoints([accountId, poolId]);
-    const writtenEpochPoints = await rewardsV1.read.accountEpochPoints([accountId, poolId, epochIndex]);
-    lastUpdatedPointsForRewards[folksTokenId as FolksTokenId] = { lastWrittenPoints, writtenEpochPoints };
-  }
-  return lastUpdatedPointsForRewards;
+  const entries = await Promise.all(
+    Object.entries(activeEpochs).map(async ([folksTokenId, { poolId, epochIndex }]) => {
+      const [lastWrittenPoints, writtenEpochPoints] = await Promise.all([
+        rewardsV1.read.accountLastUpdatedPoints([accountId, poolId]),
+        rewardsV1.read.accountEpochPoints([accountId, poolId, epochIndex]),
+      ]);
+
+      return [folksTokenId as FolksTokenId, { lastWrittenPoints, writtenEpochPoints }] as const;
+    }),
+  );
+
+  return Object.fromEntries(entries);
 }
