@@ -4,8 +4,8 @@ import { calcAccruedRewards } from "../../../../common/utils/formulae.js";
 import { increaseByPercent } from "../../../../common/utils/math-lib.js";
 import {
   CLAIM_REWARDS_GAS_LIMIT_SLIPPAGE,
-  GAS_LIMIT_ESTIMATE_INCREASE,
   UPDATE_ACCOUNT_POINTS_FOR_REWARDS_GAS_LIMIT_SLIPPAGE,
+  UPDATE_USER_POINTS_IN_LOANS_GAS_LIMIT_SLIPPAGE,
 } from "../../common/constants/contract.js";
 import { getEvmSignerAccount } from "../../common/utils/chain.js";
 import { getHubChain } from "../utils/chain.js";
@@ -78,7 +78,7 @@ export const prepare = {
     });
 
     return {
-      gasLimit: gasLimit + GAS_LIMIT_ESTIMATE_INCREASE,
+      gasLimit: increaseByPercent(gasLimit, UPDATE_USER_POINTS_IN_LOANS_GAS_LIMIT_SLIPPAGE),
       loanManagerAddress: hubChain.loanManagerAddress,
     };
   },
