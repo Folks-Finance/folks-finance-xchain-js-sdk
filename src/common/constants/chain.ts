@@ -140,7 +140,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [MAINNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -204,7 +205,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
         [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
           token: {
-            type: TokenType.ERC20,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
@@ -248,7 +250,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [MAINNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -286,7 +289,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
         [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
           token: {
-            type: TokenType.ERC20,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x7A56E1C57C7475CCf742a1832B028F0456652F97" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
@@ -330,7 +334,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [MAINNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -368,7 +373,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
         [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
           token: {
-            type: TokenType.ERC20,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x3B86Ad95859b6AB773f55f8d94B4b9d443EE931f" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
@@ -446,7 +452,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
         [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
           token: {
-            type: TokenType.ERC20,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
@@ -490,7 +497,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [MAINNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0xaf88d065e77c8cC2239327C5EDb3A432268e5831" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -528,7 +536,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
         },
         [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
           token: {
-            type: TokenType.ERC20,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x3647c54c4c2C65bC7a2D63c0Da2809B399DBBDC0" as EvmAddress, ChainType.EVM),
             decimals: 18,
           },
@@ -562,7 +571,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [TESTNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -618,7 +628,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [TESTNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -687,7 +698,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [TESTNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x036CbD53842c5426634e7929541eC2318f3dCF7e" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },
@@ -778,7 +790,8 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
       tokens: {
         [TESTNET_FOLKS_TOKEN_ID.USDC]: {
           token: {
-            type: TokenType.CIRCLE,
+            type: TokenType.CROSS_CHAIN,
+            adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
             address: convertToGenericAddress("0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d" as EvmAddress, ChainType.EVM),
             decimals: 6,
           },

@@ -12,9 +12,9 @@ import { getBridgeRouterSpokeContract } from "../../chains/evm/spoke/utils/contr
 import { ChainType } from "../../common/types/chain.js";
 import { MessageDirection } from "../../common/types/gmp.js";
 import {
+  assertAdapterSupportsCrossChainToken,
   assertAdapterSupportsDataMessage,
   assertAdapterSupportsReceiverValue,
-  assertAdapterSupportsTokenMessage,
 } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
@@ -26,7 +26,7 @@ import {
 } from "../../common/utils/chain.js";
 import { bigIntMax } from "../../common/utils/math-lib.js";
 import { assertRetryableAction, assertReversibleAction, decodeMessagePayload } from "../../common/utils/messages.js";
-import { isCircleToken } from "../../common/utils/token.js";
+import { isCrossChainToken } from "../../common/utils/token.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../core/folks-core.js";
 
@@ -45,7 +45,7 @@ import type {
   PrepareRetryMessageCall,
   PrepareReverseMessageCall,
 } from "../../common/types/module.js";
-import type { FolksTokenId } from "../../common/types/token.js";
+import type { CrossChainTokenType, FolksTokenId } from "../../common/types/token.js";
 
 export const prepare = {
   async retryMessage(
@@ -302,10 +302,10 @@ export const util = {
     if (receiverValue > 0n) assertAdapterSupportsReceiverValue(fromFolksChainId, adapterId);
 
     // check adapter id is supported
-    sendFolksTokenId && isCircleToken(sendFolksTokenId)
-      ? assertAdapterSupportsTokenMessage(fromFolksChainId, adapterId)
-      : assertAdapterSupportsDataMessage(fromFolksChainId, adapterId);
     const spokeTokenData = sendFolksTokenId ? getSpokeTokenData(spokeChain, sendFolksTokenId) : undefined;
+    spokeTokenData && sendFolksTokenId && isCrossChainToken(sendFolksTokenId)
+      ? assertAdapterSupportsCrossChainToken(fromFolksChainId, spokeTokenData.token as CrossChainTokenType, adapterId)
+      : assertAdapterSupportsDataMessage(fromFolksChainId, adapterId);
 
     return FolksEvmGmp.getSendMessageFee(
       FolksCore.getProvider<ChainType.EVM>(fromFolksChainId),
@@ -326,13 +326,12 @@ export const util = {
   ): Promise<bigint> {
     const network = FolksCore.getSelectedNetwork();
     const hubChain = getHubChain(network);
+    const hubTokenData = getHubTokenData(receiveFolksTokenId, network);
 
     // check adapter id is supported
-    isCircleToken(receiveFolksTokenId)
-      ? assertAdapterSupportsTokenMessage(toFolksChainId, adapterId)
+    isCrossChainToken(receiveFolksTokenId)
+      ? assertAdapterSupportsCrossChainToken(toFolksChainId, hubTokenData.token as CrossChainTokenType, adapterId)
       : assertAdapterSupportsDataMessage(toFolksChainId, adapterId);
-
-    const hubTokenData = getHubTokenData(receiveFolksTokenId, network);
 
     return await FolksHubGmp.getSendMessageFee(
       FolksCore.getHubProvider(),

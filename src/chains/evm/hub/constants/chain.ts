@@ -60,7 +60,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
     tokens: {
       [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
-          type: TokenType.CIRCLE,
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
           address: convertToGenericAddress("0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
@@ -201,7 +202,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
       },
       [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
         token: {
-          type: TokenType.CIRCLE,
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.CCIP_TOKEN],
           address: convertToGenericAddress("0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777" as EvmAddress, ChainType.EVM),
           decimals: 18,
         },
@@ -260,7 +262,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
     tokens: {
       [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
-          type: TokenType.CIRCLE,
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
           address: convertToGenericAddress("0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
