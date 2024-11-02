@@ -15,6 +15,9 @@ export const MAINNET_POOLS = {
   [MAINNET_FOLKS_TOKEN_ID.BNB]: 10,
   [MAINNET_FOLKS_TOKEN_ID.ETHB_bsc]: 11,
   [MAINNET_FOLKS_TOKEN_ID.BTCB_bsc]: 12,
+  [MAINNET_FOLKS_TOKEN_ID.ETH_arb]: 13,
+  [MAINNET_FOLKS_TOKEN_ID.ARB]: 14,
+  [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: 15,
 } as const satisfies Record<MainnetFolksTokenId, number>;
 
 export const TESTNET_POOLS = {
@@ -28,5 +31,5 @@ export const TESTNET_POOLS = {
 } as const satisfies Record<TestnetFolksTokenId, number>;
 
 export const FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
-  Object.entries(TESTNET_POOLS).map(([token, poolId]) => [poolId, token]),
+  Object.entries({ ...MAINNET_POOLS, ...TESTNET_POOLS }).map(([token, poolId]) => [poolId, token]),
 ) as Partial<Record<number, FolksTokenId>>;
