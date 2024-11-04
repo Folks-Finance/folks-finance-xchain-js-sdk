@@ -15,8 +15,6 @@ export const MAINNET_POOLS = {
   [MAINNET_FOLKS_TOKEN_ID.BNB]: 10,
   [MAINNET_FOLKS_TOKEN_ID.ETHB_bsc]: 11,
   [MAINNET_FOLKS_TOKEN_ID.BTCB_bsc]: 12,
-  [MAINNET_FOLKS_TOKEN_ID.ETH_arb]: 13,
-  [MAINNET_FOLKS_TOKEN_ID.ARB]: 14,
   [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: 15,
 } as const satisfies Record<MainnetFolksTokenId, number>;
 

@@ -14,8 +14,6 @@ export const MAINNET_FOLKS_TOKEN_ID = {
   BNB: "BNB",
   ETHB_bsc: "ETHB_bsc",
   BTCB_bsc: "BTCB_bsc",
-  ETH_arb: "ETH_arb",
-  ARB: "ARB",
   SolvBTC: "SolvBTC",
 } as const;
 export type MainnetFolksTokenId = (typeof MAINNET_FOLKS_TOKEN_ID)[keyof typeof MAINNET_FOLKS_TOKEN_ID];

@@ -180,26 +180,6 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0xC2FD40D9Ec4Ae7e71068652209EB75258809e131" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
-      [MAINNET_FOLKS_TOKEN_ID.ETH_arb]: {
-        token: {
-          type: TokenType.NATIVE,
-          decimals: 18,
-        },
-        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETH_arb,
-        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETH_arb],
-        poolAddress: convertToGenericAddress("0x44E0d0809AF8Ee37BFb1A4e75D5EF5B96F6346A3" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
-      },
-      [MAINNET_FOLKS_TOKEN_ID.ARB]: {
-        token: {
-          type: TokenType.ERC20,
-          decimals: 18,
-        },
-        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ARB,
-        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ARB],
-        poolAddress: convertToGenericAddress("0x1177A3c2CccDb9c50D52Fc2D30a13b2c3C40BCF4" as EvmAddress, ChainType.EVM),
-        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
-      },
       [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
         token: {
           type: TokenType.CROSS_CHAIN,

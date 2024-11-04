@@ -24,10 +24,6 @@ export const WORMHOLE_DATA: Record<FolksChainId, WormholeData> = {
     wormholeChainId: 4,
     wormholeRelayer: convertToGenericAddress("0x27428DD2d3DD32A4D7f7C497eAaa23130d894911" as EvmAddress, ChainType.EVM),
   },
-  [FOLKS_CHAIN_ID.ARBITRUM]: {
-    wormholeChainId: 23,
-    wormholeRelayer: convertToGenericAddress("0x27428DD2d3DD32A4D7f7C497eAaa23130d894911" as EvmAddress, ChainType.EVM),
-  },
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     wormholeChainId: 6,
     wormholeRelayer: convertToGenericAddress("0xA3cF45939bD6260bcFe3D66bc73d60f19e49a8BB" as EvmAddress, ChainType.EVM),
@@ -66,10 +62,6 @@ export const CCIP_DATA: Record<FolksChainId, CCIPData> = {
   [FOLKS_CHAIN_ID.BSC]: {
     ccipChainId: BigInt("11344663589394136015"),
     ccipRouter: convertToGenericAddress("0x34B03Cb9086d7D758AC55af71584F81A598759FE" as EvmAddress, ChainType.EVM),
-  },
-  [FOLKS_CHAIN_ID.ARBITRUM]: {
-    ccipChainId: BigInt("4949039107694359620"),
-    ccipRouter: convertToGenericAddress("0x141fa059441E0ca23ce184B6A78bafD2A517DdE8" as EvmAddress, ChainType.EVM),
   },
   [FOLKS_CHAIN_ID.AVALANCHE_FUJI]: {
     ccipChainId: BigInt("14767482510784806043"),
