@@ -1,7 +1,7 @@
 import { multicall } from "viem/actions";
 
 import { calcAccruedRewards } from "../../../../common/utils/formulae.js";
-import { increaseByPercent } from "../../../../common/utils/math-lib.js";
+import { increaseByPercent, unixTime } from "../../../../common/utils/math-lib.js";
 import {
   CLAIM_REWARDS_GAS_LIMIT_SLIPPAGE,
   UPDATE_ACCOUNT_POINTS_FOR_REWARDS_GAS_LIMIT_SLIPPAGE,
@@ -32,6 +32,8 @@ import type {
   PoolEpoch,
   UserPoints,
   LastUpdatedPointsForRewards,
+  Epochs,
+  Epoch,
 } from "../types/rewards.js";
 import type { HubTokenData } from "../types/token.js";
 import type {
@@ -50,11 +52,11 @@ function getActivePoolEpochs(activeEpochs: ActiveEpochs): Array<PoolEpoch> {
   return poolEpochs;
 }
 
-function getHistoricalPoolEpochs(activeEpochs: ActiveEpochs): Array<PoolEpoch> {
+function getHistoricalPoolEpochs(historicalEpochs: Epochs, ignoreZeroTotalRewards = true): Array<PoolEpoch> {
   const poolEpochs: Array<PoolEpoch> = [];
-  for (const { poolId, epochIndex: activeEpochIndex } of Object.values(activeEpochs)) {
-    for (let i = 0; i < activeEpochIndex; i++) {
-      poolEpochs.push({ poolId, epochIndex: i });
+  for (const historicalPoolEpochs of Object.values(historicalEpochs)) {
+    for (const { poolId, epochIndex, totalRewards } of historicalPoolEpochs) {
+      if (!ignoreZeroTotalRewards || totalRewards > 0n) poolEpochs.push({ poolId, epochIndex });
     }
   }
   return poolEpochs;
@@ -113,13 +115,15 @@ export const prepare = {
     sender: EvmAddress,
     hubChain: HubChain,
     accountId: AccountId,
-    activeEpochs: ActiveEpochs,
+    historicalEpochs: Epochs,
     transactionOptions: EstimateGasParameters = {
       account: sender,
     },
   ): Promise<PrepareClaimRewardsCall> {
-    const poolEpochs = getHistoricalPoolEpochs(activeEpochs);
+    const poolEpochs = getHistoricalPoolEpochs(historicalEpochs);
     const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
+
+    // filter out epochs with zero total rewards
 
     const gasLimit = await rewardsV1.estimateGas.claimRewards([accountId, poolEpochs, sender], {
       ...transactionOptions,
@@ -188,6 +192,69 @@ export const write = {
   },
 };
 
+export async function getHistoricalEpochs(
+  provider: Client,
+  network: NetworkType,
+  tokens: Array<HubTokenData>,
+): Promise<Epochs> {
+  const hubChain = getHubChain(network);
+  const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
+
+  // get latest pool epoch indexes
+  const poolEpochIndexes = (await multicall(provider, {
+    contracts: tokens.map(({ poolId }) => ({
+      address: rewardsV1.address,
+      abi: rewardsV1.abi,
+      functionName: "poolEpochIndex",
+      args: [poolId],
+    })),
+    allowFailure: false,
+  })) as Array<ReadContractReturnType<typeof RewardsV1Abi, "poolEpochIndex">>;
+
+  const latestPoolEpochIndexes: Partial<Record<FolksTokenId, number>> = {};
+  for (const [i, epochIndex] of poolEpochIndexes.entries()) {
+    const { folksTokenId } = tokens[i];
+    latestPoolEpochIndexes[folksTokenId] = epochIndex;
+  }
+
+  // get all pool epochs
+  const getPoolEpochs: Array<ContractFunctionParameters> = [];
+  for (const { folksTokenId, poolId } of tokens) {
+    const latestPoolEpochIndex = latestPoolEpochIndexes[folksTokenId] ?? 0;
+    for (let epochIndex = 1; epochIndex <= latestPoolEpochIndex; epochIndex++) {
+      getPoolEpochs.push({
+        address: rewardsV1.address,
+        abi: rewardsV1.abi,
+        functionName: "poolEpochs",
+        args: [poolId, epochIndex],
+      });
+    }
+  }
+
+  const poolEpochs = (await multicall(provider, {
+    contracts: getPoolEpochs,
+    allowFailure: false,
+  })) as Array<ReadContractReturnType<typeof RewardsV1Abi, "poolEpochs">>;
+
+  // create historical epochs
+  const currTimestamp = BigInt(unixTime());
+  let indexIntoPoolEpoch = 0;
+  const historicalEpochs: Epochs = {};
+  for (const { folksTokenId, poolId } of tokens) {
+    const historicalPoolEpochs: Array<Epoch> = [];
+    const latestPoolEpochIndex = latestPoolEpochIndexes[folksTokenId] ?? 0;
+    for (let epochIndex = 1; epochIndex <= latestPoolEpochIndex; epochIndex++) {
+      const [startTimestamp, endTimestamp, totalRewards] = poolEpochs[indexIntoPoolEpoch];
+      indexIntoPoolEpoch++;
+      if (endTimestamp < currTimestamp)
+        historicalPoolEpochs.push({ poolId, epochIndex, startTimestamp, endTimestamp, totalRewards });
+    }
+    historicalEpochs[folksTokenId] = historicalPoolEpochs;
+  }
+
+  return historicalEpochs;
+}
+
 export async function getActiveEpochs(
   provider: Client,
   network: NetworkType,
@@ -209,8 +276,8 @@ export async function getActiveEpochs(
   });
 
   const activeEpochs: ActiveEpochs = {};
-  for (const [index, result] of maybeActiveEpochs.entries()) {
-    const { folksTokenId, poolId } = tokens[index];
+  for (const [i, result] of maybeActiveEpochs.entries()) {
+    const { folksTokenId, poolId } = tokens[i];
     if (result.status === "success") {
       const [epochIndex, { start: startTimestamp, end: endTimestamp, totalRewards }] =
         result.result as ReadContractReturnType<typeof RewardsV1Abi, "getActiveEpoch">;
@@ -224,12 +291,12 @@ export async function getUnclaimedRewards(
   provider: Client,
   network: NetworkType,
   accountId: AccountId,
-  activeEpochs: ActiveEpochs,
+  historicalEpochs: Epochs,
 ): Promise<bigint> {
   const hubChain = getHubChain(network);
   const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
 
-  const poolEpochs = getHistoricalPoolEpochs(activeEpochs);
+  const poolEpochs = getHistoricalPoolEpochs(historicalEpochs);
   return await rewardsV1.read.getUnclaimedRewards([accountId, poolEpochs]);
 }
 

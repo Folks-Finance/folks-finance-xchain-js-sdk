@@ -15,6 +15,8 @@ export type PoolEpoch = {
   epochIndex: number;
 };
 
+export type Epochs = Partial<Record<FolksTokenId, Array<Epoch>>>;
+
 export type ActiveEpochs = Partial<Record<FolksTokenId, Epoch>>;
 
 export type ActiveEpochInfo = {

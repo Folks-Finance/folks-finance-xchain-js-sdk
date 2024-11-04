@@ -1,6 +1,10 @@
 import * as dn from "dnum";
 
-import { getActiveEpochs, getUnclaimedRewards } from "../../chains/evm/hub/modules/folks-hub-rewards.js";
+import {
+  getActiveEpochs,
+  getHistoricalEpochs,
+  getUnclaimedRewards,
+} from "../../chains/evm/hub/modules/folks-hub-rewards.js";
 import { FolksHubRewards } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain, getHubTokensData } from "../../chains/evm/hub/utils/chain.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
@@ -14,6 +18,7 @@ import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type {
   ActiveEpochs,
   ActiveEpochsInfo,
+  Epochs,
   LastUpdatedPointsForRewards,
   PendingRewards,
   UserPoints,
@@ -68,7 +73,7 @@ export const prepare = {
     );
   },
 
-  async claimRewards(accountId: AccountId, activeEpochs: ActiveEpochs): Promise<PrepareClaimRewardsCall> {
+  async claimRewards(accountId: AccountId, historicalEpochs: Epochs): Promise<PrepareClaimRewardsCall> {
     const folksChain = FolksCore.getSelectedFolksChain();
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
     const hubChain = getHubChain(folksChain.network);
@@ -83,7 +88,7 @@ export const prepare = {
       convertFromGenericAddress(userAddress, folksChain.chainType),
       hubChain,
       accountId,
-      activeEpochs,
+      historicalEpochs,
     );
   },
 };
@@ -130,14 +135,20 @@ export const write = {
 };
 
 export const read = {
+  historicalEpochs(): Promise<Epochs> {
+    const network = FolksCore.getSelectedNetwork();
+    const tokensData = Object.values(getHubTokensData(network));
+    return getHistoricalEpochs(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), tokensData);
+  },
+
   activeEpochs(): Promise<ActiveEpochs> {
     const network = FolksCore.getSelectedNetwork();
     const tokensData = Object.values(getHubTokensData(network));
     return getActiveEpochs(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), tokensData);
   },
 
-  unclaimedRewards(accountId: AccountId, activeEpochs: ActiveEpochs): Promise<bigint> {
-    return getUnclaimedRewards(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), accountId, activeEpochs);
+  unclaimedRewards(accountId: AccountId, historicalEpochs: Epochs): Promise<bigint> {
+    return getUnclaimedRewards(FolksCore.getHubProvider(), FolksCore.getSelectedNetwork(), accountId, historicalEpochs);
   },
 
   async userPoints(
