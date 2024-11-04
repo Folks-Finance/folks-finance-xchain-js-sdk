@@ -119,7 +119,7 @@ export const prepare = {
 
     // get state override
     let stateOverride;
-    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CROSS_CHAIN) {
       const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
       stateOverride = getAllowanceStateOverride([
         {
@@ -179,7 +179,7 @@ export const prepare = {
 
     // get state override
     let stateOverride;
-    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CROSS_CHAIN) {
       const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
       stateOverride = getAllowanceStateOverride([
         {
@@ -317,7 +317,7 @@ export const prepare = {
 
     // get state override
     let stateOverride;
-    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CIRCLE) {
+    if (spokeTokenData.token.type === TokenType.ERC20 || spokeTokenData.token.type === TokenType.CROSS_CHAIN) {
       const erc20Address = convertFromGenericAddress(spokeTokenData.token.address, ChainType.EVM);
       stateOverride = getAllowanceStateOverride([
         {
@@ -495,7 +495,7 @@ export const write = {
 
     const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
-    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
+    if (includeApprove && (token.type === TokenType.CROSS_CHAIN || token.type === TokenType.ERC20)) {
       const approveTxId = await sendERC20Approve(
         provider,
         token.address,
@@ -531,7 +531,7 @@ export const write = {
 
     const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
-    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
+    if (includeApprove && (token.type === TokenType.CROSS_CHAIN || token.type === TokenType.ERC20)) {
       const approveTxId = await sendERC20Approve(
         provider,
         token.address,
@@ -617,7 +617,7 @@ export const write = {
 
     const spokeToken = getSpokeTokenContract(provider, spokeTokenData.spokeAddress, signer);
 
-    if (includeApprove && (token.type === TokenType.CIRCLE || token.type === TokenType.ERC20)) {
+    if (includeApprove && (token.type === TokenType.CROSS_CHAIN || token.type === TokenType.ERC20)) {
       const approveTxId = await sendERC20Approve(
         provider,
         token.address,

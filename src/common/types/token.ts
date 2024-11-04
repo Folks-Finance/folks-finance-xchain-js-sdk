@@ -1,4 +1,5 @@
 import type { GenericAddress } from "./address.js";
+import type { AdapterType } from "./message.js";
 
 export const MAINNET_FOLKS_TOKEN_ID = {
   USDC: "USDC",
@@ -33,7 +34,7 @@ export type FolksTokenId = MainnetFolksTokenId | TestnetFolksTokenId;
 export enum TokenType {
   NATIVE = "NATIVE",
   ERC20 = "ERC20",
-  CIRCLE = "CIRCLE",
+  CROSS_CHAIN = "CROSS_CHAIN",
 }
 
 export type ITokenData = {
@@ -51,8 +52,9 @@ type Erc20HubTokenType = {
   decimals: number;
 };
 
-type CircleTokenType = {
-  type: TokenType.CIRCLE;
+export type CrossChainTokenType = {
+  type: TokenType.CROSS_CHAIN;
+  adapters: Array<AdapterType>;
   address: GenericAddress;
   decimals: number;
 };
@@ -62,8 +64,8 @@ type NativeTokenType = {
   decimals: number;
 };
 
-export type FolksSpokeTokenType = Erc20SpokeTokenType | CircleTokenType | NativeTokenType;
-export type FolksHubTokenType = Erc20HubTokenType | CircleTokenType | NativeTokenType;
+export type FolksSpokeTokenType = Erc20SpokeTokenType | CrossChainTokenType | NativeTokenType;
+export type FolksHubTokenType = Erc20HubTokenType | CrossChainTokenType | NativeTokenType;
 
 export type SpokeTokenData = {
   poolId: number;
