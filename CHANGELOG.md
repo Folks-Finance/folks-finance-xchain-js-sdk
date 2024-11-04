@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.40
+
+### Patch Changes
+
+- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Added SolvBTC in Avalanche, Ethereum, Base and BSC
+
+- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Refactored cross chain token type
+
 ## 0.0.39
 
 ### Patch Changes
