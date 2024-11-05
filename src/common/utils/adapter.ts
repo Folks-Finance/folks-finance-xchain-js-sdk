@@ -38,16 +38,19 @@ export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, ad
 
 export function doesAdapterSupportCrossChainToken(
   crossChainToken: CrossChainTokenType,
+  folksChainId: FolksChainId,
   adapterId: AdapterType,
 ): boolean {
-  return crossChainToken.adapters.includes(adapterId);
+  const isHub = isHubChain(folksChainId, FolksCore.getSelectedNetwork());
+  return (isHub && adapterId === AdapterType.HUB) || (!isHub && crossChainToken.adapters.includes(adapterId));
 }
 
 export function assertCrossChainTokenSupportedByAdapter(
   crossChainToken: CrossChainTokenType,
+  folksChainId: FolksChainId,
   adapterId: AdapterType,
 ): void {
-  if (!doesAdapterSupportCrossChainToken(crossChainToken, adapterId))
+  if (!doesAdapterSupportCrossChainToken(crossChainToken, folksChainId, adapterId))
     throw Error(`Adapter ${adapterId} does not support cross chain token: ${crossChainToken.address}`);
 }
 
@@ -57,7 +60,7 @@ export function assertAdapterSupportsCrossChainToken(
   adapterId: AdapterType,
 ): void {
   assertAdapterSupportsTokenMessage(folksChainId, adapterId);
-  assertCrossChainTokenSupportedByAdapter(crossChainToken, adapterId);
+  assertCrossChainTokenSupportedByAdapter(crossChainToken, folksChainId, adapterId);
 }
 
 export function doesAdapterSupportReceiverValue(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
