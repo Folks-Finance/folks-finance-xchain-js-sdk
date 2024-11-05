@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.41
+
+### Patch Changes
+
+- [#192](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/192) [`9c5609e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/9c5609e92371054e4a06180f9c0c95242957130b) Thanks [@palace22](https://github.com/palace22)! - Added Arbitrum chain with ETH, ARB and SolvBTC
+
 ## 0.0.40
 
 ### Patch Changes
