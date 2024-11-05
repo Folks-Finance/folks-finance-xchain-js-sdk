@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.42
+
+### Patch Changes
+
+- [#194](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/194) [`decfce7`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/decfce70c82ad01703799f6af21c1687b61bb70f) Thanks [@palace22](https://github.com/palace22)! - Fixed check on cross chain token adapter when the chain is the hub
+
 ## 0.0.41
 
 ### Patch Changes
