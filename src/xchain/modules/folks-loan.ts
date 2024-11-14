@@ -11,7 +11,7 @@ import { ChainType } from "../../common/types/chain.js";
 import { MessageDirection } from "../../common/types/gmp.js";
 import { Action } from "../../common/types/message.js";
 import { TokenType } from "../../common/types/token.js";
-import { assertAdapterSupportsDataMessage, assertAdapterSupportsTokenMessage } from "../../common/utils/adapter.js";
+import { assertAdapterSupportsCrossChainToken, assertAdapterSupportsDataMessage } from "../../common/utils/adapter.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import {
   assertHubChainSelected,
@@ -206,8 +206,8 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
-    if (spokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    if (spokeTokenData.token.type === TokenType.CROSS_CHAIN)
+      assertAdapterSupportsCrossChainToken(folksChain.folksChainId, spokeTokenData.token, adapters.adapterId);
     else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const userAddress = getSignerGenericAddress({
@@ -289,8 +289,8 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
-    if (spokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    if (spokeTokenData.token.type === TokenType.CROSS_CHAIN)
+      assertAdapterSupportsCrossChainToken(folksChain.folksChainId, spokeTokenData.token, adapters.adapterId);
     else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const userAddress = getSignerGenericAddress({
@@ -368,8 +368,12 @@ export const prepare = {
     const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    if (receiverSpokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    if (receiverSpokeTokenData.token.type === TokenType.CROSS_CHAIN)
+      assertAdapterSupportsCrossChainToken(
+        receiverFolksChainId,
+        receiverSpokeTokenData.token,
+        adapters.returnAdapterId,
+      );
     else assertAdapterSupportsDataMessage(receiverFolksChainId, adapters.returnAdapterId);
 
     assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
@@ -498,8 +502,12 @@ export const prepare = {
     const receiverSpokeTokenData = getSpokeTokenData(receiverSpokeChain, folksTokenId);
 
     assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
-    if (receiverSpokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(receiverFolksChainId, adapters.returnAdapterId);
+    if (receiverSpokeTokenData.token.type === TokenType.CROSS_CHAIN)
+      assertAdapterSupportsCrossChainToken(
+        receiverFolksChainId,
+        receiverSpokeTokenData.token,
+        adapters.returnAdapterId,
+      );
     else assertAdapterSupportsDataMessage(receiverFolksChainId, adapters.returnAdapterId);
     assertSpokeChainSupportFolksToken(receiverFolksChainId, folksTokenId, network);
 
@@ -628,8 +636,8 @@ export const prepare = {
     const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
     const hubTokenData = getHubTokenData(folksTokenId, folksChain.network);
 
-    if (spokeTokenData.token.type === TokenType.CIRCLE)
-      assertAdapterSupportsTokenMessage(folksChain.folksChainId, adapters.adapterId);
+    if (spokeTokenData.token.type === TokenType.CROSS_CHAIN)
+      assertAdapterSupportsCrossChainToken(folksChain.folksChainId, spokeTokenData.token, adapters.adapterId);
     else assertAdapterSupportsDataMessage(folksChain.folksChainId, adapters.adapterId);
 
     const userAddress = getSignerGenericAddress({

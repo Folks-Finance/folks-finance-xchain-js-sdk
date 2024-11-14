@@ -60,7 +60,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
     tokens: {
       [MAINNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
-          type: TokenType.CIRCLE,
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
           address: convertToGenericAddress("0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
@@ -179,6 +180,38 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0xC2FD40D9Ec4Ae7e71068652209EB75258809e131" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
+      [MAINNET_FOLKS_TOKEN_ID.ETH_arb]: {
+        token: {
+          type: TokenType.NATIVE,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ETH_arb,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ETH_arb],
+        poolAddress: convertToGenericAddress("0x44E0d0809AF8Ee37BFb1A4e75D5EF5B96F6346A3" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
+      [MAINNET_FOLKS_TOKEN_ID.ARB]: {
+        token: {
+          type: TokenType.ERC20,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.ARB,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.ARB],
+        poolAddress: convertToGenericAddress("0x1177A3c2CccDb9c50D52Fc2D30a13b2c3C40BCF4" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
+      [MAINNET_FOLKS_TOKEN_ID.SolvBTC]: {
+        token: {
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.CCIP_TOKEN],
+          address: convertToGenericAddress("0xbc78D84Ba0c46dFe32cf2895a19939c86b81a777" as EvmAddress, ChainType.EVM),
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.SolvBTC,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.SolvBTC],
+        poolAddress: convertToGenericAddress("0x307bCEC89624660Ed06C97033EDb7eF49Ab0EB2D" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
     } satisfies Record<MainnetFolksTokenId, HubTokenData>,
     rewardsV1Address: convertToGenericAddress(
       "0x7c532A6209350cF27EfC3D06E82E35ACFd362C7C" as EvmAddress,
@@ -233,7 +266,8 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
     tokens: {
       [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         token: {
-          type: TokenType.CIRCLE,
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.WORMHOLE_CCTP, AdapterType.CCIP_TOKEN],
           address: convertToGenericAddress("0x5425890298aed601595a70ab815c96711a31bc65" as EvmAddress, ChainType.EVM),
           decimals: 6,
         },
