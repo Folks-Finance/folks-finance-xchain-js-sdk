@@ -123,8 +123,6 @@ export const prepare = {
     const poolEpochs = getHistoricalPoolEpochs(historicalEpochs);
     const rewardsV1 = getRewardsV1Contract(provider, hubChain.rewardsV1Address);
 
-    // filter out epochs with zero total rewards
-
     const gasLimit = await rewardsV1.estimateGas.claimRewards([accountId, poolEpochs, sender], {
       ...transactionOptions,
       value: undefined,
