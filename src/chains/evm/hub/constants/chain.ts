@@ -336,6 +336,18 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0x424E02262874AD74562B08487628093b0456Ac9E" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+        token: {
+          type: TokenType.CROSS_CHAIN,
+          adapters: [AdapterType.CCIP_TOKEN],
+          address: convertToGenericAddress("0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4" as EvmAddress, ChainType.EVM),
+          decimals: 18,
+        },
+        folksTokenId: TESTNET_FOLKS_TOKEN_ID.CCIP_BnM,
+        poolId: TESTNET_POOLS[TESTNET_FOLKS_TOKEN_ID.CCIP_BnM],
+        poolAddress: convertToGenericAddress("0x99A15c2529ba1020814E9601F3CcAcC413747935" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
     } satisfies Record<TestnetFolksTokenId, HubTokenData>,
     rewardsV1Address: convertToGenericAddress(
       "0xB8Aa9782d5922B00fC63e7def85F276059B4aCd0" as EvmAddress,
