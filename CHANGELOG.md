@@ -1,5 +1,13 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.43
+
+### Patch Changes
+
+- [#186](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/186) [`5f5b333`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5f5b33379c8f8ee6a9d2745064472809e40eb26b) Thanks [@palace22](https://github.com/palace22)! - Added testnet token CCIP-BnM
+
+- [#187](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/187) [`97a19c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/97a19c300c166705e7b10b4dba50319fad92b032) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deposit boost support
+
 ## 0.0.42
 
 ### Patch Changes
