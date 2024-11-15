@@ -45,11 +45,7 @@ import type {
 } from "viem";
 
 function getActivePoolEpochs(activeEpochs: ActiveEpochs): Array<PoolEpoch> {
-  const poolEpochs: Array<PoolEpoch> = [];
-  for (const { poolId, epochIndex } of Object.values(activeEpochs)) {
-    poolEpochs.push({ poolId, epochIndex });
-  }
-  return poolEpochs;
+  return Object.values(activeEpochs).map(({ poolId, epochIndex }) => ({ poolId, epochIndex }));
 }
 
 function getHistoricalPoolEpochs(historicalEpochs: Epochs, ignoreZeroTotalRewards = true): Array<PoolEpoch> {
