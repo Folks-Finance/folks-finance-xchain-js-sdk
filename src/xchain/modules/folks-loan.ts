@@ -1129,7 +1129,6 @@ export const write = {
 
   async liquidate(accountId: AccountId, prepareCall: PrepareLiquidateCall) {
     const folksChain = FolksCore.getSelectedFolksChain();
-
     assertHubChainSelected(folksChain.folksChainId, folksChain.network);
 
     return await FolksHubLoan.write.liquidate(

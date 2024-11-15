@@ -1,15 +1,50 @@
 import type { AccountId } from "../../../../common/types/lending.js";
 import type { FolksTokenId } from "../../../../common/types/token.js";
+import type { Dnum } from "dnum";
 
-export type AccountPoolRewards = {
+export type Epoch = {
+  poolId: number;
+  epochIndex: number;
+  startTimestamp: bigint;
+  endTimestamp: bigint;
+  totalRewards: bigint;
+};
+
+export type PoolEpoch = {
+  poolId: number;
+  epochIndex: number;
+};
+
+export type Epochs = Partial<Record<FolksTokenId, Array<Epoch>>>;
+
+export type ActiveEpochs = Partial<Record<FolksTokenId, Epoch>>;
+
+export type ActiveEpochInfo = {
+  remainingRewards: bigint;
+  rewardsApr: Dnum;
+} & Epoch;
+
+export type ActiveEpochsInfo = Partial<Record<FolksTokenId, ActiveEpochInfo>>;
+
+export type PendingRewards = Partial<Record<FolksTokenId, bigint>>;
+
+export type PoolsPoints = {
   collateral: bigint;
   borrow: bigint;
   interestPaid: bigint;
 };
 
-export type AccountRewards = Partial<Record<FolksTokenId, AccountPoolRewards>>;
-
-export type UserRewards = {
+export type UserPoints = {
   accountId: AccountId;
-  rewards: AccountRewards;
+  poolsPoints: Partial<Record<FolksTokenId, PoolsPoints>>;
 };
+
+export type LastUpdatedPointsForRewards = Partial<
+  Record<
+    FolksTokenId,
+    {
+      lastWrittenPoints: bigint;
+      writtenEpochPoints: bigint;
+    }
+  >
+>;

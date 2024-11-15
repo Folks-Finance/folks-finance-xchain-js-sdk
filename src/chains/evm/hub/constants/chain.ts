@@ -213,6 +213,10 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
     } satisfies Record<MainnetFolksTokenId, HubTokenData>,
+    rewardsV1Address: convertToGenericAddress(
+      "0x7c532A6209350cF27EfC3D06E82E35ACFd362C7C" as EvmAddress,
+      ChainType.EVM,
+    ),
   },
   [NetworkType.TESTNET]: {
     folksChainId: FOLKS_CHAIN_ID.AVALANCHE_FUJI,
@@ -345,5 +349,9 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
     } satisfies Record<TestnetFolksTokenId, HubTokenData>,
+    rewardsV1Address: convertToGenericAddress(
+      "0xB8Aa9782d5922B00fC63e7def85F276059B4aCd0" as EvmAddress,
+      ChainType.EVM,
+    ),
   },
 };

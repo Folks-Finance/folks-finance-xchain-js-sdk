@@ -17,6 +17,9 @@ import type {
   PrepareRetryMessageCall as PrepareRetryMessageEVMCall,
   PrepareReverseMessageCall as PrepareReverseMessageEVMCall,
   PrepareResendWormholeMessageCall as PrepareResendWormholeMessageEVMCall,
+  PrepareUpdateUserPointsInLoans as PrepareUpdateUserLoanPoolEVMPoints,
+  PrepareUpdateAccountsPointsForRewardsCall as PrepareUpdateAccountsPointsForRewardsEVMCall,
+  PrepareClaimRewardsCall as PrepareClaimRewardsEVMCall,
 } from "../../chains/evm/common/types/module.js";
 
 export enum LoanTypeId {
@@ -44,3 +47,6 @@ export type PrepareLiquidateCall = PrepareLiquidateEVMCall;
 export type PrepareRetryMessageCall = PrepareRetryMessageEVMCall;
 export type PrepareReverseMessageCall = PrepareReverseMessageEVMCall;
 export type PrepareResendWormholeMessageCall = PrepareResendWormholeMessageEVMCall;
+export type PrepareUpdateUserLoanPoolPoints = PrepareUpdateUserLoanPoolEVMPoints;
+export type PrepareUpdateAccountsPointsForRewardsCall = PrepareUpdateAccountsPointsForRewardsEVMCall;
+export type PrepareClaimRewardsCall = PrepareClaimRewardsEVMCall;

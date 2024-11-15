@@ -13,4 +13,5 @@ export type HubChain = {
   accountManagerAddress: GenericAddress;
   loanManagerAddress: GenericAddress;
   tokens: Partial<Record<FolksTokenId, HubTokenData>>;
+  rewardsV1Address: GenericAddress;
 } & IFolksChain;
