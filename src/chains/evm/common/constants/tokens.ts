@@ -103,6 +103,10 @@ export const CONTRACT_SLOT: Partial<
         balanceOf: 9n,
         allowance: 10n,
       },
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+        balanceOf: 0n,
+        allowance: 1n,
+      },
     },
   },
   [EVM_FOLKS_CHAIN_ID.BASE_SEPOLIA]: {
@@ -111,6 +115,10 @@ export const CONTRACT_SLOT: Partial<
         balanceOf: 9n,
         allowance: 10n,
       },
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+        balanceOf: 0n,
+        allowance: 1n,
+      },
     },
   },
   [EVM_FOLKS_CHAIN_ID.ARBITRUM_SEPOLIA]: {
@@ -118,6 +126,10 @@ export const CONTRACT_SLOT: Partial<
       [TESTNET_FOLKS_TOKEN_ID.USDC]: {
         balanceOf: 9n,
         allowance: 10n,
+      },
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+        balanceOf: 0n,
+        allowance: 1n,
       },
     },
   },
@@ -128,6 +140,18 @@ export const CONTRACT_SLOT: Partial<
         allowance: 10n,
       },
       [TESTNET_FOLKS_TOKEN_ID.LINK_eth_sep]: {
+        balanceOf: 0n,
+        allowance: 1n,
+      },
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
+        balanceOf: 0n,
+        allowance: 1n,
+      },
+    },
+  },
+  [EVM_FOLKS_CHAIN_ID.BSC_TESTNET]: {
+    erc20: {
+      [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: {
         balanceOf: 0n,
         allowance: 1n,
       },
