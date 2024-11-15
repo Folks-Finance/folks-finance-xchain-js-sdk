@@ -1,14 +1,14 @@
-import { isHubChain } from "../../chains/evm/hub/utils/chain.js";
+import { getHubTokenData, isHubChain } from "../../chains/evm/hub/utils/chain.js";
 import { exhaustiveCheck } from "../../utils/exhaustive-check.js";
 import { FolksCore } from "../../xchain/core/folks-core.js";
-import { DATA_ADAPTERS, HUB_ADAPTERS, TOKEN_ADAPTERS } from "../constants/adapter.js";
+import { DATA_ADAPTERS, HUB_ADAPTERS } from "../constants/adapter.js";
 import { MessageAdapterParamsType } from "../types/adapter.js";
 import { AdapterType } from "../types/message.js";
-
-import { isCCIPToken, isCircleToken } from "./token.js";
+import { TokenType } from "../types/token.js";
 
 import type { MessageAdapterParams, ReceiveTokenMessageAdapterParams } from "../types/adapter.js";
-import type { FolksChainId } from "../types/chain.js";
+import type { FolksChainId, NetworkType } from "../types/chain.js";
+import type { CrossChainTokenType, FolksTokenId } from "../types/token.js";
 
 export function doesAdapterSupportDataMessage(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
   const isHub = isHubChain(folksChainId, FolksCore.getSelectedNetwork());
@@ -36,6 +36,33 @@ export function assertAdapterSupportsTokenMessage(folksChainId: FolksChainId, ad
     throw Error(`Adapter ${adapterId} does not support token message for folksChainId: ${folksChainId}`);
 }
 
+export function doesAdapterSupportCrossChainToken(
+  crossChainToken: CrossChainTokenType,
+  folksChainId: FolksChainId,
+  adapterId: AdapterType,
+): boolean {
+  const isHub = isHubChain(folksChainId, FolksCore.getSelectedNetwork());
+  return (isHub && adapterId === AdapterType.HUB) || (!isHub && crossChainToken.adapters.includes(adapterId));
+}
+
+export function assertCrossChainTokenSupportedByAdapter(
+  crossChainToken: CrossChainTokenType,
+  folksChainId: FolksChainId,
+  adapterId: AdapterType,
+): void {
+  if (!doesAdapterSupportCrossChainToken(crossChainToken, folksChainId, adapterId))
+    throw Error(`Adapter ${adapterId} does not support cross chain token: ${crossChainToken.address}`);
+}
+
+export function assertAdapterSupportsCrossChainToken(
+  folksChainId: FolksChainId,
+  crossChainToken: CrossChainTokenType,
+  adapterId: AdapterType,
+): void {
+  assertAdapterSupportsTokenMessage(folksChainId, adapterId);
+  assertCrossChainTokenSupportedByAdapter(crossChainToken, folksChainId, adapterId);
+}
+
 export function doesAdapterSupportReceiverValue(folksChainId: FolksChainId, adapterId: AdapterType): boolean {
   const isHub = isHubChain(folksChainId, FolksCore.getSelectedNetwork());
   return (
@@ -49,21 +76,23 @@ export function assertAdapterSupportsReceiverValue(folksChainId: FolksChainId, a
     throw Error(`Adapter ${adapterId} does not support receiver value for folksChainId: ${folksChainId}`);
 }
 
+function getSendTokenAdapterIds(folksTokenId: FolksTokenId, network: NetworkType) {
+  const hubTokenData = getHubTokenData(folksTokenId, network);
+  if (hubTokenData.token.type == TokenType.CROSS_CHAIN) return hubTokenData.token.adapters;
+  return DATA_ADAPTERS;
+}
+
 function getAdapterIds(messageAdapterParams: MessageAdapterParams) {
   const { sourceFolksChainId, network, messageAdapterParamType } = messageAdapterParams;
   if (isHubChain(sourceFolksChainId, network)) return HUB_ADAPTERS;
-  if (messageAdapterParamType == MessageAdapterParamsType.SendToken) {
-    if (isCircleToken(messageAdapterParams.folksTokenId)) return TOKEN_ADAPTERS;
-    if (isCCIPToken(messageAdapterParams.folksTokenId)) return [AdapterType.CCIP_TOKEN];
-  }
+  if (messageAdapterParamType == MessageAdapterParamsType.SendToken)
+    return getSendTokenAdapterIds(messageAdapterParams.folksTokenId, network);
   return DATA_ADAPTERS;
 }
 
 function getReturnAdapterIds({ folksTokenId, destFolksChainId, network }: ReceiveTokenMessageAdapterParams) {
   if (isHubChain(destFolksChainId, network)) return HUB_ADAPTERS;
-  if (isCircleToken(folksTokenId)) return TOKEN_ADAPTERS;
-  if (isCCIPToken(folksTokenId)) return [AdapterType.CCIP_TOKEN];
-  return DATA_ADAPTERS;
+  return getSendTokenAdapterIds(folksTokenId, network);
 }
 
 export function getSupportedMessageAdapters(params: MessageAdapterParams) {

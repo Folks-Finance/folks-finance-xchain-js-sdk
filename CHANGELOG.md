@@ -1,5 +1,25 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.42
+
+### Patch Changes
+
+- [#194](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/194) [`decfce7`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/decfce70c82ad01703799f6af21c1687b61bb70f) Thanks [@palace22](https://github.com/palace22)! - Fixed check on cross chain token adapter when the chain is the hub
+
+## 0.0.41
+
+### Patch Changes
+
+- [#192](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/192) [`9c5609e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/9c5609e92371054e4a06180f9c0c95242957130b) Thanks [@palace22](https://github.com/palace22)! - Added Arbitrum chain with ETH, ARB and SolvBTC
+
+## 0.0.40
+
+### Patch Changes
+
+- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Added SolvBTC in Avalanche, Ethereum, Base and BSC
+
+- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Refactored cross chain token type
+
 ## 0.0.39
 
 ### Patch Changes

@@ -4,8 +4,8 @@ import { MessageDirection } from "../../../../common/types/gmp.js";
 import { Action } from "../../../../common/types/message.js";
 import { TokenType } from "../../../../common/types/token.js";
 import {
+  assertAdapterSupportsCrossChainToken,
   assertAdapterSupportsDataMessage,
-  assertAdapterSupportsTokenMessage,
 } from "../../../../common/utils/adapter.js";
 import { getSpokeChain, getSpokeTokenData } from "../../../../common/utils/chain.js";
 import {
@@ -67,8 +67,8 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubTokenData = getHubTokenData(folksTokenId, network);
 
-  if (hubTokenData.token.type === TokenType.CIRCLE)
-    assertAdapterSupportsTokenMessage(payloadData.receiverFolksChainId, returnAdapterId);
+  if (hubTokenData.token.type === TokenType.CROSS_CHAIN)
+    assertAdapterSupportsCrossChainToken(payloadData.receiverFolksChainId, hubTokenData.token, returnAdapterId);
   else assertAdapterSupportsDataMessage(payloadData.receiverFolksChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
@@ -146,8 +146,8 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
   const hubTokenData = getHubTokenData(folksTokenId, network);
 
-  if (hubTokenData.token.type === TokenType.CIRCLE)
-    assertAdapterSupportsTokenMessage(message.sourceChainId, returnAdapterId);
+  if (hubTokenData.token.type === TokenType.CROSS_CHAIN)
+    assertAdapterSupportsCrossChainToken(message.sourceChainId, hubTokenData.token, returnAdapterId);
   else assertAdapterSupportsDataMessage(message.sourceChainId, returnAdapterId);
 
   const returnData: SendTokenMessageData = {
