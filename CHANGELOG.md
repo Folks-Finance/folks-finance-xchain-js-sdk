@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.44
+
+### Patch Changes
+
+- [#197](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/197) [`44e5ebb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/44e5ebb40044b33a1cf6858641322a6496d64c4e) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix rewards apr
+
 ## 0.0.43
 
 ### Patch Changes
