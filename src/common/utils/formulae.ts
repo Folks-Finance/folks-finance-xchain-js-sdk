@@ -106,7 +106,7 @@ export function toUnderlyingAmount(fAmount: bigint, diit: Dnum): bigint {
   return underlyingAmount;
 }
 
-function calcAssetDollarValue(amount: bigint, tokenPrice: Dnum, tokenDecimals: number): Dnum {
+export function calcAssetDollarValue(amount: bigint, tokenPrice: Dnum, tokenDecimals: number): Dnum {
   return dn.mul(tokenPrice, [amount, tokenDecimals], {
     rounding: "ROUND_DOWN",
   });
