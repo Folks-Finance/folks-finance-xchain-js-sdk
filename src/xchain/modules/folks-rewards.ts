@@ -9,11 +9,13 @@ import { FolksHubRewards } from "../../chains/evm/hub/modules/index.js";
 import { getHubChain, getHubTokensData } from "../../chains/evm/hub/utils/chain.js";
 import { convertFromGenericAddress } from "../../common/utils/address.js";
 import { assertHubChainSelected, getSignerGenericAddress } from "../../common/utils/chain.js";
+import { calcAssetDollarValue } from "../../common/utils/formulae.js";
 import { SECONDS_IN_YEAR, unixTime } from "../../common/utils/math-lib.js";
 import { FolksCore } from "../core/folks-core.js";
 
 import type { PrepareUpdateUserPointsInLoans } from "../../chains/evm/common/types/index.js";
 import type { LoanTypeInfo } from "../../chains/evm/hub/types/loan.js";
+import type { OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
 import type {
   ActiveEpochs,
@@ -179,9 +181,16 @@ export const read = {
 };
 
 export const util = {
-  activeEpochsInfo(poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>, activeEpochs: ActiveEpochs): ActiveEpochsInfo {
+  activeEpochsInfo(
+    poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
+    activeEpochs: ActiveEpochs,
+    oraclePrices: OraclePrices,
+  ): ActiveEpochsInfo {
     const activeEpochsInfo: ActiveEpochsInfo = {};
     const currTimestamp = BigInt(unixTime());
+
+    const avaxPrice = oraclePrices.AVAX;
+    if (!avaxPrice) throw Error("AVAX price unavailable");
 
     for (const [folksTokenId, activeEpoch] of Object.entries(activeEpochs)) {
       // calculations assumes reward rate is constant and consistent
@@ -194,8 +203,16 @@ export const util = {
       // apr is total rewards over the total deposit, scaling by epoch length
       const poolInfo = poolsInfo[folksTokenId as FolksTokenId];
       if (!poolInfo) throw new Error(`Unknown folks token id ${folksTokenId}`);
+
+      const tokenPrice = oraclePrices[folksTokenId as FolksTokenId];
+      if (!tokenPrice) throw Error(`${tokenPrice} price unavailable`);
+
       const rewardsApr = dn.mul(
-        dn.div(activeEpoch.totalRewards, poolInfo.depositData.totalAmount, { decimals: 18 }),
+        dn.div(
+          calcAssetDollarValue(remainingRewards, avaxPrice.price, avaxPrice.decimals),
+          calcAssetDollarValue(poolInfo.depositData.totalAmount, tokenPrice.price, tokenPrice.decimals),
+          { decimals: 18 },
+        ),
         dn.div(SECONDS_IN_YEAR, remainingTime, { decimals: 18 }),
       );
 
