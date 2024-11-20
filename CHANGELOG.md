@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.45
+
+### Patch Changes
+
+- [#199](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/199) [`f7b6adb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f7b6adb8d53592b66f7d49dd8d827c491f2b54f6) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix pending rewards from miscalculation of user points
+
 ## 0.0.44
 
 ### Patch Changes
