@@ -386,7 +386,7 @@ export async function getUserPoints(
 
       const accrued = calcAccruedRewards(amount, borrowRewardIndex, [rewardIndex, 18]);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      userRewards.poolsPoints[folksTokenId]!.collateral += accrued;
+      userRewards.poolsPoints[folksTokenId]!.borrow += accrued;
     }
   }
 
