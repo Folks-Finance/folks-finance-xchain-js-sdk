@@ -1194,7 +1194,7 @@ export const util = {
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
-    activeEpochsInfo: ActiveEpochsInfo,
+    activeEpochsInfo?: ActiveEpochsInfo,
   ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan
     return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices, activeEpochsInfo);

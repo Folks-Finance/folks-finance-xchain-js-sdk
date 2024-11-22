@@ -335,7 +335,7 @@ export function getUserLoansInfo(
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
-  activeEpochsInfo: ActiveEpochsInfo,
+  activeEpochsInfo?: ActiveEpochsInfo,
 ): Record<LoanId, UserLoanInfo> {
   const poolIdToFolksTokenId = new Map(
     Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [poolId, folksTokenId]),
@@ -363,7 +363,7 @@ export function getUserLoansInfo(
       const folksTokenId = poolIdToFolksTokenId.get(poolId);
       if (!folksTokenId) throw new Error(`Unknown pool id ${poolId}`);
 
-      const activeEpochInfo = activeEpochsInfo[folksTokenId];
+      const activeEpochInfo = activeEpochsInfo?.[folksTokenId];
       const rewardsApr = activeEpochInfo?.rewardsApr ?? dn.from(0, 18);
 
       const poolInfo = poolsInfo[folksTokenId];
