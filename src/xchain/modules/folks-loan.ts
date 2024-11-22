@@ -29,6 +29,7 @@ import { FolksCore } from "../core/folks-core.js";
 import type { LoanChange, LoanManagerUserLoan, LoanTypeInfo, UserLoanInfo } from "../../chains/evm/hub/types/loan.js";
 import type { OraclePrice, OraclePrices } from "../../chains/evm/hub/types/oracle.js";
 import type { PoolInfo } from "../../chains/evm/hub/types/pool.js";
+import type { ActiveEpochsInfo } from "../../chains/evm/hub/types/rewards.js";
 import type { TokenRateLimit } from "../../chains/evm/spoke/types/pool.js";
 import type { FolksChainId } from "../../common/types/chain.js";
 import type { AccountId, LoanId, LoanName, Nonce } from "../../common/types/lending.js";
@@ -1193,9 +1194,10 @@ export const util = {
     poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
     loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
     oraclePrices: OraclePrices,
+    activeEpochsInfo: ActiveEpochsInfo,
   ): Record<LoanId, UserLoanInfo> {
     // get info of each user loan
-    return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices);
+    return FolksHubLoan.getUserLoansInfo(userLoansMap, poolsInfo, loanTypesInfo, oraclePrices, activeEpochsInfo);
   },
 
   emptyLoanForSimulate(accountId: AccountId, loanTypeId: LoanTypeId): LoanManagerUserLoan {
