@@ -67,6 +67,7 @@ import type {
 } from "../types/loan.js";
 import type { OraclePrice, OraclePrices } from "../types/oracle.js";
 import type { PoolInfo } from "../types/pool.js";
+import type { ActiveEpochsInfo } from "../types/rewards.js";
 import type { HubTokenData } from "../types/token.js";
 import type { Dnum } from "dnum";
 import type {
@@ -334,6 +335,7 @@ export function getUserLoansInfo(
   poolsInfo: Partial<Record<FolksTokenId, PoolInfo>>,
   loanTypesInfo: Partial<Record<LoanTypeId, LoanTypeInfo>>,
   oraclePrices: OraclePrices,
+  activeEpochsInfo?: ActiveEpochsInfo,
 ): Record<LoanId, UserLoanInfo> {
   const poolIdToFolksTokenId = new Map(
     Object.values(poolsInfo).map(({ folksTokenId, poolId }) => [poolId, folksTokenId]),
@@ -361,6 +363,9 @@ export function getUserLoansInfo(
       const folksTokenId = poolIdToFolksTokenId.get(poolId);
       if (!folksTokenId) throw new Error(`Unknown pool id ${poolId}`);
 
+      const activeEpochInfo = activeEpochsInfo?.[folksTokenId];
+      const rewardsApr = activeEpochInfo?.rewardsApr ?? dn.from(0, 18);
+
       const poolInfo = poolsInfo[folksTokenId];
       const loanPoolInfo = loanTypeInfo.pools[folksTokenId];
       const oraclePrice = oraclePrices[folksTokenId];
@@ -382,8 +387,8 @@ export function getUserLoansInfo(
 
       totalCollateralBalanceValue = dn.add(totalCollateralBalanceValue, balanceValue);
       totalEffectiveCollateralBalanceValue = dn.add(totalEffectiveCollateralBalanceValue, effectiveBalanceValue);
-      netRate = dn.add(netRate, dn.mul(balanceValue, interestRate));
-      netYield = dn.add(netYield, dn.mul(balanceValue, interestYield));
+      netRate = dn.add(netRate, dn.mul(balanceValue, dn.add(interestRate, rewardsApr)));
+      netYield = dn.add(netYield, dn.mul(balanceValue, dn.add(interestYield, rewardsApr)));
 
       collaterals[folksTokenId] = {
         folksTokenId,
