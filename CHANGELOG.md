@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.46
+
+### Patch Changes
+
+- [#201](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/201) [`515b6ef`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/515b6ef3893481f9892d713eaaa930da53a4fafc) Thanks [@stefanofa](https://github.com/stefanofa)! - Consider rewards apr when calculating net apr/apy on loans
+
 ## 0.0.45
 
 ### Patch Changes
