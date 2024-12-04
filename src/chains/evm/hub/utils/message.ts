@@ -61,7 +61,7 @@ export async function getHubRetryMessageExtraArgsAndAdapterFees(
     return { adapterFees: 0n, extraArgs: { returnAdapterId, returnGasLimit: 0n } };
   const payloadData = decodeMessagePayloadData(action as ReceiveTokenAction, data);
 
-  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
+  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId, network);
 
   const spokeChain = getSpokeChain(payloadData.receiverFolksChainId, network);
   const spokeTokenData = getSpokeTokenData(spokeChain, folksTokenId);
@@ -137,7 +137,7 @@ export async function getHubReverseMessageExtraArgsAndAdapterFees(
 }> {
   const { action, data } = payload;
   const payloadData = decodeMessagePayloadData(action as ReversibleHubAction, data);
-  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId);
+  const folksTokenId = getFolksTokenIdFromPool(payloadData.poolId, network);
 
   const returnAdapterId = extraArgsParams?.returnAdapterId ?? message.returnAdapterId;
   const accountId = extraArgsParams?.accountId ?? payload.accountId;

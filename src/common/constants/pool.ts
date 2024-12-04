@@ -1,3 +1,4 @@
+import { NetworkType } from "../types/chain.js";
 import { MAINNET_FOLKS_TOKEN_ID, TESTNET_FOLKS_TOKEN_ID } from "../types/token.js";
 
 import type { FolksTokenId, MainnetFolksTokenId, TestnetFolksTokenId } from "../types/token.js";
@@ -31,6 +32,15 @@ export const TESTNET_POOLS = {
   [TESTNET_FOLKS_TOKEN_ID.CCIP_BnM]: 135,
 } as const satisfies Record<TestnetFolksTokenId, number>;
 
-export const FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
-  Object.entries({ ...MAINNET_POOLS, ...TESTNET_POOLS }).map(([token, poolId]) => [poolId, token]),
+const MAINNET_FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
+  Object.entries(MAINNET_POOLS).map(([token, poolId]) => [poolId, token]),
 ) as Partial<Record<number, FolksTokenId>>;
+
+const TESTNET_FOLKS_TOKEN_IDS_FROM_POOL = Object.fromEntries(
+  Object.entries(TESTNET_POOLS).map(([token, poolId]) => [poolId, token]),
+) as Partial<Record<number, FolksTokenId>>;
+
+export const FOLKS_TOKEN_IDS_FROM_POOL_BY_NETWORK = {
+  [NetworkType.MAINNET]: MAINNET_FOLKS_TOKEN_IDS_FROM_POOL,
+  [NetworkType.TESTNET]: TESTNET_FOLKS_TOKEN_IDS_FROM_POOL,
+} as Record<NetworkType, Partial<Record<number, FolksTokenId>>>;
