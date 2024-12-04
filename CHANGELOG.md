@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.47
+
+### Patch Changes
+
+- [#203](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/203) [`6e35561`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6e35561ba790306c537aabeeac6f1470edebfdac) Thanks [@palace22](https://github.com/palace22)! - Fixed folks token ids from pool const
+
 ## 0.0.46
 
 ### Patch Changes
