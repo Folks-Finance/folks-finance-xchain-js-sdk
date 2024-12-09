@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.48
+
+### Patch Changes
+
+- [#205](https://github.com/Folks-Finance/xchain-js-sdk/pull/205) [`1d90526`](https://github.com/Folks-Finance/xchain-js-sdk/commit/1d905267884335b96473e7cebe841e1d30004bda) Thanks [@stefanofa](https://github.com/stefanofa)! - Update repository name
+
 ## 0.0.47
 
 ### Patch Changes
