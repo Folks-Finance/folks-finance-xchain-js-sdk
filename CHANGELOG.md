@@ -4,304 +4,304 @@
 
 ### Patch Changes
 
-- [#203](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/203) [`6e35561`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6e35561ba790306c537aabeeac6f1470edebfdac) Thanks [@palace22](https://github.com/palace22)! - Fixed folks token ids from pool const
+- [#203](https://github.com/Folks-Finance/xchain-js-sdk/pull/203) [`6e35561`](https://github.com/Folks-Finance/xchain-js-sdk/commit/6e35561ba790306c537aabeeac6f1470edebfdac) Thanks [@palace22](https://github.com/palace22)! - Fixed folks token ids from pool const
 
 ## 0.0.46
 
 ### Patch Changes
 
-- [#201](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/201) [`515b6ef`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/515b6ef3893481f9892d713eaaa930da53a4fafc) Thanks [@stefanofa](https://github.com/stefanofa)! - Consider rewards apr when calculating net apr/apy on loans
+- [#201](https://github.com/Folks-Finance/xchain-js-sdk/pull/201) [`515b6ef`](https://github.com/Folks-Finance/xchain-js-sdk/commit/515b6ef3893481f9892d713eaaa930da53a4fafc) Thanks [@stefanofa](https://github.com/stefanofa)! - Consider rewards apr when calculating net apr/apy on loans
 
 ## 0.0.45
 
 ### Patch Changes
 
-- [#199](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/199) [`f7b6adb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f7b6adb8d53592b66f7d49dd8d827c491f2b54f6) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix pending rewards from miscalculation of user points
+- [#199](https://github.com/Folks-Finance/xchain-js-sdk/pull/199) [`f7b6adb`](https://github.com/Folks-Finance/xchain-js-sdk/commit/f7b6adb8d53592b66f7d49dd8d827c491f2b54f6) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix pending rewards from miscalculation of user points
 
 ## 0.0.44
 
 ### Patch Changes
 
-- [#197](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/197) [`44e5ebb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/44e5ebb40044b33a1cf6858641322a6496d64c4e) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix rewards apr
+- [#197](https://github.com/Folks-Finance/xchain-js-sdk/pull/197) [`44e5ebb`](https://github.com/Folks-Finance/xchain-js-sdk/commit/44e5ebb40044b33a1cf6858641322a6496d64c4e) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix rewards apr
 
 ## 0.0.43
 
 ### Patch Changes
 
-- [#186](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/186) [`5f5b333`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5f5b33379c8f8ee6a9d2745064472809e40eb26b) Thanks [@palace22](https://github.com/palace22)! - Added testnet token CCIP-BnM
+- [#186](https://github.com/Folks-Finance/xchain-js-sdk/pull/186) [`5f5b333`](https://github.com/Folks-Finance/xchain-js-sdk/commit/5f5b33379c8f8ee6a9d2745064472809e40eb26b) Thanks [@palace22](https://github.com/palace22)! - Added testnet token CCIP-BnM
 
-- [#187](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/187) [`97a19c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/97a19c300c166705e7b10b4dba50319fad92b032) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deposit boost support
+- [#187](https://github.com/Folks-Finance/xchain-js-sdk/pull/187) [`97a19c3`](https://github.com/Folks-Finance/xchain-js-sdk/commit/97a19c300c166705e7b10b4dba50319fad92b032) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deposit boost support
 
 ## 0.0.42
 
 ### Patch Changes
 
-- [#194](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/194) [`decfce7`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/decfce70c82ad01703799f6af21c1687b61bb70f) Thanks [@palace22](https://github.com/palace22)! - Fixed check on cross chain token adapter when the chain is the hub
+- [#194](https://github.com/Folks-Finance/xchain-js-sdk/pull/194) [`decfce7`](https://github.com/Folks-Finance/xchain-js-sdk/commit/decfce70c82ad01703799f6af21c1687b61bb70f) Thanks [@palace22](https://github.com/palace22)! - Fixed check on cross chain token adapter when the chain is the hub
 
 ## 0.0.41
 
 ### Patch Changes
 
-- [#192](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/192) [`9c5609e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/9c5609e92371054e4a06180f9c0c95242957130b) Thanks [@palace22](https://github.com/palace22)! - Added Arbitrum chain with ETH, ARB and SolvBTC
+- [#192](https://github.com/Folks-Finance/xchain-js-sdk/pull/192) [`9c5609e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/9c5609e92371054e4a06180f9c0c95242957130b) Thanks [@palace22](https://github.com/palace22)! - Added Arbitrum chain with ETH, ARB and SolvBTC
 
 ## 0.0.40
 
 ### Patch Changes
 
-- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Added SolvBTC in Avalanche, Ethereum, Base and BSC
+- [#190](https://github.com/Folks-Finance/xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Added SolvBTC in Avalanche, Ethereum, Base and BSC
 
-- [#190](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Refactored cross chain token type
+- [#190](https://github.com/Folks-Finance/xchain-js-sdk/pull/190) [`5c4371b`](https://github.com/Folks-Finance/xchain-js-sdk/commit/5c4371b4542a3bdbffc7ebf74892497b89954792) Thanks [@palace22](https://github.com/palace22)! - Refactored cross chain token type
 
 ## 0.0.39
 
 ### Patch Changes
 
-- [#184](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/184) [`674f18c`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/674f18c7ed13913f285b327f78485a4ce05d50c0) Thanks [@stefanofa](https://github.com/stefanofa)! - Add missing BSC field on evm chain names and ids
+- [#184](https://github.com/Folks-Finance/xchain-js-sdk/pull/184) [`674f18c`](https://github.com/Folks-Finance/xchain-js-sdk/commit/674f18c7ed13913f285b327f78485a4ce05d50c0) Thanks [@stefanofa](https://github.com/stefanofa)! - Add missing BSC field on evm chain names and ids
 
 ## 0.0.38
 
 ### Patch Changes
 
-- [#182](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/182) [`467a5ba`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/467a5ba048e18d870ae4b7c402bf7644cd1de38a) Thanks [@palace22](https://github.com/palace22)! - Added BSC chain and BNB, ETHB and BTCB tokens
+- [#182](https://github.com/Folks-Finance/xchain-js-sdk/pull/182) [`467a5ba`](https://github.com/Folks-Finance/xchain-js-sdk/commit/467a5ba048e18d870ae4b7c402bf7644cd1de38a) Thanks [@palace22](https://github.com/palace22)! - Added BSC chain and BNB, ETHB and BTCB tokens
 
 ## 0.0.37
 
 ### Patch Changes
 
-- [#180](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/180) [`9b54a04`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/9b54a04eda5106d0322c73f97476338d161f6481) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC slots
+- [#180](https://github.com/Folks-Finance/xchain-js-sdk/pull/180) [`9b54a04`](https://github.com/Folks-Finance/xchain-js-sdk/commit/9b54a04eda5106d0322c73f97476338d161f6481) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC slots
 
 ## 0.0.36
 
 ### Patch Changes
 
-- [#178](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Refactored pools and hub chain tokens types
+- [#178](https://github.com/Folks-Finance/xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Refactored pools and hub chain tokens types
 
-- [#178](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC Base spoke and pool consts
+- [#178](https://github.com/Folks-Finance/xchain-js-sdk/pull/178) [`3eb07c3`](https://github.com/Folks-Finance/xchain-js-sdk/commit/3eb07c3240f968bf09dc7a1f80d9cd70260201db) Thanks [@palace22](https://github.com/palace22)! - Added cbBTC Base spoke and pool consts
 
 ## 0.0.35
 
 ### Patch Changes
 
-- [#176](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/176) [`296a713`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/296a713ee89591407fd8f11f835663a5ecb84a52) Thanks [@palace22](https://github.com/palace22)! - Added isAccountCreated
+- [#176](https://github.com/Folks-Finance/xchain-js-sdk/pull/176) [`296a713`](https://github.com/Folks-Finance/xchain-js-sdk/commit/296a713ee89591407fd8f11f835663a5ecb84a52) Thanks [@palace22](https://github.com/palace22)! - Added isAccountCreated
 
 ## 0.0.34
 
 ### Patch Changes
 
-- [#174](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/174) [`2ed67dd`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2ed67dd33312621cd31088e2ee893c28b8e97e54) Thanks [@palace22](https://github.com/palace22)! - Added increase by 5% in retry and reverse gas limit estimation
+- [#174](https://github.com/Folks-Finance/xchain-js-sdk/pull/174) [`2ed67dd`](https://github.com/Folks-Finance/xchain-js-sdk/commit/2ed67dd33312621cd31088e2ee893c28b8e97e54) Thanks [@palace22](https://github.com/palace22)! - Added increase by 5% in retry and reverse gas limit estimation
 
 ## 0.0.33
 
 ### Patch Changes
 
-- [#172](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/172) [`f76fe5e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f76fe5ebf0d7d8ff27a394d77f13d38be50e7f51) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add f token supply and updated retained amount
+- [#172](https://github.com/Folks-Finance/xchain-js-sdk/pull/172) [`f76fe5e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/f76fe5ebf0d7d8ff27a394d77f13d38be50e7f51) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add f token supply and updated retained amount
 
 ## 0.0.32
 
 ### Patch Changes
 
-- [#170](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/170) [`8c8738f`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/8c8738f849adc42d212cb5238859fd4d82fb80bb) Thanks [@palace22](https://github.com/palace22)! - Fixed override token data on send token action
+- [#170](https://github.com/Folks-Finance/xchain-js-sdk/pull/170) [`8c8738f`](https://github.com/Folks-Finance/xchain-js-sdk/commit/8c8738f849adc42d212cb5238859fd4d82fb80bb) Thanks [@palace22](https://github.com/palace22)! - Fixed override token data on send token action
 
 ## 0.0.31
 
 ### Patch Changes
 
-- [#166](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/166) [`5ef123e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/5ef123e238c8afed42cb34275ce41de71ec0664b) Thanks [@palace22](https://github.com/palace22)! - Fixed gasLimit in retry estimation
+- [#166](https://github.com/Folks-Finance/xchain-js-sdk/pull/166) [`5ef123e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/5ef123e238c8afed42cb34275ce41de71ec0664b) Thanks [@palace22](https://github.com/palace22)! - Fixed gasLimit in retry estimation
 
-- [#167](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/167) [`1f9badb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/1f9badb59166a5b9dcc1d6ef54cf24868c5754a9) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse extra args token
+- [#167](https://github.com/Folks-Finance/xchain-js-sdk/pull/167) [`1f9badb`](https://github.com/Folks-Finance/xchain-js-sdk/commit/1f9badb59166a5b9dcc1d6ef54cf24868c5754a9) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse extra args token
 
 ## 0.0.30
 
 ### Patch Changes
 
-- [#164](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/164) [`7a57c85`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7a57c85c1280e6660319f66342597a94e4da3844) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export token rate limit
+- [#164](https://github.com/Folks-Finance/xchain-js-sdk/pull/164) [`7a57c85`](https://github.com/Folks-Finance/xchain-js-sdk/commit/7a57c85c1280e6660319f66342597a94e4da3844) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export token rate limit
 
 ## 0.0.29
 
 ### Patch Changes
 
-- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry and reverse msg value estimation considering bridge router balance
+- [#158](https://github.com/Folks-Finance/xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry and reverse msg value estimation considering bridge router balance
 
-- [#163](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/163) [`468f2d6`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/468f2d6284e3fc6f3e5e6b9721251280878e7a2a) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse message to send
+- [#163](https://github.com/Folks-Finance/xchain-js-sdk/pull/163) [`468f2d6`](https://github.com/Folks-Finance/xchain-js-sdk/commit/468f2d6284e3fc6f3e5e6b9721251280878e7a2a) Thanks [@palace22](https://github.com/palace22)! - Fixed retry and reverse message to send
 
-- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added reverse extra args completion with gas limit estimation
+- [#158](https://github.com/Folks-Finance/xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added reverse extra args completion with gas limit estimation
 
-- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Updated SendTokenMessageData to not have the extraneous value folksTokenId
+- [#158](https://github.com/Folks-Finance/xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Updated SendTokenMessageData to not have the extraneous value folksTokenId
 
-- [#158](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry extra args completion with gas limit estimation
+- [#158](https://github.com/Folks-Finance/xchain-js-sdk/pull/158) [`deef6ce`](https://github.com/Folks-Finance/xchain-js-sdk/commit/deef6ce735c669bc8b07d05c015d1a4d1f699613) Thanks [@palace22](https://github.com/palace22)! - Added retry extra args completion with gas limit estimation
 
 ## 0.0.28
 
 ### Patch Changes
 
-- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - Fixed BTCb ava spoke token
+- [#151](https://github.com/Folks-Finance/xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - Fixed BTCb ava spoke token
 
-- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deploy mainnet
+- [#151](https://github.com/Folks-Finance/xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deploy mainnet
 
-- [#159](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/159) [`8854ef7`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/8854ef773fa4cc33bd2b045c01f598baeafe51ee) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add addresses to fee data
+- [#159](https://github.com/Folks-Finance/xchain-js-sdk/pull/159) [`8854ef7`](https://github.com/Folks-Finance/xchain-js-sdk/commit/8854ef773fa4cc33bd2b045c01f598baeafe51ee) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add addresses to fee data
 
-- [#151](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix precision of price formulae
+- [#151](https://github.com/Folks-Finance/xchain-js-sdk/pull/151) [`965b38e`](https://github.com/Folks-Finance/xchain-js-sdk/commit/965b38e7942975cf11134bb7456aaf1a2ee85904) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix precision of price formulae
 
-- [#154](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/154) [`32b44f5`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/32b44f524aa6238daf274e700bd381911c65fd19) Thanks [@palace22](https://github.com/palace22)! - increased send token adapter fees by 1%
+- [#154](https://github.com/Folks-Finance/xchain-js-sdk/pull/154) [`32b44f5`](https://github.com/Folks-Finance/xchain-js-sdk/commit/32b44f524aa6238daf274e700bd381911c65fd19) Thanks [@palace22](https://github.com/palace22)! - increased send token adapter fees by 1%
 
 ## 0.0.27
 
 ### Patch Changes
 
-- [#152](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/152) [`1c4d754`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/1c4d7548397260f2ad7b247a52c072011db8c898) Thanks [@gidonkatten](https://github.com/gidonkatten)! - estimate message fee
+- [#152](https://github.com/Folks-Finance/xchain-js-sdk/pull/152) [`1c4d754`](https://github.com/Folks-Finance/xchain-js-sdk/commit/1c4d7548397260f2ad7b247a52c072011db8c898) Thanks [@gidonkatten](https://github.com/gidonkatten)! - estimate message fee
 
 ## 0.0.26
 
 ### Patch Changes
 
-- [#149](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/149) [`7460a3d`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7460a3da195ea5502bdea60c8a7acef5b82a16e7) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix hub retry and reverse msg value and change order of params
+- [#149](https://github.com/Folks-Finance/xchain-js-sdk/pull/149) [`7460a3d`](https://github.com/Folks-Finance/xchain-js-sdk/commit/7460a3da195ea5502bdea60c8a7acef5b82a16e7) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fix hub retry and reverse msg value and change order of params
 
 ## 0.0.25
 
 ### Patch Changes
 
-- [#147](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/147) [`4c440af`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/4c440afb8a78d8050ec8ab85bee7a4e4ebf229aa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - redeploy smart contracts
+- [#147](https://github.com/Folks-Finance/xchain-js-sdk/pull/147) [`4c440af`](https://github.com/Folks-Finance/xchain-js-sdk/commit/4c440afb8a78d8050ec8ab85bee7a4e4ebf229aa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - redeploy smart contracts
 
 ## 0.0.24
 
 ### Patch Changes
 
-- [#145](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/145) [`a06cebb`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/a06cebbefb163c46251b4dd864be7d382a692736) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add total retained amount to pool info
+- [#145](https://github.com/Folks-Finance/xchain-js-sdk/pull/145) [`a06cebb`](https://github.com/Folks-Finance/xchain-js-sdk/commit/a06cebbefb163c46251b4dd864be7d382a692736) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add total retained amount to pool info
 
 ## 0.0.23
 
 ### Patch Changes
 
-- [#143](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/143) [`0b9da33`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0b9da33c09c1a5b51e26aba66ab457450a268c0c) Thanks [@gidonkatten](https://github.com/gidonkatten)! - resend wormhole message
+- [#143](https://github.com/Folks-Finance/xchain-js-sdk/pull/143) [`0b9da33`](https://github.com/Folks-Finance/xchain-js-sdk/commit/0b9da33c09c1a5b51e26aba66ab457450a268c0c) Thanks [@gidonkatten](https://github.com/gidonkatten)! - resend wormhole message
 
 ## 0.0.22
 
 ### Patch Changes
 
-- [#138](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/138) [`63c6dc3`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/63c6dc3f9bd871f2a6287902521921f1ccfb1ffa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - remove referrals from rewards
+- [#138](https://github.com/Folks-Finance/xchain-js-sdk/pull/138) [`63c6dc3`](https://github.com/Folks-Finance/xchain-js-sdk/commit/63c6dc3f9bd871f2a6287902521921f1ccfb1ffa) Thanks [@gidonkatten](https://github.com/gidonkatten)! - remove referrals from rewards
 
 ## 0.0.21
 
 ### Patch Changes
 
-- [#135](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/135) [`6cd9ea2`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6cd9ea2e52684a72b6add658dd0f584d9bcc8040) Thanks [@gidonkatten](https://github.com/gidonkatten)! - read on chain rewards
+- [#135](https://github.com/Folks-Finance/xchain-js-sdk/pull/135) [`6cd9ea2`](https://github.com/Folks-Finance/xchain-js-sdk/commit/6cd9ea2e52684a72b6add658dd0f584d9bcc8040) Thanks [@gidonkatten](https://github.com/gidonkatten)! - read on chain rewards
 
 ## 0.0.20
 
 ### Patch Changes
 
-- [#133](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/133) [`2103ea1`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2103ea15e069b1f40cbaf639568f4028083dcb83) Thanks [@palace22](https://github.com/palace22)! - Reduced gas limit estimate increase
+- [#133](https://github.com/Folks-Finance/xchain-js-sdk/pull/133) [`2103ea1`](https://github.com/Folks-Finance/xchain-js-sdk/commit/2103ea15e069b1f40cbaf639568f4028083dcb83) Thanks [@palace22](https://github.com/palace22)! - Reduced gas limit estimate increase
 
-- [#132](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/132) [`6f0acf6`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/6f0acf6b2f950424546e7c9df57885af9c689e1d) Thanks [@palace22](https://github.com/palace22)! - fix borrow and withdraw gas limit estimation
+- [#132](https://github.com/Folks-Finance/xchain-js-sdk/pull/132) [`6f0acf6`](https://github.com/Folks-Finance/xchain-js-sdk/commit/6f0acf6b2f950424546e7c9df57885af9c689e1d) Thanks [@palace22](https://github.com/palace22)! - fix borrow and withdraw gas limit estimation
 
 ## 0.0.19
 
 ### Patch Changes
 
-- [#128](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/128) [`c50a338`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/c50a338cedc2ff0c3b7278604e36cd28fbcfae63) Thanks [@gidonkatten](https://github.com/gidonkatten)! - boost borrow receive gas limit temporarily
+- [#128](https://github.com/Folks-Finance/xchain-js-sdk/pull/128) [`c50a338`](https://github.com/Folks-Finance/xchain-js-sdk/commit/c50a338cedc2ff0c3b7278604e36cd28fbcfae63) Thanks [@gidonkatten](https://github.com/gidonkatten)! - boost borrow receive gas limit temporarily
 
 ## 0.0.18
 
 ### Patch Changes
 
-- [#126](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/126) [`c9e2e02`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/c9e2e0238e4c62946f17176af6b5616db28d9650) Thanks [@stefanofa](https://github.com/stefanofa)! - Export getRandomBytes
+- [#126](https://github.com/Folks-Finance/xchain-js-sdk/pull/126) [`c9e2e02`](https://github.com/Folks-Finance/xchain-js-sdk/commit/c9e2e0238e4c62946f17176af6b5616db28d9650) Thanks [@stefanofa](https://github.com/stefanofa)! - Export getRandomBytes
 
 ## 0.0.17
 
 ### Patch Changes
 
-- [#124](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of new contracts
+- [#124](https://github.com/Folks-Finance/xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of new contracts
 
-- [#124](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - update contract calls for new contracts
+- [#124](https://github.com/Folks-Finance/xchain-js-sdk/pull/124) [`01ed760`](https://github.com/Folks-Finance/xchain-js-sdk/commit/01ed7601db31288bcd961f61433fb7b4b9c8b8e3) Thanks [@gidonkatten](https://github.com/gidonkatten)! - update contract calls for new contracts
 
 ## 0.0.16
 
 ### Patch Changes
 
-- [#122](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/122) [`7bcc4ba`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/7bcc4ba331aa48a086a39582396eaf98de0d5c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Export HUB_CHAIN from package
+- [#122](https://github.com/Folks-Finance/xchain-js-sdk/pull/122) [`7bcc4ba`](https://github.com/Folks-Finance/xchain-js-sdk/commit/7bcc4ba331aa48a086a39582396eaf98de0d5c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Export HUB_CHAIN from package
 
 ## 0.0.15
 
 ### Patch Changes
 
-- [#120](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/120) [`0dbde90`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0dbde906fd5b3755bae37b29120aca9c9c9ee793) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of bsc and bnb
+- [#120](https://github.com/Folks-Finance/xchain-js-sdk/pull/120) [`0dbde90`](https://github.com/Folks-Finance/xchain-js-sdk/commit/0dbde906fd5b3755bae37b29120aca9c9c9ee793) Thanks [@gidonkatten](https://github.com/gidonkatten)! - deployment of bsc and bnb
 
 ## 0.0.14
 
 ### Patch Changes
 
-- [#118](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/118) [`16d51fd`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/16d51fddc1b1c71d1df2dc43c9e0f8906cd7c780) Thanks [@palace22](https://github.com/palace22)! - Added return adapter ids and return gas limit for send token actions
+- [#118](https://github.com/Folks-Finance/xchain-js-sdk/pull/118) [`16d51fd`](https://github.com/Folks-Finance/xchain-js-sdk/commit/16d51fddc1b1c71d1df2dc43c9e0f8906cd7c780) Thanks [@palace22](https://github.com/palace22)! - Added return adapter ids and return gas limit for send token actions
 
 ## 0.0.13
 
 ### Patch Changes
 
-- [#114](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/114) [`cc749e2`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/cc749e2d8c5a62bccafa6d6454e988c634a1a161) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added loan utils for getting max amounts
+- [#114](https://github.com/Folks-Finance/xchain-js-sdk/pull/114) [`cc749e2`](https://github.com/Folks-Finance/xchain-js-sdk/commit/cc749e2d8c5a62bccafa6d6454e988c634a1a161) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added loan utils for getting max amounts
 
 ## 0.0.12
 
 ### Patch Changes
 
-- [#115](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/115) [`64a211d`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/64a211d298a6dc9c79e73d50885eede2c728c9e3) Thanks [@stefanofa](https://github.com/stefanofa)! - Enforced the return type of adapters id to make it explicit that the returned array always has at least one element
+- [#115](https://github.com/Folks-Finance/xchain-js-sdk/pull/115) [`64a211d`](https://github.com/Folks-Finance/xchain-js-sdk/commit/64a211d298a6dc9c79e73d50885eede2c728c9e3) Thanks [@stefanofa](https://github.com/stefanofa)! - Enforced the return type of adapters id to make it explicit that the returned array always has at least one element
 
 ## 0.0.11
 
 ### Patch Changes
 
-- [#112](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/112) [`b753d71`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/b753d71e72ae488654a93493a03df06d5f84a863) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fixed calculation of net yield
+- [#112](https://github.com/Folks-Finance/xchain-js-sdk/pull/112) [`b753d71`](https://github.com/Folks-Finance/xchain-js-sdk/commit/b753d71e72ae488654a93493a03df06d5f84a863) Thanks [@gidonkatten](https://github.com/gidonkatten)! - fixed calculation of net yield
 
 ## 0.0.10
 
 ### Patch Changes
 
-- [#110](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/110) [`0bced11`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/0bced11f21bf71a790ca6874ca4fddd114780ff4) Thanks [@gidonkatten](https://github.com/gidonkatten)! - use oracle token decimals rather than defined constant
+- [#110](https://github.com/Folks-Finance/xchain-js-sdk/pull/110) [`0bced11`](https://github.com/Folks-Finance/xchain-js-sdk/commit/0bced11f21bf71a790ca6874ca4fddd114780ff4) Thanks [@gidonkatten](https://github.com/gidonkatten)! - use oracle token decimals rather than defined constant
 
 ## 0.0.9
 
 ### Patch Changes
 
-- [#109](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/109) [`dd97c21`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/dd97c2136a92e716a0e815241b4a83b56b5fd705) Thanks [@palace22](https://github.com/palace22)! - Added read user loans info example
+- [#109](https://github.com/Folks-Finance/xchain-js-sdk/pull/109) [`dd97c21`](https://github.com/Folks-Finance/xchain-js-sdk/commit/dd97c2136a92e716a0e815241b4a83b56b5fd705) Thanks [@palace22](https://github.com/palace22)! - Added read user loans info example
 
-- [#107](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/107) [`795e926`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/795e926ec00b1a81a0d587e07df6c2f35d90738c) Thanks [@palace22](https://github.com/palace22)! - Refactored LoanManagerUserLoan type
+- [#107](https://github.com/Folks-Finance/xchain-js-sdk/pull/107) [`795e926`](https://github.com/Folks-Finance/xchain-js-sdk/commit/795e926ec00b1a81a0d587e07df6c2f35d90738c) Thanks [@palace22](https://github.com/palace22)! - Refactored LoanManagerUserLoan type
 
 ## 0.0.8
 
 ### Patch Changes
 
-- [#105](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/105) [`2551022`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/2551022f5cb6f5f1919dad17b0d75d171a955954) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add amount to msg value for repay
+- [#105](https://github.com/Folks-Finance/xchain-js-sdk/pull/105) [`2551022`](https://github.com/Folks-Finance/xchain-js-sdk/commit/2551022f5cb6f5f1919dad17b0d75d171a955954) Thanks [@gidonkatten](https://github.com/gidonkatten)! - add amount to msg value for repay
 
 ## 0.0.7
 
 ### Patch Changes
 
-- [#103](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/103) [`f2b1995`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/f2b1995ca706bbf3e0329d4e3b2f4798f61d05a1) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export formulae for converting between underlying and f amount
+- [#103](https://github.com/Folks-Finance/xchain-js-sdk/pull/103) [`f2b1995`](https://github.com/Folks-Finance/xchain-js-sdk/commit/f2b1995ca706bbf3e0329d4e3b2f4798f61d05a1) Thanks [@gidonkatten](https://github.com/gidonkatten)! - export formulae for converting between underlying and f amount
 
 ## 0.0.6
 
 ### Patch Changes
 
-- [#101](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/101) [`d19af87`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/d19af87c21d835bbcef10876c3ab0c5ff9b140eb) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added fixed gas limit estimate increase
+- [#101](https://github.com/Folks-Finance/xchain-js-sdk/pull/101) [`d19af87`](https://github.com/Folks-Finance/xchain-js-sdk/commit/d19af87c21d835bbcef10876c3ab0c5ff9b140eb) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added fixed gas limit estimate increase
 
 ## 0.0.5
 
 ### Patch Changes
 
-- [`33dfe7c`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/33dfe7ca1f242f93222d4209f904ea31da235c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Exports transaction utils
+- [`33dfe7c`](https://github.com/Folks-Finance/xchain-js-sdk/commit/33dfe7ca1f242f93222d4209f904ea31da235c65) Thanks [@stefanofa](https://github.com/stefanofa)! - Exports transaction utils
 
 ## 0.0.4
 
 ### Patch Changes
 
-- [#98](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/98) [`fb85a71`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/fb85a71b72b0846295a0b8a39a2f0ea215e1606f) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added util to create empty loan for simulate
+- [#98](https://github.com/Folks-Finance/xchain-js-sdk/pull/98) [`fb85a71`](https://github.com/Folks-Finance/xchain-js-sdk/commit/fb85a71b72b0846295a0b8a39a2f0ea215e1606f) Thanks [@gidonkatten](https://github.com/gidonkatten)! - added util to create empty loan for simulate
 
 ## 0.0.3
 
 ### Patch Changes
 
-- [#96](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/96) [`1dc1c7f`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/1dc1c7ff2a5df85fa63a5f41b888dd825af4d3c7) Thanks [@palace22](https://github.com/palace22)! - Added wait txn and get operation ids by transaction functions
+- [#96](https://github.com/Folks-Finance/xchain-js-sdk/pull/96) [`1dc1c7f`](https://github.com/Folks-Finance/xchain-js-sdk/commit/1dc1c7ff2a5df85fa63a5f41b888dd825af4d3c7) Thanks [@palace22](https://github.com/palace22)! - Added wait txn and get operation ids by transaction functions
 
 ## 0.0.2
 
 ### Patch Changes
 
-- [#94](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/pull/94) [`1b4db45`](https://github.com/Folks-Finance/folks-finance-xchain-js-sdk/commit/1b4db453fa85bd73b3a96d2e885c989a3056aee8) Thanks [@palace22](https://github.com/palace22)! - Added CreateLoanAndDeposit action to SendTokenAction type
+- [#94](https://github.com/Folks-Finance/xchain-js-sdk/pull/94) [`1b4db45`](https://github.com/Folks-Finance/xchain-js-sdk/commit/1b4db453fa85bd73b3a96d2e885c989a3056aee8) Thanks [@palace22](https://github.com/palace22)! - Added CreateLoanAndDeposit action to SendTokenAction type
