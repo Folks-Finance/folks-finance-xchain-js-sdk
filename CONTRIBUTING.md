@@ -1,8 +1,8 @@
-# Contributing to folks-finance-xchain-js-sdk
+# Contributing to @folks-finance/xchain-sdk
 
 ## Table of Contents
 
-- [Contributing to folks-finance-xchain-js-sdk](#contributing-to-folks-finance-xchain-js-sdk)
+- [Contributing to @folks-finance/xchain-sdk](#contributing-to-folks-financexchain-sdk)
   - [Table of Contents](#table-of-contents)
     - [Using nvm to Manage Node.js Version](#using-nvm-to-manage-nodejs-version)
     - [Using pnpm Managed via Corepack](#using-pnpm-managed-via-corepack)

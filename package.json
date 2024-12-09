@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Folks-Finance/folks-finance-xchain-js-sdk.git"
+    "url": "https://github.com/Folks-Finance/xchain-js-sdk.git"
   },
   "type": "module",
   "engines": {
