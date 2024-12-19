@@ -217,6 +217,19 @@ export const SPOKE_CHAIN: Record<NetworkType, Partial<Record<FolksChainId, Spoke
             ChainType.EVM,
           ),
         },
+        [MAINNET_FOLKS_TOKEN_ID.JOE]: {
+          token: {
+            type: TokenType.ERC20,
+            address: convertToGenericAddress("0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd" as EvmAddress, ChainType.EVM),
+            decimals: 18,
+          },
+          folksTokenId: MAINNET_FOLKS_TOKEN_ID.JOE,
+          poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.JOE],
+          spokeAddress: convertToGenericAddress(
+            "0x3b1C2eC8B7cdE241E0890C9742C14dD7867aA812" as EvmAddress,
+            ChainType.EVM,
+          ),
+        },
       },
     },
     [FOLKS_CHAIN_ID.ETHEREUM]: {

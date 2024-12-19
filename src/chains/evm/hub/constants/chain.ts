@@ -212,6 +212,16 @@ export const HUB_CHAIN: Record<NetworkType, HubChain> = {
         poolAddress: convertToGenericAddress("0x307bCEC89624660Ed06C97033EDb7eF49Ab0EB2D" as EvmAddress, ChainType.EVM),
         supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
       },
+      [MAINNET_FOLKS_TOKEN_ID.JOE]: {
+        token: {
+          type: TokenType.ERC20,
+          decimals: 18,
+        },
+        folksTokenId: MAINNET_FOLKS_TOKEN_ID.JOE,
+        poolId: MAINNET_POOLS[MAINNET_FOLKS_TOKEN_ID.JOE],
+        poolAddress: convertToGenericAddress("0x5e5a2007a8D613C4C98F425097166095C875e6eE" as EvmAddress, ChainType.EVM),
+        supportedLoanTypes: new Set([LoanTypeId.DEPOSIT, LoanTypeId.GENERAL]),
+      },
     } satisfies Record<MainnetFolksTokenId, HubTokenData>,
     rewardsV1Address: convertToGenericAddress(
       "0x7c532A6209350cF27EfC3D06E82E35ACFd362C7C" as EvmAddress,
