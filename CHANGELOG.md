@@ -1,5 +1,11 @@
 # @folks-finance/xchain-sdk
 
+## 0.0.49
+
+### Patch Changes
+
+- [#207](https://github.com/Folks-Finance/xchain-js-sdk/pull/207) [`cbef524`](https://github.com/Folks-Finance/xchain-js-sdk/commit/cbef524db2290e69ac802d611e76deeb8473a4dd) Thanks [@palace22](https://github.com/palace22)! - Added JOE ERC-20 token
+
 ## 0.0.48
 
 ### Patch Changes
