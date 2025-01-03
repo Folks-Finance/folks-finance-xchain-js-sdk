@@ -1,4 +1,4 @@
-import { createClient, createWalletClient, http, parseUnits, formatUnits } from "viem";
+import { createClient, createWalletClient, http, parseUnits } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 
 import {
@@ -18,6 +18,7 @@ import type { FolksCoreConfig, MessageAdapters, AccountId, LoanId } from "../src
 
 async function main() {
   const chain = FOLKS_CHAIN_ID.AVALANCHE_FUJI;
+  const tokenId = TESTNET_FOLKS_TOKEN_ID.AVAX;
   const jsonRpcAddress = "https://my-rpc.avax-testnet.network/<API_KEY>";
 
   const folksConfig: FolksCoreConfig = {
@@ -35,7 +36,6 @@ async function main() {
   FolksCore.init(folksConfig);
   FolksCore.setNetwork(NetworkType.TESTNET);
 
-  // write
   const MNEMONIC = "your mnemonic here";
   const account = mnemonicToAccount(MNEMONIC);
 
@@ -46,10 +46,11 @@ async function main() {
   });
 
   const { adapterIds, returnAdapterIds } = getSupportedMessageAdapters({
-    action: Action.CreateAccount,
-    messageAdapterParamType: MessageAdapterParamsType.Data,
+    action: Action.Deposit,
+    messageAdapterParamType: MessageAdapterParamsType.SendToken,
     network: NetworkType.TESTNET,
     sourceFolksChainId: chain,
+    folksTokenId: tokenId,
   });
 
   const adapters: MessageAdapters = {
@@ -66,8 +67,8 @@ async function main() {
   const prepareDepositCall = await FolksLoan.prepare.deposit(
     accountId,
     loanId,
-    LoanTypeId.GENERAL,
-    TESTNET_FOLKS_TOKEN_ID.AVAX,
+    LoanTypeId.GENERAL, // LoanTypeId.DEPOSIT for deposits
+    tokenId,
     amountToDeposit,
     adapters,
   );
@@ -78,9 +79,7 @@ async function main() {
     false,
     prepareDepositCall,
   );
-  console.log(
-    `${formatUnits(amountToDeposit, 18)} ${TESTNET_FOLKS_TOKEN_ID.AVAX} deposited to loan ${loanId}, transaction ID: ${createDepositCallRes}`,
-  );
+  console.log(`Transaction ID: ${createDepositCallRes}`);
 }
 
 main()

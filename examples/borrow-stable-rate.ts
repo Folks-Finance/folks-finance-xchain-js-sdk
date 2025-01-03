@@ -1,25 +1,25 @@
-import { createClient, createWalletClient, http } from "viem";
+import { multiply, divide } from "dnum";
+import { createClient, createWalletClient, http, parseUnits } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 
-import { convertStringToLoanName } from "../src/common/utils/lending.js";
 import {
   NetworkType,
   FolksCore,
-  getRandomBytes,
   FolksLoan,
+  FolksPool,
   FOLKS_CHAIN_ID,
-  BYTES4_LENGTH,
   getSupportedMessageAdapters,
   Action,
   MessageAdapterParamsType,
-  LoanTypeId,
   CHAIN_VIEM,
+  TESTNET_FOLKS_TOKEN_ID,
 } from "../src/index.js";
 
-import type { FolksCoreConfig, MessageAdapters, Nonce, AccountId } from "../src/index.js";
+import type { FolksCoreConfig, MessageAdapters, AccountId, LoanId } from "../src/index.js";
 
 async function main() {
-  const chain = FOLKS_CHAIN_ID.AVALANCHE_FUJI;
+  const chain = FOLKS_CHAIN_ID.BSC_TESTNET;
+  const tokenId = TESTNET_FOLKS_TOKEN_ID.BNB;
   const jsonRpcAddress = "https://my-rpc.avax-testnet.network/<API_KEY>";
 
   const folksConfig: FolksCoreConfig = {
@@ -37,8 +37,6 @@ async function main() {
   FolksCore.init(folksConfig);
   FolksCore.setNetwork(NetworkType.TESTNET);
 
-  const nonce: Nonce = getRandomBytes(BYTES4_LENGTH) as Nonce;
-
   const MNEMONIC = "your mnemonic here";
   const account = mnemonicToAccount(MNEMONIC);
 
@@ -49,10 +47,12 @@ async function main() {
   });
 
   const { adapterIds, returnAdapterIds } = getSupportedMessageAdapters({
-    action: Action.CreateLoan,
-    messageAdapterParamType: MessageAdapterParamsType.Data,
+    action: Action.Borrow,
+    messageAdapterParamType: MessageAdapterParamsType.ReceiveToken,
     network: NetworkType.TESTNET,
     sourceFolksChainId: chain,
+    destFolksChainId: chain,
+    folksTokenId: tokenId,
   });
 
   const adapters: MessageAdapters = {
@@ -62,24 +62,33 @@ async function main() {
 
   FolksCore.setFolksSigner({ signer, folksChainId: chain });
 
-  const accountId = "0x7d6...b66" as AccountId; //Your xChainApp account id
-  const loanName = convertStringToLoanName("Test Loan");
+  const accountId = "0x7d6...b66" as AccountId; // Your xChainApp account id
+  const loanId = "0x166...c12" as LoanId; // Your loan id
+  const amountToBorrow = parseUnits("0.0005", 18); // 0.0005 BNB (BNB has 18 decimals)
+  const poolInfo = await FolksPool.read.poolInfo(tokenId);
+  const interestRate = poolInfo.stableBorrowData.interestRate[0];
+  const stableRateSlippagePercent = 5; // 5% max deviation from current rate
+  const [maxStableRate] = divide(multiply(interestRate, 100 + stableRateSlippagePercent), 100);
 
-  const prepareCreateLoanCall = await FolksLoan.prepare.createLoan(
+  const prepareBorrowCall = await FolksLoan.prepare.borrow(
     accountId,
-    nonce,
-    LoanTypeId.GENERAL, // LoanTypeId.DEPOSIT for deposits
-    loanName,
+    loanId,
+    tokenId,
+    amountToBorrow,
+    maxStableRate,
+    chain,
     adapters,
   );
-  const createLoanCallRes = await FolksLoan.write.createLoan(
+  const createBorrowCallRes = await FolksLoan.write.borrow(
     accountId,
-    nonce,
-    LoanTypeId.GENERAL, // LoanTypeId.DEPOSIT for deposits
-    loanName,
-    prepareCreateLoanCall,
+    loanId,
+    tokenId,
+    amountToBorrow,
+    maxStableRate,
+    chain,
+    prepareBorrowCall,
   );
-  console.log(`Transaction ID: ${createLoanCallRes}`);
+  console.log(`Transaction ID: ${createBorrowCallRes}`);
 }
 
 main()
