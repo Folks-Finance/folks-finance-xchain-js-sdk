@@ -171,6 +171,8 @@ const createAccount = async (sourceFolksChainId: FolksChainId) => {
 
 Remember that any changes made to `FolksCore` (like changing the network or signer) will affect all subsequent module calls. This design allows for flexible and context-aware interactions with the Folks Finance protocol across different chains and environments.
 
+More examples provided in [`./examples`](./examples) folder.
+
 ### React Usage
 
 When using the SDK with React, there are a few additional considerations to ensure proper initialization and synchronization. Here's how to set up and use the SDK in a React environment:

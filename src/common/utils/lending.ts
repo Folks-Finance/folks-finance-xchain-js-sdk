@@ -1,12 +1,12 @@
-import { concat, keccak256 } from "viem";
+import { concat, keccak256, pad, toHex } from "viem";
 
-import { UINT16_LENGTH } from "../constants/bytes.js";
+import { BYTES32_LENGTH, UINT16_LENGTH } from "../constants/bytes.js";
 
 import { convertNumberToBytes } from "./bytes.js";
 
 import type { GenericAddress } from "../types/address.js";
 import type { FolksChainId } from "../types/chain.js";
-import type { AccountId, LoanId, Nonce } from "../types/lending.js";
+import type { AccountId, LoanId, LoanName, Nonce } from "../types/lending.js";
 
 export function isAccountId(accountId: AccountId): boolean {
   return accountId.length === 64 + 2;
@@ -18,4 +18,8 @@ export function buildAccountId(addr: GenericAddress, chainId: FolksChainId, nonc
 
 export function buildLoanId(accountId: AccountId, nonce: Nonce): LoanId {
   return keccak256(concat([accountId, nonce])) as LoanId;
+}
+
+export function convertStringToLoanName(name: string): LoanName {
+  return pad(toHex(name), { size: BYTES32_LENGTH }) as LoanName;
 }
